@@ -32,10 +32,15 @@ const TabNav = ({ items }) => {
       {items.map(({ id, to = "#", exact = true, title }, index) => (
         <NavButton
           key={id || index}
-          LinkComponent={NavLink}
-          activeClassName="active-link"
+          LinkComponent={(props) => (
+            <NavLink
+              {...props}
+              className={({ isActive }) =>
+                isActive ? props.className + " active-link" : props.className
+              }
+            />
+          )}
           to={to}
-          exact={exact}
         >
           {title}
         </NavButton>

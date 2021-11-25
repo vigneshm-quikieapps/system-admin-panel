@@ -1,7 +1,7 @@
 export { default as addIcon } from "./icon-add.png";
 export { default as allergyIcon } from "./icon-allergy.png";
 export { default as arrowDownLightIcon } from "./icon-arrow-down.png";
-export { default as arrowDownIcon } from "./icon-dashboard-dark.png";
+export { default as arrowDownIcon } from "./icon-arrow-down-dark.png";
 export { default as backIcon } from "./icon-back.png";
 export { default as calendarIcon } from "./icon-calendar.png";
 export { default as classIcon } from "./icon-class.png";
@@ -11,7 +11,7 @@ export { default as deleteIcon } from "./icon-delete.png";
 export { default as editIcon } from "./icon-edit.png";
 export { default as homeIcon } from "./icon-home.png";
 export { default as memberIcon } from "./icon-member.png";
-export { default as menuIcon } from "./icon-member.png";
+export { default as menuIcon } from "./icon-menu.png";
 export { default as moreIcon } from "./icon-more.png";
 export { default as notificationIcon } from "./icon-notification.png";
 export { default as paymentIcon } from "./icon-payment.png";
