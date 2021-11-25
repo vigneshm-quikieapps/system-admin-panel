@@ -37,7 +37,7 @@
 
 ## Styling
 
-We are going to use the [sx prop]()[4] and internal [styled][1] function of
+We are going to use the [sx prop][4] and internal [styled][1] function of
 material-ui which has access to the [theme](https://mui.com/customization/theming/)
 object and the component props.
 So we're using inline styling for every component and you should not import any
