@@ -1,70 +1,121 @@
-# Getting Started with Create React App
+# Instructions
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Prerequisites you need to know or learn
 
-## Available Scripts
+- Material-UI v5
+- react-query
+- react-hook-form & yup
 
-In the project directory, you can run:
+## Naming files
 
-### `npm start`
+- Use `lower-kebab-case` for file names
+- Use `.jsx` file extension when the file includes jsx tags
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Naming variables
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- Use meaningful names
+- Use camelCase
 
-### `npm test`
+## Code style
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Use prettier formatter
+- Set format on save in your IDE
+- set the prettier config file path to `.prettier.json`
 
-### `npm run build`
+## Project Structure
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- assets: images, icons, fonts and other assets
+- components: common components
+- helper/constants.js: reusable constant variables
+- hoc: Higher Order Components (example: main-layout)
+- services: API call functions
+- hooks: your custom hooks
+- router: app routes
+- styles: Theme and global styles (don't change it, contact Abbas if you need a
+  global style, theme variable or theme override to be included)
+- utils: reusable functions used through the app
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Styling
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+We are going to use the [sx prop]()[4] and internal [styled][1] function of
+material-ui which has access to the [theme](https://mui.com/customization/theming/)
+object and the component props.
+So we're using inline styling for every component and you should not import any
+stylesheets in your components.
 
-### `npm run eject`
+MUI almost has all the components required in this project which you can
+customize using the [styled][1] function mentioned above, so try to use
+Material-UI pre-built components whenever possible especially
+for [Typography][2].
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Read the `material-ui` v5 [documentation][3] if you are not familiar with MUI
+yet
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+`styled` basic usage:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```jsx
+import * as React from "react";
+import { styled } from "@mui/system";
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+const MyComponent = styled("div")({
+  color: "darkslategray",
+  backgroundColor: "aliceblue",
+  padding: 8,
+  borderRadius: 4,
+});
 
-## Learn More
+export default function BasicUsage() {
+  return <MyComponent>Styled div</MyComponent>;
+}
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+`styled` accessing the theme:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```jsx
+const MyThemeComponent = styled("div")(({ theme }) => ({
+  color: theme.palette.primary.contrastText,
+  backgroundColor: theme.palette.primary.main,
+  padding: theme.spacing(1),
+  borderRadius: theme.shape.borderRadius,
+}));
+```
 
-### Code Splitting
+`styled` advanced usage (accessing the theme and component props, applying nested styles):
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```jsx
+import { styled } from "@mui/material/styles";
 
-### Analyzing the Bundle Size
+const SpanWithPopup = styled("span", {
+  // return false for props that shouldn't be passed to the underlying component
+  shouldForwardProp: (prop) => ["color", "popupColor"].indexOf(prop) === -1,
+})(({ theme, color, popupColor }) => ({
+  position: "relative",
+  backgroundColor: theme.palette.background.paper,
+  color: color,
+  "&::after": {
+    content: "attr(data-title)",
+    display: "block",
+    position: "absolute",
+    top: "100%",
+    left: "50%",
+    color: popupColor,
+    whiteSpace: "nowrap",
+    transform: "translate(-50%, 0)",
+    padding: `0 ${theme.spacing(1)}`,
+    marginTop: `${theme.spacing(0.5)}`,
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: 4,
+    visibility: "hidden",
+  },
+  "&:hover, &:focus": {
+    "&::after": {
+      visibility: "visible",
+    },
+  },
+}));
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+[1]: https://mui.com/system/styled/
+[2]: https://mui.com/components/typography/
+[3]: https://mui.com/getting-started/usage/
+[4]: https://mui.com/system/the-sx-prop/
