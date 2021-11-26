@@ -15,11 +15,11 @@ const Page = () => (
   <Routes>
     <Route element={<TopNav />}>
       <Route path="add/:id" element={<BusinessAddEdit />} />
-      <Route path="finance-info" element={<BusinessFinance />} />
-      <Route path="details" element={<BusinessInfo />} />
-      <Route path="other-info" element={<BusinessOtherInfo />} />
+      <Route path="finance-info/:id" element={<BusinessFinance />} />
+      <Route path="details/:id" element={<BusinessInfo />} />
+      <Route path="other-info/:id" element={<BusinessOtherInfo />} />
       <Route path="add-finance/:id" element={<BusinessAddEditFinance />} />
-      <Route path="add-finance" element={<BusinessAddEditFinance />} />
+      <Route path="add-finance/:id" element={<BusinessAddEditFinance />} />
     </Route>
     <Route path="add" element={<BusinessAddEdit />} />
     <Route index element={<BusinessList />} />
