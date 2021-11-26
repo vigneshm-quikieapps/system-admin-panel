@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useMatch } from "react-router-dom";
+import { NavLink, useMatch } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import {
   Drawer,
@@ -73,9 +73,15 @@ const NavItem = ({ id, urlPath, nested, disabled, exact, icon, title }) => {
   return (
     <ListItemButton
       key={id}
-      component={Link}
+      component={(props) => (
+        <NavLink
+          {...props}
+          className={({ isActive }) =>
+            isActive ? props.className + " activeNavLink" : props.className
+          }
+        />
+      )}
       to={urlPath}
-      className={match ? "activeNavLink" : ""}
       sx={{ mb: nested ? 0 : 3, pr: 2 }}
       disabled={disabled}
     >
@@ -105,9 +111,15 @@ const NestedList = ({ item }) => {
       <ListItemButton
         sx={{ mb: 1 }}
         onClick={toggleOpen}
-        component={Link}
+        component={(props) => (
+          <NavLink
+            {...props}
+            className={({ isActive }) =>
+              isActive ? props.className + " activeNavLink" : props.className
+            }
+          />
+        )}
         to={item.urlPath || "#"}
-        className={match ? "activeNavLink" : ""}
         disabled={item.disabled}
       >
         {item.icon && <ListItemIcon>{item.icon}</ListItemIcon>}
