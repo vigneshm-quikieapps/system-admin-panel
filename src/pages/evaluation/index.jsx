@@ -7,7 +7,7 @@ import {
   NotFound,
 } from "..";
 
-const Page = () => (
+const EvaluationSchemes = () => (
   <Routes>
     <Route index element={<EvaluationList />} />
     <Route path="details/:id" element={<EvaluationInfo />} />
@@ -17,4 +17,4 @@ const Page = () => (
   </Routes>
 );
 
-export default Page;
+export default EvaluationSchemes;
