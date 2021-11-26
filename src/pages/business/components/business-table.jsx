@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router-dom";
+
 import { Table, TableHeading, AddButton } from "../../../components";
 
-const heading = (
+const Heading = ({ onAdd }) => (
   <TableHeading title="BusinessList">
-    <AddButton />
+    <AddButton onClick={onAdd} />
   </TableHeading>
 );
 const headers = [
@@ -14,9 +16,13 @@ const headers = [
 ];
 
 const BusinessTable = ({ rows, pagination }) => {
+  const navigate = useNavigate();
+
+  const addHandler = () => navigate("add");
+
   return (
     <Table
-      heading={heading}
+      heading={<Heading onAdd={addHandler} />}
       headers={headers}
       rows={rows}
       pagination={pagination}
