@@ -6,6 +6,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import { tableCellClasses } from "@mui/material/TableCell";
 import { Box } from "@mui/system";
@@ -35,6 +36,28 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+export const TableHeading = ({
+  title,
+  children,
+  titleComponent = "h3",
+  titleSx = { fontSize: "20px", fontWeight: "bold", flexGrow: "1" },
+}) => (
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      px: 2,
+      py: 1.5,
+      borderBottom: (theme) => `1px solid ${theme.palette.highlight.main}`,
+    }}
+  >
+    <Typography component={titleComponent} sx={titleSx}>
+      {title}
+    </Typography>
+    <Box sx={{ display: "flex", gap: 1 }}>{children}</Box>
+  </Box>
+);
+
 const CustomTable = ({ heading, headers, rows, pagination }) => {
   return (
     <CustomContainer>
@@ -61,7 +84,7 @@ const CustomTable = ({ heading, headers, rows, pagination }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      {pagination}
+      <Box sx={{ m: 1 }}>{pagination}</Box>
     </CustomContainer>
   );
 };

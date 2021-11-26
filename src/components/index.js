@@ -11,7 +11,7 @@ export { default as Pagination } from "./pagination";
 export { default as Button } from "./simple-button";
 export { default as Status } from "./status";
 export { default as Checkbox } from "./styled-checkbox";
-export { default as Table } from "./table";
+export { default as Table, TableHeading } from "./table";
 export { default as TableMui } from "./table-mui";
 export { default as TabNav } from "./tabular-navigation";
 export { default as TextField, menuSX } from "./textfield";
