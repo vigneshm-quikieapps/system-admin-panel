@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Card,
   CardTitle,
@@ -8,16 +9,20 @@ import {
 } from "../../components";
 import { moreIcon } from "../../assets/icons";
 
-const BusinessBasicInfo = () => (
-  <Card>
-    <CardTitle>Card Title</CardTitle>
-    <CardActions>
-      <IconButton>
-        <ImgIcon>{moreIcon}</ImgIcon>
-      </IconButton>
-    </CardActions>
-    <Outputs items={{ first: "first Item", second: "secondItem" }} />
-  </Card>
-);
+const BusinessBasicInfo = ({ setPageTitle }) => {
+  useEffect(() => setPageTitle("Basic Info"));
+
+  return (
+    <Card>
+      <CardTitle>Zippy Totz Pre-school Gymnastics</CardTitle>
+      <CardActions>
+        <IconButton>
+          <ImgIcon>{moreIcon}</ImgIcon>
+        </IconButton>
+      </CardActions>
+      <Outputs items={{ first: "first Item", second: "secondItem" }} />
+    </Card>
+  );
+};
 
 export default BusinessBasicInfo;

@@ -1,9 +1,11 @@
-import { Outlet } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { Box, Typography } from "@mui/material";
+import { Outlet, useParams, useNavigate } from "react-router-dom";
 
-import TabNav from "../../../components/tabular-navigation";
+import { TabNav, IconButton, ImgIcon } from "../../../components";
+import { backIcon } from "../../../assets/icons";
 
-const TopNav = () => {
+const TopNav = ({ pageTitle }) => {
+  const navigate = useNavigate();
   const { id: businessId = "" } = useParams();
   const pathTo = (path) => path + "/" + businessId;
 
@@ -29,6 +31,14 @@ const TopNav = () => {
   ];
   return (
     <>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+        <IconButton onClick={() => navigate("../")}>
+          <ImgIcon>{backIcon}</ImgIcon>
+        </IconButton>
+        <Typography variant="h1" sx={{ fontSize: "20px", fontWeight: "bold" }}>
+          {pageTitle}
+        </Typography>
+      </Box>
       <TabNav items={items} />
       <Outlet />
     </>
