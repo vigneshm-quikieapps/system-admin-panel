@@ -1,6 +1,7 @@
 import { styled } from "@mui/material/styles";
 import { Box, Button } from "@mui/material";
-import { NavLink } from "react-router-dom";
+
+import { NavLink } from ".";
 
 const NavButton = styled(Button)(({ theme }) => ({
   whiteSpace: "nowrap",
@@ -32,14 +33,8 @@ const TabNav = ({ items }) => {
       {items.map(({ id, to = "#", exact = true, title }, index) => (
         <NavButton
           key={id || index}
-          LinkComponent={(props) => (
-            <NavLink
-              {...props}
-              className={({ isActive }) =>
-                isActive ? props.className + " active-link" : props.className
-              }
-            />
-          )}
+          LinkComponent={NavLink}
+          activeClassName="active-link"
           to={to}
         >
           {title}

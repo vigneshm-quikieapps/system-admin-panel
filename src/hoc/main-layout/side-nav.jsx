@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, useMatch } from "react-router-dom";
+import { useMatch } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import {
   Drawer,
@@ -14,6 +14,8 @@ import {
   ExpandMore as ExpandMoreIcon,
 } from "@mui/icons-material";
 
+import { NavLink } from "../../components";
+
 const StyledDrawer = styled(Drawer, {
   shouldForwardProp: (prop) => prop !== "drawerWidth",
 })(({ theme, drawerWidth }) => ({
@@ -21,7 +23,7 @@ const StyledDrawer = styled(Drawer, {
   flexShrink: 0,
   color: theme.palette.text.navItem,
   backgroundColor: theme.palette.darkIndigo.main,
-  "& .activeNavLink": {
+  "& .active-navigation-Link": {
     color: theme.palette.text.navItemActive,
   },
   "& .MuiDrawer-paper": {
@@ -73,14 +75,8 @@ const NavItem = ({ id, urlPath, nested, disabled, exact, icon, title }) => {
   return (
     <ListItemButton
       key={id}
-      component={(props) => (
-        <NavLink
-          {...props}
-          className={({ isActive }) =>
-            isActive ? props.className + " activeNavLink" : props.className
-          }
-        />
-      )}
+      component={NavLink}
+      activeClassName="active-navigation-Link"
       to={urlPath}
       sx={{ mb: nested ? 0 : 3, pr: 2 }}
       disabled={disabled}
@@ -93,10 +89,10 @@ const NavItem = ({ id, urlPath, nested, disabled, exact, icon, title }) => {
 };
 
 const NestedList = ({ item }) => {
-  const match = useMatch({
-    path: item.urlPath,
-    caseSensitive: true,
-  });
+  // const match = useMatch({
+  //   path: item.urlPath,
+  //   caseSensitive: true,
+  // });
   const [open, setOpen] = useState(false);
 
   // useEffect(() => setOpen(!!match), [match]);
@@ -111,14 +107,8 @@ const NestedList = ({ item }) => {
       <ListItemButton
         sx={{ mb: 1 }}
         onClick={toggleOpen}
-        component={(props) => (
-          <NavLink
-            {...props}
-            className={({ isActive }) =>
-              isActive ? props.className + " activeNavLink" : props.className
-            }
-          />
-        )}
+        component={NavLink}
+        activeClassName="active-navigation-Link"
         to={item.urlPath || "#"}
         disabled={item.disabled}
       >

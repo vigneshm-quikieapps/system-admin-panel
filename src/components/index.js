@@ -22,3 +22,4 @@ export { default as Grid } from "./grid";
 export { default as AddButton } from "./add-button";
 export { default as Popover } from "./popover";
 export { default as Card, CardTitle, CardActions } from "./card";
+export { default as NavLink } from "./nav-link";
