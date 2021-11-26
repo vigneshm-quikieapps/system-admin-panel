@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { InputAdornment } from "@mui/material";
+import { Box, InputAdornment } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 
 import {
   Actions,
   Pagination,
-  Grid,
   Button,
   TextField,
   PageHeader,
@@ -63,9 +62,9 @@ const BusinessList = () => {
   return (
     <>
       <PageHeader title="Business" description="Manage your Business here" />
-      <Grid columnCount={9} sx={{ mb: 1 }}>
+      <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
         <TextField
-          sx={{ gridColumnEnd: "span 7" }}
+          sx={{ flex: "1" }}
           placeholder="Search business by name"
           InputProps={{
             startAdornment: (
@@ -75,10 +74,8 @@ const BusinessList = () => {
             ),
           }}
         />
-        <Button sx={{ gridColumnEnd: "span 2" }} active>
-          Advanced Search
-        </Button>
-      </Grid>
+        <Button active>Advanced Search</Button>
+      </Box>
       <BusinessTable rows={tableRows} pagination={pagination} />
     </>
   );
