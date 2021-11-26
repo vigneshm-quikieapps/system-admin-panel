@@ -1,7 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { InputAdornment } from "@mui/material";
+import { Search as SearchIcon } from "@mui/icons-material";
 
-import { Actions, Pagination } from "../../components";
+import {
+  Actions,
+  Pagination,
+  Grid,
+  Button,
+  TextField,
+  PageHeader,
+} from "../../components";
 import BusinessTable from "./components/business-table";
 
 const items = [
@@ -53,6 +62,23 @@ const BusinessList = () => {
 
   return (
     <>
+      <PageHeader title="Business" description="Manage your Business here" />
+      <Grid columnCount={9} sx={{ mb: 1 }}>
+        <TextField
+          sx={{ gridColumnEnd: "span 7" }}
+          placeholder="Search business by name"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start" sx={{ mr: "-10px" }}>
+                <SearchIcon sx={{ color: "#0004" }} />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Button sx={{ gridColumnEnd: "span 2" }} active>
+          Advanced Search
+        </Button>
+      </Grid>
       <BusinessTable rows={tableRows} pagination={pagination} />
     </>
   );
