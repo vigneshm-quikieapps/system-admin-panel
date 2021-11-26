@@ -29,6 +29,7 @@ const theme = createTheme({
       background: "#f4f4f4",
     },
   },
+  spacing: 10,
   shape: {
     borderRadiuses: {
       primary: "12px",
