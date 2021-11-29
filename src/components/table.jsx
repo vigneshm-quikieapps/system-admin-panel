@@ -7,6 +7,8 @@ import {
   TableHead,
   TableRow,
   Typography,
+  CircularProgress,
+  LinearProgress,
 } from "@mui/material";
 import { tableCellClasses } from "@mui/material/TableCell";
 import { Box } from "@mui/system";
@@ -58,7 +60,14 @@ export const TableHeading = ({
   </Box>
 );
 
-const CustomTable = ({ heading, headers, rows, pagination }) => {
+const CustomTable = ({
+  heading,
+  headers,
+  rows,
+  pagination,
+  isLoading,
+  isFetching,
+}) => {
   return (
     <CustomContainer>
       {heading}
@@ -74,16 +83,37 @@ const CustomTable = ({ heading, headers, rows, pagination }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, index) => (
-              <StyledTableRow key={row.id || index} onClick={row.onClick}>
-                {row.items.map((item, index) => (
-                  <StyledTableCell key={index}>{item}</StyledTableCell>
-                ))}
-              </StyledTableRow>
-            ))}
+            {isLoading ? (
+              <>
+                <StyledTableRow>
+                  <StyledTableCell colSpan={headers.length} rowSpan={3}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <CircularProgress />
+                    </Box>
+                  </StyledTableCell>
+                </StyledTableRow>
+                <StyledTableRow />
+                <StyledTableRow />
+              </>
+            ) : (
+              rows.map((row, index) => (
+                <StyledTableRow key={row.id || index} onClick={row.onClick}>
+                  {row.items.map((item, index) => (
+                    <StyledTableCell key={index}>{item}</StyledTableCell>
+                  ))}
+                </StyledTableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>
+      {isFetching && <LinearProgress />}
       <Box sx={{ m: 1 }}>{pagination}</Box>
     </CustomContainer>
   );
