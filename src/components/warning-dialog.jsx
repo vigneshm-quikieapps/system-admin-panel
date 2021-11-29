@@ -15,17 +15,24 @@ export default function DialogBox({
   description,
   acceptButtonTitle = "Yes",
   rejectButtonTitle = "No",
+  showReject = false,
 }) {
   return (
-    <Dialog open={open} onClose={onReject}>
+    <Dialog
+      open={open}
+      onClose={onReject}
+      sx={{ "& .MuiDialog-paper": { minWidth: "400px" } }}
+    >
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{description}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onReject} autoFocus>
-          {rejectButtonTitle}
-        </Button>
+        {showReject && (
+          <Button onClick={onReject} autoFocus>
+            {rejectButtonTitle}
+          </Button>
+        )}
         <Button onClick={onAccept}>{acceptButtonTitle}</Button>
       </DialogActions>
     </Dialog>
