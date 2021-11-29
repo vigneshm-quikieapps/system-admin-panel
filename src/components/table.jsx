@@ -113,7 +113,7 @@ const CustomTable = ({
           </TableBody>
         </Table>
       </TableContainer>
-      {isFetching && <LinearProgress />}
+      {isFetching ? <LinearProgress /> : <Box sx={{ height: "4px" }} />}
       <Box sx={{ m: 1 }}>{pagination}</Box>
     </CustomContainer>
   );
