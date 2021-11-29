@@ -8,6 +8,7 @@ const Roles = () => (
     <Route path="details/:id" element={<RoleInfo />} />
     <Route path="add/:id" element={<RoleAddEdit />} />
     <Route path="add" element={<RoleAddEdit />} />
+    <Route index element={<RoleList />} />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );
