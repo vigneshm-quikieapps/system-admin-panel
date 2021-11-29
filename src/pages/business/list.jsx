@@ -1,73 +1,96 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, InputAdornment } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 
-import axios from "../../utils/axios-instance";
+import { useBusinessListQuery } from "../../services/business-services";
 import {
   Actions,
   Pagination,
   Button,
   TextField,
   PageHeader,
+  WarningDialog,
 } from "../../components";
 import BusinessTable from "./components/business-table";
-
-const items = [
-  {
-    _id: 1,
-    name: "Business 1",
-    city: "Bangalore",
-    postCode: "1234567890",
-    primaryContact: "contact",
-  },
-];
-
-const fetchBusinessList = (page, filters) =>
-  axios.get("/api/businesses", { page, filters });
+import { transformError, toPascal } from "../../utils";
 
 const BusinessList = () => {
+  const [searchValue, setSearchValue] = useState("");
   const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState();
+
+  const [showError, setShowError] = useState(false);
   const navigate = useNavigate();
+  const { isLoading, isError, error, data, isFetching, isPreviousData } =
+    useBusinessListQuery(page, filters);
 
-  const rowClickHandler = (id) => navigate(`details/${id}`);
+  const rowClickHandler = useCallback(
+    (id) => navigate(`details/${id}`),
+    [navigate],
+  );
 
-  const editHandler = (e, id) => {
+  const editHandler = useCallback(
+    (e, id) => {
+      e.stopPropagation();
+      navigate(`add/${id}`);
+    },
+    [navigate],
+  );
+
+  const deleteHandler = useCallback((e, id) => {
     e.stopPropagation();
-    navigate(`add/${id}`);
-  };
-
-  const deleteHandler = (e, id) => {
-    e.stopPropagation();
-  };
+  }, []);
 
   const pageChangeHandler = (_, value) => {
     setPage(value);
   };
 
-  const tableRows = items.map(
-    ({ _id, name, city, postCode, primaryContact }) => ({
-      onClick: () => rowClickHandler(_id),
-      items: [
-        name,
-        city,
-        postCode,
-        primaryContact,
-        <Actions
-          onDelete={(e) => deleteHandler(e, _id)}
-          onEdit={(e) => editHandler(e, _id)}
-        />,
-      ],
-    }),
+  const searchChangeHandler = (e) => setSearchValue(e.target.value);
+
+  const tableRows = useMemo(
+    () =>
+      data?.docs?.map(({ _id, name, city, postcode, contactName }) => ({
+        onClick: () => rowClickHandler(_id),
+        items: [
+          toPascal(name),
+          toPascal(city),
+          postcode,
+          toPascal(contactName),
+          <Actions
+            onDelete={(e) => deleteHandler(e, _id)}
+            onEdit={(e) => editHandler(e, _id)}
+          />,
+        ],
+      })),
+    [data, editHandler, deleteHandler, rowClickHandler],
   );
 
-  const pagination = <Pagination count={3} onChange={pageChangeHandler} />;
+  useEffect(() => setShowError(isError), [isError]);
+
+  useEffect(() => {
+    const searchTimer = setTimeout(() => {
+      if (!searchValue) return setFilters([]);
+      setFilters([{ field: "name", type: "STARTS_WITH", value: searchValue }]);
+    }, 500);
+    return () => clearTimeout(searchTimer);
+  }, [searchValue]);
+
+  const pagination = (
+    <Pagination
+      count={data?.totalPages || 0}
+      disabled={isPreviousData}
+      onChange={pageChangeHandler}
+    />
+  );
 
   return (
     <>
       <PageHeader title="Business" description="Manage your Business here" />
       <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
         <TextField
+          value={searchValue}
+          onChange={searchChangeHandler}
           sx={{ flex: "1" }}
           placeholder="Search business by name"
           InputProps={{
@@ -80,7 +103,22 @@ const BusinessList = () => {
         />
         <Button active>Advanced Search</Button>
       </Box>
-      <BusinessTable rows={tableRows} pagination={pagination} />
+      {isError ? (
+        <WarningDialog
+          open={showError}
+          title="Error"
+          description={transformError(error)}
+          acceptButtonTitle="Discard"
+          onAccept={() => setShowError(false)}
+        />
+      ) : (
+        <BusinessTable
+          rows={tableRows}
+          pagination={pagination}
+          isLoading={isLoading}
+          isFetching={isFetching}
+        />
+      )}
     </>
   );
 };

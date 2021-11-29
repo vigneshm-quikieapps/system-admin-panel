@@ -15,7 +15,7 @@ const headers = [
   "Action",
 ];
 
-const BusinessTable = ({ rows, pagination }) => {
+const BusinessTable = ({ rows, pagination, isLoading, isFetching }) => {
   const navigate = useNavigate();
 
   const addHandler = () => navigate("add");
@@ -26,6 +26,8 @@ const BusinessTable = ({ rows, pagination }) => {
       headers={headers}
       rows={rows}
       pagination={pagination}
+      isLoading={isLoading}
+      isFetching={isFetching}
     />
   );
 };
