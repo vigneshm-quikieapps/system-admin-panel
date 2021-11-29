@@ -57,7 +57,7 @@ const RoleList = () => {
 
   return (
     <>
-      <PageHeader title="Role" description="Manage your Role here" />
+      <PageHeader title="Role" description="Manage roles from here" />
       <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
         <TextField
           sx={{ flex: "1" }}
