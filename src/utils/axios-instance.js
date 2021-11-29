@@ -1,9 +1,9 @@
 import axios from "axios";
 
-import { API_URL } from "../helper/config";
+import { baseURL } from "../helper/config";
 
 const axiosInstance = axios.create({
-  baseURL: API_URL,
+  baseURL,
   ///
   // withCredentials: true,
 });
@@ -20,7 +20,7 @@ axiosInstance.interceptors.request.use(
     console.error(error);
     // Do something with request error
     return Promise.reject(error);
-  }
+  },
 );
 
 axiosInstance.interceptors.response.use(
@@ -54,7 +54,7 @@ axiosInstance.interceptors.response.use(
       // Do something with response error
       return Promise.reject(error);
     }
-  }
+  },
 );
 
 export default axiosInstance;

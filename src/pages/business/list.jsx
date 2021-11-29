@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, InputAdornment } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 
+import axios from "../../utils/axios-instance";
 import {
   Actions,
   Pagination,
@@ -21,6 +22,9 @@ const items = [
     primaryContact: "contact",
   },
 ];
+
+const fetchBusinessList = (page, filters) =>
+  axios.get("/api/businesses", { page, filters });
 
 const BusinessList = () => {
   const [page, setPage] = useState(1);
