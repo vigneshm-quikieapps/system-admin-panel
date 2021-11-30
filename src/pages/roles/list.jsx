@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Box, InputAdornment } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 
+import axios from "../../utils/axios-instance";
+
 import {
   Actions,
   Pagination,

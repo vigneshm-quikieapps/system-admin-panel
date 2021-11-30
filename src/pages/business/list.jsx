@@ -23,9 +23,6 @@ const items = [
   },
 ];
 
-const fetchBusinessList = (page, filters) =>
-  axios.get("/api/businesses", { page, filters });
-
 const BusinessList = () => {
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
