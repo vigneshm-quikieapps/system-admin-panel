@@ -1,3 +1,10 @@
-const Page = () => <>Users</>;
+import { Routes, Route } from "react-router-dom";
+import UserList from "./list";
 
-export default Page;
+const Users = () => (
+  <Routes>
+    <Route index element={<UserList />} />
+  </Routes>
+);
+
+export default Users;
