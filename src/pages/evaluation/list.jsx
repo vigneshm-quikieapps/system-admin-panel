@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo , useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Actions,
@@ -7,54 +7,86 @@ import {
   TextField,
   Button,
   PageHeader,
+  WarningDialog
 } from "../../components";
 import EvaluationTable from "./components/evaluation-table";
 import { Box, InputAdornment, Typography } from "@mui/material";
 import { SearchOutlined as SearchIcon } from "@mui/icons-material";
-
-const items = [
-  {
-    _id: 1,
-    evaluationScheme: "Scottish Gymnastics Award Scheme",
-    status: Status,
-    schemeID: "100000001",
-  },
-];
+import { fetchEvaluationSchemes } from "../../services/list-services";
+import { transformError, toPascal } from "../../utils";
 
 const EvaluationList = () => {
+  const [status, setStatus] = useState("ACTIVE");
+
   const [page, setPage] = useState(1);
+  const [searchValue, setSearchValue] = useState("");
+  const [filters, setFilters] = useState();
+  const [showError, setShowError] = useState(false);
 
   const navigate = useNavigate();
+  const { isLoading, isError, error, data, isFetching, isPreviousData } =
+  fetchEvaluationSchemes(page, filters);
+  const rowClickHandler = useCallback(
+    (id) => navigate(`details/${id}`),
+    [navigate],
+  );
 
-  const rowClickHandler = (id) => navigate(`details/${id}`);
+  const editHandler = useCallback(
+    (e, id) => {
+      e.stopPropagation();
+      navigate(`add/${id}`);
+    },
+    [navigate],
+  );
 
-  const editHandler = (e, id) => {
+  const deleteHandler = useCallback((e, id) => {
     e.stopPropagation();
-    navigate(`add/${id}`);
-  };
+  }, []);
 
-  const deleteHandler = (e, id) => {
-    e.stopPropagation();
-  };
   const pageChangeHandler = (_, value) => {
     setPage(value);
   };
-  const tableRows = items.map(
-    ({ _id, evaluationScheme, status, schemeID }) => ({
+
+  const searchChangeHandler = (e) => setSearchValue(e.target.value);
+  const statusColors = { ACTIVE: "green", INACTIVE: "red" };
+  const statusText = {
+    ACTIVE: "Active",
+    INACTIVE: "Inactive",
+  };
+  const tableRows= useMemo(
+    () =>
+  data?.docs?.map(({ _id, name, status, levelCount }) => ({
       onClick: () => rowClickHandler(_id),
       items: [
-        evaluationScheme,
-        <Status status="green" title="Active" />,
-        schemeID,
+        toPascal(name),
+        <Status status={statusColors[status]} title={statusText[status]} />,
+        levelCount,
         <Actions
           onDelete={(e) => deleteHandler(e, _id)}
           onEdit={(e) => editHandler(e, _id)}
         />,
       ],
-    }),
-  );
+    })),
+  [data, editHandler, deleteHandler, rowClickHandler],
+);
 
-  const pagination = <Pagination count={3} onChange={pageChangeHandler} />;
+useEffect(() => setShowError(isError), [isError]);
+
+useEffect(() => {
+  const searchTimer = setTimeout(() => {
+    if (!searchValue) return setFilters([]);
+    setFilters([{ field: "name", type: "STARTS_WITH", value: searchValue }]);
+  }, 500);
+  return () => clearTimeout(searchTimer);
+}, [searchValue]);
+
+const pagination = (
+  <Pagination
+    count={data?.totalPages || 0}
+    disabled={isPreviousData}
+    onChange={pageChangeHandler}
+  />
+);
 
   return (
     <>
@@ -64,6 +96,8 @@ const EvaluationList = () => {
       />
       <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
         <TextField
+        value={searchValue}
+        onChange={searchChangeHandler}
           sx={{ flex: "1" }}
           placeholder="Search"
           InputProps={{
@@ -76,7 +110,20 @@ const EvaluationList = () => {
         />
         <Button active>Advanced Search</Button>
       </Box>
-      <EvaluationTable rows={tableRows} pagination={pagination} />
+      {isError ? (
+        <WarningDialog
+          open={showError}
+          title="Error"
+          description={transformError(error)}
+          acceptButtonTitle="Discard"
+          onAccept={() => setShowError(false)}
+        />
+      ) : (
+      <EvaluationTable rows={tableRows}
+      pagination={pagination}
+      isLoading={isLoading}
+      isFetching={isFetching} />
+      )}
     </>
   );
 };

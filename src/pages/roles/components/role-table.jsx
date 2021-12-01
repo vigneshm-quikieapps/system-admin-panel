@@ -9,7 +9,7 @@ const Heading = ({ onAdd }) => (
 );
 const headers = ["Role Name ", "Role Code", "Role ID", "Action"];
 
-const RoleTable = ({ rows, pagination }) => {
+const RoleTable = ({ rows, pagination, isLoading, isFetching }) => {
   const navigate = useNavigate();
 
   const addHandler = () => navigate("add");
@@ -20,6 +20,8 @@ const RoleTable = ({ rows, pagination }) => {
       headers={headers}
       rows={rows}
       pagination={pagination}
+      isLoading={isLoading}
+      isFetching={isFetching}
     />
   );
 };
