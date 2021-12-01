@@ -13,20 +13,7 @@ import {
   WarningDialog,
 } from "../../components";
 import BusinessTable from "./components/business-table";
-<<<<<<< HEAD
 import { transformError, toPascal } from "../../utils";
-=======
-
-const items = [
-  {
-    _id: 1,
-    name: "Business 1",
-    city: "Bangalore",
-    postCode: "1234567890",
-    primaryContact: "contact",
-  },
-];
->>>>>>> pinky-pages
 
 const BusinessList = () => {
   const [searchValue, setSearchValue] = useState("");
