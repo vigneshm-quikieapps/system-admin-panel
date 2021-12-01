@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, InputAdornment } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 
-import { useBusinessListQuery } from "../../services/business-services";
+import { useBusinessListQuery } from "../../services/list-services";
 import {
   Actions,
   Pagination,
