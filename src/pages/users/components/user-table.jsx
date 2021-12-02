@@ -1,20 +1,26 @@
 import { Table, TableHeading, AddButton } from "../../../components";
+import { useNavigate } from "react-router-dom";
 
-const heading = (
+const Heading = ({ onAdd }) => (
   <TableHeading title="User List">
-    <AddButton />
+    <AddButton onClick={onAdd} />
   </TableHeading>
 );
 
 const headers = ["Role Name ", "Email", "Contact Number", "User ID", "Action"];
 
-const UserListTable = ({ rows, pagination }) => {
+const UserListTable = ({ rows, pagination, isLoading, isFetching }) => {
+  const addHandler = () => navigate("add");
+  const navigate = useNavigate();
+
   return (
     <Table
-      heading={heading}
+      heading={<Heading onAdd={addHandler} />}
       headers={headers}
       rows={rows}
       pagination={pagination}
+      isLoading={isLoading}
+      isFetching={isFetching}
     />
   );
 };

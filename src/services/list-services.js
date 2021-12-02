@@ -26,7 +26,5 @@ export const fetchEvaluationSchemes = buildQueryHook(
   "evaluationList",
   "evaluations",
 );
-export const fetchRoleList = buildQueryHook(
-  "roleList",
-  "roles",
-);
+export const fetchRoleList = buildQueryHook("roleList", "roles");
+export const fetchUserList = buildQueryHook("userList", "users");
