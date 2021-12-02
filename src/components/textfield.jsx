@@ -2,14 +2,15 @@ import { styled } from "@mui/material/styles";
 import { TextField } from "@mui/material";
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
-  "& .Mui-disabled": {    
+  "& .Mui-disabled": {
     color: `${theme.palette.text.secondary} !important`,
     WebkitTextFillColor: `${theme.palette.text.secondary} !important`,
   },
+  justifyContent: "center",
   // applied to label of all variants
   "& label": {
     color: theme.palette.text.secondary,
-    lineHeight: 1,
+    // lineHeight: 1,
     "&.Mui-focused": {
       color: theme.palette.secondary.main,
     },
