@@ -10,7 +10,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   // applied to label of all variants
   "& label": {
     color: theme.palette.text.secondary,
-    // lineHeight: 1,
+    lineHeight: 1,
     "&.Mui-focused": {
       color: theme.palette.secondary.main,
     },
