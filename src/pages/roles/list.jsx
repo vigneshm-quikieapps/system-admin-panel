@@ -115,7 +115,10 @@ const AdvancedSearch = ({
           sx={{ width: "calc(37% - 120px)" }}
         />
 
-        <GradientButton sx={{ width: "200px !important" }}>
+        <GradientButton
+          sx={{ width: "200px !important" }}
+          onClick={searchHandler}
+        >
           Search
         </GradientButton>
       </Box>
@@ -156,7 +159,6 @@ const RoleList = () => {
   };
 
   const searchChangeHandler = (e) => setSearchValue(e.target.value);
-
   const tableRows = useMemo(
     () =>
       data?.docs?.map(({ _id, name, code, roleID }) => ({
