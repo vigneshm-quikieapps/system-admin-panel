@@ -22,9 +22,9 @@ export const useBusinessListQuery = buildQueryHook(
   "businesses",
 );
 
-export const fetchEvaluationSchemes = buildQueryHook(
+export const useEvaluationSchemesQuery = buildQueryHook(
   "evaluationList",
   "evaluations",
 );
-export const fetchRoleList = buildQueryHook("roleList", "roles");
-export const fetchUserList = buildQueryHook("userList", "users");
+export const useRoleListQuery = buildQueryHook("roleList", "roles");
+export const useUserListQuery = buildQueryHook("userList", "users");

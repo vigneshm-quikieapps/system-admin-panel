@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo , useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Actions,
@@ -7,12 +7,12 @@ import {
   TextField,
   Button,
   PageHeader,
-  WarningDialog
+  WarningDialog,
 } from "../../components";
 import EvaluationTable from "./components/evaluation-table";
 import { Box, InputAdornment, Typography } from "@mui/material";
 import { SearchOutlined as SearchIcon } from "@mui/icons-material";
-import { fetchEvaluationSchemes } from "../../services/list-services";
+import { useEvaluationSchemesQuery } from "../../services/list-services";
 import { transformError, toPascal } from "../../utils";
 
 const EvaluationList = () => {
@@ -25,7 +25,7 @@ const EvaluationList = () => {
 
   const navigate = useNavigate();
   const { isLoading, isError, error, data, isFetching, isPreviousData } =
-  fetchEvaluationSchemes(page, filters);
+    useEvaluationSchemesQuery(page, filters);
   const rowClickHandler = useCallback(
     (id) => navigate(`details/${id}`),
     [navigate],
@@ -48,14 +48,14 @@ const EvaluationList = () => {
   };
 
   const searchChangeHandler = (e) => setSearchValue(e.target.value);
-  const statusColors = { ACTIVE: "green", INACTIVE: "red" };
-  const statusText = {
-    ACTIVE: "Active",
-    INACTIVE: "Inactive",
-  };
-  const tableRows= useMemo(
-    () =>
-  data?.docs?.map(({ _id, name, status, levelCount }) => ({
+
+  const tableRows = useMemo(() => {
+    const statusColors = { ACTIVE: "green", INACTIVE: "red" };
+    const statusText = {
+      ACTIVE: "Active",
+      INACTIVE: "Inactive",
+    };
+    return data?.docs?.map(({ _id, name, status, levelCount }) => ({
       onClick: () => rowClickHandler(_id),
       items: [
         toPascal(name),
@@ -66,27 +66,26 @@ const EvaluationList = () => {
           onEdit={(e) => editHandler(e, _id)}
         />,
       ],
-    })),
-  [data, editHandler, deleteHandler, rowClickHandler],
-);
+    }));
+  }, [data, editHandler, deleteHandler, rowClickHandler]);
 
-useEffect(() => setShowError(isError), [isError]);
+  useEffect(() => setShowError(isError), [isError]);
 
-useEffect(() => {
-  const searchTimer = setTimeout(() => {
-    if (!searchValue) return setFilters([]);
-    setFilters([{ field: "name", type: "STARTS_WITH", value: searchValue }]);
-  }, 500);
-  return () => clearTimeout(searchTimer);
-}, [searchValue]);
+  useEffect(() => {
+    const searchTimer = setTimeout(() => {
+      if (!searchValue) return setFilters([]);
+      setFilters([{ field: "name", type: "STARTS_WITH", value: searchValue }]);
+    }, 500);
+    return () => clearTimeout(searchTimer);
+  }, [searchValue]);
 
-const pagination = (
-  <Pagination
-    count={data?.totalPages || 0}
-    disabled={isPreviousData}
-    onChange={pageChangeHandler}
-  />
-);
+  const pagination = (
+    <Pagination
+      count={data?.totalPages || 0}
+      disabled={isPreviousData}
+      onChange={pageChangeHandler}
+    />
+  );
 
   return (
     <>
@@ -96,8 +95,8 @@ const pagination = (
       />
       <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
         <TextField
-        value={searchValue}
-        onChange={searchChangeHandler}
+          value={searchValue}
+          onChange={searchChangeHandler}
           sx={{ flex: "1" }}
           placeholder="Search"
           InputProps={{
@@ -119,10 +118,12 @@ const pagination = (
           onAccept={() => setShowError(false)}
         />
       ) : (
-      <EvaluationTable rows={tableRows}
-      pagination={pagination}
-      isLoading={isLoading}
-      isFetching={isFetching} />
+        <EvaluationTable
+          rows={tableRows}
+          pagination={pagination}
+          isLoading={isLoading}
+          isFetching={isFetching}
+        />
       )}
     </>
   );

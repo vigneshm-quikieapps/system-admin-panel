@@ -1,21 +1,21 @@
 import { Table, TableHeading, AddButton } from "../../../components";
 import { useNavigate } from "react-router-dom";
 
-const heading = (
+const Heading = ({ onAdd }) => (
   <TableHeading title="EvaluationList">
-    <AddButton />
+    <AddButton onClick={onAdd} />
   </TableHeading>
 );
 
 const headers = ["Evaluation Scheme", "Status", "Scheme ID", "Action"];
 
-const EvaluationTable = ({ rows, pagination, isLoading, isFetching  }) => {
+const EvaluationTable = ({ rows, pagination, isLoading, isFetching }) => {
   const navigate = useNavigate();
 
   const addHandler = () => navigate("add");
   return (
     <Table
-      heading={heading}
+      heading={<Heading onAdd={addHandler} />}
       headers={headers}
       rows={rows}
       pagination={pagination}

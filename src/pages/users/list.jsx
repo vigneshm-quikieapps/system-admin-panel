@@ -1,5 +1,7 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Box, InputAdornment, Typography } from "@mui/material";
+import { SearchOutlined as SearchIcon } from "@mui/icons-material";
 
 import {
   Actions,
@@ -10,10 +12,8 @@ import {
   WarningDialog,
 } from "../../components";
 
-import { Box, InputAdornment, Typography } from "@mui/material";
-import { SearchOutlined as SearchIcon } from "@mui/icons-material";
 import UserListTable from "./components/user-table";
-import { fetchUserList } from "../../services/list-services";
+import { useUserListQuery } from "../../services/list-services";
 import { transformError, toPascal } from "../../utils";
 
 const UserList = () => {
@@ -25,7 +25,7 @@ const UserList = () => {
   const navigate = useNavigate();
 
   const { isLoading, isError, error, data, isFetching, isPreviousData } =
-    fetchUserList(page, filters);
+    useUserListQuery(page, filters);
 
   const rowClickHandler = useCallback(
     (id) => navigate(`details/${id}`),
@@ -40,12 +40,19 @@ const UserList = () => {
     [navigate],
   );
 
-  const deleteHandler = (e, id) => {
+  const deleteHandler = useCallback((e, id) => {
     e.stopPropagation();
-  };
+  }, []);
 
   const pageChangeHandler = (_, value) => {
     setPage(value);
+  };
+  const searchChangeHandler = (e) => {
+    setSearchValue(e.target.value);
+    // setFilters([{ field: "name", type: "STARTS_WITH", value: e.target.value }]);
+    // setFilters([
+    //   { field: "mobileNo", type: "STARTS_WITH", value: e.target.value },
+    // ]);
   };
 
   const tableRows = useMemo(
@@ -81,18 +88,10 @@ const UserList = () => {
       onChange={pageChangeHandler}
     />
   );
-  const searchChangeHandler = (e) => setSearchValue(e.target.value);
 
-  const AdvancedSearch = ({
-    open,
-    setOpen,
-
-    name,
-    setName,
-  }) => {
+  const AdvancedSearch = ({ open, setOpen, mobileNo, name, setName }) => {
     const [status, setStatus] = useState("ACTIVE");
     const [nameOperator, setNameOperator] = useState("STARTS_WITH");
-    const [statusOperator, setStatusOperator] = useState("EQUALS");
 
     const nameChangeHandler = (e) => setName(e.target.value);
     const nameOperatorChangeHandler = (e) => setNameOperator(e.target.value);
@@ -113,7 +112,7 @@ const UserList = () => {
             sx={{
               width: "calc(100% - 220px)",
               mr: "20px",
-              bgcolor: (theme) => theme.palette.highlight.main,
+              backgroundColor: (theme) => theme.palette.highlight.main,
             }}
             InputProps={{
               startAdornment: (
@@ -151,10 +150,11 @@ const UserList = () => {
             sx={{ width: "calc(50% - 120px)" }}
           />
 
-          <TextField sx={{ width: "200px" }} label="Email"></TextField>
+          <TextField label="Email" sx={{ width: "200px" }} />
 
           <TextField
             label="Contact Number"
+            value={mobileNo}
             sx={{ width: "calc(50% - 120px)" }}
           />
 
@@ -192,6 +192,7 @@ const UserList = () => {
           Manage users from here
         </Typography>
       </Box>
+
       <Box sx={{ display: showAdvancedSearch ? "none" : "flex", mb: 1 }}>
         <TextField
           value={searchValue}
@@ -211,6 +212,13 @@ const UserList = () => {
           Advanced Search
         </Button>
       </Box>
+      <AdvancedSearch
+        open={showAdvancedSearch}
+        setOpen={setShowAdvancedSearch}
+        setFilters={setFilters}
+        name={searchValue}
+        setName={setSearchValue}
+      />
 
       {isError ? (
         <WarningDialog
