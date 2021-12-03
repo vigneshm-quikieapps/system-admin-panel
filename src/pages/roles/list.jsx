@@ -11,6 +11,7 @@ import {
   PageHeader,
   WarningDialog,
   GradientButton,
+  Grid,
 } from "../../components";
 import { useRoleListQuery } from "../../services/list-services";
 import RoleTable from "./components/role-table";
@@ -59,7 +60,7 @@ const AdvancedSearch = ({
           display: open ? "flex" : "none",
           flexWrap: "wrap",
           justifyContent: "space-between",
-          "&>*": { width: "30%", marginBottom: "16px !important" },
+          "&>*": { marginBottom: "16px !important" },
         }}
       >
         <TextField
@@ -89,38 +90,38 @@ const AdvancedSearch = ({
         >
           Basic Search
         </Button>
+        <Box sx={{ display: "flex", gap: 2, width: "100%" }}>
+          <Grid sx={{ width: "calc(100% - 200px)" }}>
+            <TextField
+              select
+              label="Operator"
+              value={state.operator}
+              onChange={(e) => changeHandler(e, "operator")}
+            >
+              <MenuItem value="EQUALS">Equals to</MenuItem>
+              <MenuItem value="STARTS_WITH">Starts with</MenuItem>
+            </TextField>
 
-        <TextField
-          select
-          sx={{ width: "calc(37% - 120px)" }}
-          label="Operator"
-          value={state.operator}
-          onChange={(e) => changeHandler(e, "operator")}
-        >
-          <MenuItem value="EQUALS">Equals to</MenuItem>
-          <MenuItem value="STARTS_WITH">Starts with</MenuItem>
-        </TextField>
+            <TextField
+              label="Name"
+              value={state.name}
+              onChange={(e) => changeHandler(e, "name")}
+            />
 
-        <TextField
-          label="Name"
-          value={state.name}
-          onChange={(e) => changeHandler(e, "name")}
-          sx={{ width: "calc(37% - 120px)" }}
-        />
+            <TextField
+              label="Role code"
+              value={state.code}
+              onChange={(e) => changeHandler(e, "code")}
+            />
+          </Grid>
 
-        <TextField
-          label="Role code"
-          value={state.code}
-          onChange={(e) => changeHandler(e, "code")}
-          sx={{ width: "calc(37% - 120px)" }}
-        />
-
-        <GradientButton
-          sx={{ width: "200px !important" }}
-          onClick={searchHandler}
-        >
-          Search
-        </GradientButton>
+          <GradientButton
+            sx={{ width: "200px !important" }}
+            onClick={searchHandler}
+          >
+            Search
+          </GradientButton>
+        </Box>
       </Box>
     )
   );
