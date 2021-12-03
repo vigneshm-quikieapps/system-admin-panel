@@ -91,7 +91,7 @@ const AdvancedSearch = ({
           Basic Search
         </Button>
         <Box sx={{ display: "flex", gap: 2, width: "100%" }}>
-          <Grid sx={{ width: "calc(100% - 200px)" }}>
+          <Grid sx={{ width: "calc(100% - 220px)" }}>
             <TextField
               select
               label="Operator"
