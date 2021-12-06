@@ -1,5 +1,8 @@
 import { cloneElement, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { styled } from "@mui/material/styles";
 import {
   Box,
@@ -14,10 +17,13 @@ import {
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 
+import { useMuiRegister } from "../../hooks";
 import { TextField, GradientButton, Grid } from "../../components";
+import Address from "./components/address";
 
 const FormModal = styled(Dialog)(({ theme }) => ({
   "& .MuiPaper-root": { borderRadius: theme.shape.borderRadiuses.ternary },
+  "& label": { lineHeight: "initial !important" },
 }));
 
 function ElevationScroll(props) {
@@ -33,14 +39,45 @@ function ElevationScroll(props) {
   });
 }
 
-const Page = () => {
+const validationSchema = Yup.object()
+  .shape({
+    name: Yup.string().min(3).label("Business Name"),
+    code: Yup.string()
+      .min(3, "Business Code Must be 3 to 5 characters")
+      .max(5, "Business Code Must be 3 to 5 characters"),
+    tradename: Yup.string().min(3).label("Trade Name"),
+    type: Yup.string().required().label("Business Type"),
+    status: Yup.string().required().label("Status"),
+    postcode: Yup.string().min(5).label("Postcode"),
+    line1: Yup.string().required().label("Address Line 1"),
+    city: Yup.string().required().label("City / Town"),
+    country: Yup.string().required().label("Country"),
+  })
+  .required();
+
+const AddBusinessPage = () => {
   const navigate = useNavigate();
+  const { id } = useParams;
   const [contentRef, setContentRef] = useState();
 
-  const handleClose = () => navigate("/business");
-  const handleSave = () => {};
-  const handleDiscard = () => {};
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isValid },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    reValidateMode: "onChange",
+  });
 
+  const muiRegister = useMuiRegister(register);
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
+
+  const handleClose = () => navigate("/business");
+  const handleDiscard = () => {};
   return (
     <FormModal open={true} maxWidth="xl">
       <ElevationScroll targetRef={contentRef}>
@@ -83,17 +120,46 @@ const Page = () => {
             },
           }}
         >
-          <TextField variant="filled" label="Business Registered Name*" />
-          <TextField variant="filled" label="Business Code*" />
-          <TextField variant="filled" label="Business Trade Name*" />
-          <TextField variant="filled" label="Business Type*" select>
+          <TextField
+            {...muiRegister("name")}
+            error={!!errors?.name?.message}
+            variant="filled"
+            label="Business Registered Name*"
+          />
+          <TextField
+            {...muiRegister("code")}
+            error={!!errors?.code?.message}
+            variant="filled"
+            label="Business Code*"
+          />
+          <TextField
+            {...muiRegister("tradename")}
+            error={!!errors?.tradename?.message}
+            variant="filled"
+            label="Business Trade Name*"
+          />
+          <TextField
+            {...muiRegister("type")}
+            error={!!errors?.type?.message}
+            variant="filled"
+            label="Business Type*"
+            defaultValue="LIMITED_COMPANY"
+            select
+          >
             <MenuItem value="LIMITED_COMPANY">Limited Company</MenuItem>
             <MenuItem value="LIMITED_LIABILITY_PARTNERSHIP">
               Limited Liability Partnership
             </MenuItem>
             <MenuItem value="SOLE_TRADER">Sole Trader</MenuItem>
           </TextField>
-          <TextField variant="filled" label="Status*" select>
+          <TextField
+            {...muiRegister("status")}
+            error={!!errors?.status?.message}
+            variant="filled"
+            label="Status*"
+            select
+            defaultValue="ACTIVE"
+          >
             <MenuItem value="ACTIVE">Active</MenuItem>
             <MenuItem value="INACTIVE">Inactive</MenuItem>
           </TextField>
@@ -115,58 +181,36 @@ const Page = () => {
               "& .MuiFilledInput-root": { height: "initial !important" },
             }}
           />
-          <Grid
-            columnCount={2}
-            sx={{
-              bgcolor: "#ECEBF0",
-              p: 2,
-              borderRadius: 2,
-              gridColumnEnd: "span 3",
-            }}
-          >
-            <Typography
-              component="h3"
-              sx={{
-                fontWeight: "bold",
-                fontSize: "14px",
-                gridColumnEnd: "span 2",
-              }}
-            >
-              Address
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gridRow: "2 / span 7",
-                gridColumnStart: "2",
-              }}
-            >
-              <GradientButton>Enter Address Manually</GradientButton>
-            </Box>
-            <TextField variant="filled" label="Enter a postcode*" />
-            <TextField variant="filled" label="Start typing an address" />
-            <TextField variant="filled" label="Address Line 1*" />
-            <TextField variant="filled" label="Address Line 2" />
-            <TextField variant="filled" label="City / Town*" />
-            <TextField variant="filled" label="Country*" select>
-              <MenuItem value="UK">United Kingdom</MenuItem>
-            </TextField>
-            <TextField variant="filled" label="Geo Location*" />
-          </Grid>
+          <Address register={muiRegister} errors={errors} setValue={setValue} />
         </Grid>
+        <Box sx={{ display: "flex", gap: 2, py: 2 }}>
+          <GradientButton onClick={handleSubmit(onSubmit)} size="large">
+            Save
+          </GradientButton>
+          <GradientButton onClick={handleDiscard} size="large" invert>
+            Discard
+          </GradientButton>
+        </Box>
       </DialogContent>
-      <DialogActions sx={{ justifyContent: "flex-start", p: 2 }}>
-        <GradientButton onClick={handleSave} size="large">
-          Save
-        </GradientButton>
-        <GradientButton onClick={handleDiscard} size="large" invert>
-          Discard
-        </GradientButton>
-      </DialogActions>
+      {!isValid && (
+        <DialogActions
+          sx={{ flexDirection: "column", alignItems: "flex-start", p: 2 }}
+        >
+          {Object.values(errors)
+            .reverse()
+            .map(({ message }, index) => (
+              <Typography
+                key={index}
+                sx={{ color: "error.main", ml: "0 !important" }}
+                component="span"
+              >
+                {message}
+              </Typography>
+            ))}
+        </DialogActions>
+      )}
     </FormModal>
   );
 };
 
-export default Page;
+export default AddBusinessPage;
