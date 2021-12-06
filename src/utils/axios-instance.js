@@ -1,11 +1,8 @@
 import axios from "axios";
 
-import { baseURL } from "../helper/config";
-
 const axiosInstance = axios.create({
-  baseURL,
-  ///
-  // withCredentials: true,
+  baseURL: process.env.REACT_APP_API_URL,
+  withCredentials: process.env.NODE_ENV === "production" ? true : false,
 });
 
 axiosInstance.interceptors.request.use(
