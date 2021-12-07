@@ -3,6 +3,7 @@ import { Box, Typography, MenuItem, Autocomplete } from "@mui/material";
 
 import { useAddressQuery } from "../../../services/address-services";
 import { Grid, TextField, GradientButton } from "../../../components";
+import { countries } from "../../../helper/constants";
 
 const Address = ({ register, errors, setValue }) => {
   const [postcode, setPostcode] = useState("");
@@ -45,7 +46,6 @@ const Address = ({ register, errors, setValue }) => {
   useEffect(() => {
     currentAddress?.postcode && setValue("postcode", currentAddress.postcode);
     setValue("city", currentAddress?.posttown || "");
-    setValue("country", currentAddress?.country || "UK");
     setValue("line1", currentAddress?.addressline1 || "");
     setValue("line2", currentAddress?.addressline2 || "");
     setValue(
@@ -132,9 +132,17 @@ const Address = ({ register, errors, setValue }) => {
         variant="filled"
         label="Country*"
         select
-        defaultValue="UK"
+        defaultValue="GB"
       >
-        <MenuItem value="UK">United Kingdom</MenuItem>
+        {countries
+          .sort(({ label: labelA }, { label: labelB }) =>
+            labelA > labelB ? 1 : -1,
+          )
+          .map(({ code, label }) => (
+            <MenuItem key={code} value={code}>
+              {label}
+            </MenuItem>
+          ))}
       </TextField>
       <TextField
         {...register("geo")}
