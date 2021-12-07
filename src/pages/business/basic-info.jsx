@@ -8,7 +8,7 @@ import { useBusinessInfoQuery } from "../../services/business-services";
 const BusinessBasicInfo = ({ setPageTitle }) => {
   useEffect(() => setPageTitle("Basic Info"));
   const { id } = useParams();
-  const { data } = useBusinessInfoQuery(id);
+  const { data = { business: {} } } = useBusinessInfoQuery(id);
   console.log("data", data);
 
   const {
@@ -19,6 +19,10 @@ const BusinessBasicInfo = ({ setPageTitle }) => {
       type,
       status,
       line1,
+      line2,
+      city,
+      country,
+      postcode,
       contactName,
       contactEmail,
       primaryMobileNo,
@@ -37,13 +41,15 @@ const BusinessBasicInfo = ({ setPageTitle }) => {
     "Primary Contact Telephone": primaryPhone,
     "Primary Contact Mobile": primaryMobileNo,
     About: toPascal(about),
-    Address: toPascal(line1),
+    Address: toPascal(
+      line1 + "  " + line2 + "  " + city + "  " + country + "  " + postcode,
+    ),
   };
 
   return (
     <Card>
       <CardTitle>{toPascal(name)}</CardTitle>
-      <Outputs items={items} columnCount={4} />
+      <Outputs items={data.business?.name ? items : []} columnCount={4} />
     </Card>
   );
 };
