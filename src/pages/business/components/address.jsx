@@ -5,11 +5,18 @@ import { useAddressQuery } from "../../../services/address-services";
 import { Grid, TextField, GradientButton } from "../../../components";
 import { countries } from "../../../helper/constants";
 
-const Address = ({ register, errors, setValue }) => {
+const Address = ({ register, errors, setValue, watch }) => {
+  const postcodeRef = useRef();
+  const [manual, setManual] = useState(false);
   const [postcode, setPostcode] = useState("");
   const [address, setAddress] = useState(null);
   const previousPostcode = useRef("");
-
+  // const [postcode, line1, line2, city] = watch([
+  //   "postcode",
+  //   "line1",
+  //   "line2",
+  //   "city",
+  // ]);
   const {
     data: addresses = [],
     isLoading,
@@ -56,6 +63,12 @@ const Address = ({ register, errors, setValue }) => {
     );
   }, [setValue, currentAddress]);
 
+  const manualClickHandler = () => {
+    setManual(true);
+    postcodeRef.current.focus();
+  };
+  const { inputRef, ...postcodeRegister } = register("postcode");
+
   return (
     <Grid
       columnCount={2}
@@ -85,16 +98,23 @@ const Address = ({ register, errors, setValue }) => {
           gridColumnStart: "2",
         }}
       >
-        <GradientButton>Enter Address Manually</GradientButton>
+        <GradientButton onClick={manualClickHandler}>
+          Enter Address Manually
+        </GradientButton>
       </Box>
       <TextField
-        {...register("postcode", { onChange: postcodeChangeHandler })}
+        {...postcodeRegister}
+        inputRef={(e) => {
+          inputRef(e);
+          postcodeRef.current = e;
+        }}
         error={!!errors?.postcode?.message}
         variant="filled"
         label="Enter a postcode*"
       />
       <Autocomplete
         disablePortal
+        disabled={manual}
         options={addressOptions}
         onFocus={addressFocusHandler}
         value={address}
@@ -109,19 +129,20 @@ const Address = ({ register, errors, setValue }) => {
       />
       <TextField
         {...register("line1")}
-        value={currentAddress?.addressline1 || ""}
+        value={(manual ? undefined : currentAddress?.addressline1) || ""}
         error={!!errors?.line1?.message}
         variant="filled"
         label="Address Line 1*"
       />
       <TextField
-        value={currentAddress?.addressline2 || ""}
+        {...register("line2")}
+        value={(manual ? undefined : currentAddress?.addressline2) || ""}
         variant="filled"
         label="Address Line 2"
       />
       <TextField
         {...register("city")}
-        value={currentAddress?.posttown || ""}
+        value={(manual ? undefined : currentAddress?.posttown) || ""}
         error={!!errors?.city?.message}
         variant="filled"
         label="City / Town*"

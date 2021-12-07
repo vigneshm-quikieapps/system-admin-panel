@@ -64,6 +64,7 @@ const AddBusinessPage = () => {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors, isValid },
   } = useForm({
     resolver: yupResolver(validationSchema),
@@ -181,7 +182,12 @@ const AddBusinessPage = () => {
               "& .MuiFilledInput-root": { height: "initial !important" },
             }}
           />
-          <Address register={muiRegister} errors={errors} setValue={setValue} />
+          <Address
+            register={muiRegister}
+            errors={errors}
+            setValue={setValue}
+            watch={watch}
+          />
         </Grid>
         <Box sx={{ display: "flex", gap: 2, py: 2 }}>
           <GradientButton onClick={handleSubmit(onSubmit)} size="large">
