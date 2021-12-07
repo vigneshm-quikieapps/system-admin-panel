@@ -84,7 +84,7 @@ const AdvancedSearch = ({
           active
           sx={{ width: "200px !important", justifySelf: "flex-end" }}
           onClick={() => {
-            setName(state.name);
+            setName(state.setSearchValue);
             setOpen(false);
           }}
         >
@@ -104,7 +104,7 @@ const AdvancedSearch = ({
 
             <TextField
               label="Name"
-              value={state.name}
+              value={name}
               onChange={(e) => changeHandler(e, "name")}
             />
 
