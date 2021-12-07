@@ -1,33 +1,29 @@
 import { useState, useRef, useMemo, useEffect } from "react";
-import axios from "axios";
 import { Box, Typography, MenuItem, Autocomplete } from "@mui/material";
 
+import { useAddressQuery } from "../../../services/address-services";
 import { Grid, TextField, GradientButton } from "../../../components";
 
 const Address = ({ register, errors, setValue }) => {
   const [postcode, setPostcode] = useState("");
-  const [addresses, setAddresses] = useState([]);
   const [address, setAddress] = useState(null);
   const previousPostcode = useRef("");
+
+  const {
+    data: addresses = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useAddressQuery(postcode);
 
   const postcodeChangeHandler = (e) => setPostcode(e.target.value);
 
   const addressChangeHandler = (e, newValue) => setAddress(newValue);
 
   const addressFocusHandler = async () => {
-    console.log("[address focus handler] 1");
     if (previousPostcode.current === postcode || !postcode) return;
-    console.log("[address focus handler] 2");
-    try {
-      const response = await axios.get(
-        `https://ws.postcoder.com/pcw/${process.env.REACT_APP_POSTCODER_API_KEY}/address/uk/${postcode}?format=json&lines=2&addtags=latitude,longitude,country`,
-      );
-      const addressList = response.data;
-      setAddresses(addressList);
-      previousPostcode.current = postcode;
-    } catch (e) {
-      console.log(e);
-    }
+    refetch();
+    previousPostcode.current = postcode;
   };
 
   const addressOptions = useMemo(() => {
@@ -38,6 +34,13 @@ const Address = ({ register, errors, setValue }) => {
     () => addresses.find(({ summaryline }) => summaryline === address),
     [addresses, address],
   );
+  const geo = useMemo(
+    () =>
+      currentAddress?.latitude && currentAddress?.longitude
+        ? `${currentAddress?.latitude}, ${currentAddress?.longitude}`
+        : "",
+    [currentAddress],
+  );
 
   useEffect(() => {
     if (!currentAddress) return;
@@ -45,17 +48,17 @@ const Address = ({ register, errors, setValue }) => {
     // line1,
     // city,
     // country
-    setValue("postcode", currentAddress?.postcode || "");
-    setValue("city", currentAddress?.posttown || "");
-    setValue("country", currentAddress?.country || "UK");
-    setValue("line1", currentAddress?.addressline1 || "");
-    setValue("line2", currentAddress?.addressline2 || "");
-    setValue(
-      "geo",
-      currentAddress?.latitude && currentAddress?.longitude
-        ? `${currentAddress?.latitude}, ${currentAddress?.longitude}`
-        : "",
-    );
+    // setValue("postcode", currentAddress?.postcode || "");
+    // setValue("city", currentAddress?.posttown || "");
+    // setValue("country", currentAddress?.country || "UK");
+    // setValue("line1", currentAddress?.addressline1 || "");
+    // setValue("line2", currentAddress?.addressline2 || "");
+    // setValue(
+    //   "geo",
+    //   currentAddress?.latitude && currentAddress?.longitude
+    //     ? `${currentAddress?.latitude}, ${currentAddress?.longitude}`
+    //     : "",
+    // );
   }, [setValue, currentAddress]);
   console.log(currentAddress);
 
@@ -112,17 +115,19 @@ const Address = ({ register, errors, setValue }) => {
       />
       <TextField
         {...register("line1")}
+        value={currentAddress?.addressline1 || ""}
         error={!!errors?.line1?.message}
         variant="filled"
         label="Address Line 1*"
       />
       <TextField
-        {...register("line2")}
+        value={currentAddress?.addressline2 || ""}
         variant="filled"
         label="Address Line 2"
       />
       <TextField
         {...register("city")}
+        value={currentAddress?.posttown || ""}
         error={!!errors?.city?.message}
         variant="filled"
         label="City / Town*"
@@ -137,7 +142,12 @@ const Address = ({ register, errors, setValue }) => {
       >
         <MenuItem value="UK">United Kingdom</MenuItem>
       </TextField>
-      <TextField {...register("geo")} variant="filled" label="Geo Location" />
+      <TextField
+        {...register("geo")}
+        value={geo}
+        variant="filled"
+        label="Geo Location"
+      />
     </Grid>
   );
 };
