@@ -31,7 +31,7 @@ const Address = ({ register, errors, setValue }) => {
   }, [addresses]);
 
   const currentAddress = useMemo(
-    () => addresses.find(({ summaryline }) => summaryline === address),
+    () => addresses.find(({ summaryline }) => summaryline === address) || {},
     [addresses, address],
   );
   const geo = useMemo(
@@ -43,24 +43,18 @@ const Address = ({ register, errors, setValue }) => {
   );
 
   useEffect(() => {
-    if (!currentAddress) return;
-    // postcode,
-    // line1,
-    // city,
-    // country
-    // setValue("postcode", currentAddress?.postcode || "");
-    // setValue("city", currentAddress?.posttown || "");
-    // setValue("country", currentAddress?.country || "UK");
-    // setValue("line1", currentAddress?.addressline1 || "");
-    // setValue("line2", currentAddress?.addressline2 || "");
-    // setValue(
-    //   "geo",
-    //   currentAddress?.latitude && currentAddress?.longitude
-    //     ? `${currentAddress?.latitude}, ${currentAddress?.longitude}`
-    //     : "",
-    // );
+    currentAddress?.postcode && setValue("postcode", currentAddress.postcode);
+    setValue("city", currentAddress?.posttown || "");
+    setValue("country", currentAddress?.country || "UK");
+    setValue("line1", currentAddress?.addressline1 || "");
+    setValue("line2", currentAddress?.addressline2 || "");
+    setValue(
+      "geo",
+      currentAddress?.latitude && currentAddress?.longitude
+        ? `${currentAddress?.latitude}, ${currentAddress?.longitude}`
+        : "",
+    );
   }, [setValue, currentAddress]);
-  console.log(currentAddress);
 
   return (
     <Grid
