@@ -23,6 +23,7 @@ const BusinessBasicInfo = ({ setPageTitle }) => {
       contactEmail,
       primaryMobileNo,
       primaryPhone,
+      about,
     },
   } = data;
   const items = {
@@ -35,7 +36,7 @@ const BusinessBasicInfo = ({ setPageTitle }) => {
     "Primary Contact Email": toPascal(contactEmail),
     "Primary Contact Telephone": primaryPhone,
     "Primary Contact Mobile": primaryMobileNo,
-    About: toPascal(name),
+    About: toPascal(about),
     Address: toPascal(line1),
   };
 
