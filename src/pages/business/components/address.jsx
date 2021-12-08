@@ -1,5 +1,11 @@
 import { useState, useRef, useMemo, useEffect } from "react";
-import { Box, Typography, MenuItem, Autocomplete } from "@mui/material";
+import {
+  Box,
+  Typography,
+  MenuItem,
+  Autocomplete,
+  LinearProgress,
+} from "@mui/material";
 
 import { useAddressQuery } from "../../../services/address-services";
 import { Grid, TextField, GradientButton } from "../../../components";
@@ -18,14 +24,15 @@ const Address = ({ register, errors, setValue }) => {
   const {
     data: addresses = [],
     isLoading,
+    isFetching,
     isError,
     refetch,
   } = useAddressQuery(postcode);
 
   const postcodeChangeHandler = (e) => setPostcode(e.target.value);
   const addressChangeHandler = (e, newValue) => setAddress(newValue);
-  const addressFocusHandler = () => {
-    if (previousPostcode.current === postcode || !postcode) return;
+  const postcodeBlurHandler = () => {
+    if (manual || previousPostcode.current === postcode || !postcode) return;
     refetch();
     previousPostcode.current = postcode;
   };
@@ -73,7 +80,6 @@ const Address = ({ register, errors, setValue }) => {
   const { inputRef, ...postcodeRegister } = register("postcode", {
     onChange: postcodeChangeHandler,
   });
-  console.log(postcode);
   return (
     <Grid
       columnCount={2}
@@ -82,8 +88,22 @@ const Address = ({ register, errors, setValue }) => {
         p: 2,
         borderRadius: 2,
         gridColumnEnd: "span 3",
+        position: "relative",
       }}
     >
+      {isError && (
+        <Typography
+          color="error"
+          sx={{ position: "absolute", top: "20px", right: "20px" }}
+        >
+          Something went wrong while getting the address list!
+        </Typography>
+      )}
+      {(isLoading || isFetching) && (
+        <LinearProgress
+          sx={{ position: "absolute", top: 0, right: 0, width: "100%" }}
+        />
+      )}
       <Typography
         component="h3"
         sx={{
@@ -114,6 +134,7 @@ const Address = ({ register, errors, setValue }) => {
           postcodeRef.current = e;
         }}
         value={postcode}
+        onBlur={postcodeBlurHandler}
         error={!!errors?.postcode?.message}
         variant="filled"
         label="Enter a postcode*"
@@ -122,7 +143,6 @@ const Address = ({ register, errors, setValue }) => {
         disablePortal
         disabled={manual}
         options={addressOptions}
-        onFocus={addressFocusHandler}
         value={address}
         onChange={addressChangeHandler}
         renderInput={(params) => (
