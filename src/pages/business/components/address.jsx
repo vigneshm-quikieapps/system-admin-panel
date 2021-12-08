@@ -5,18 +5,16 @@ import { useAddressQuery } from "../../../services/address-services";
 import { Grid, TextField, GradientButton } from "../../../components";
 import { countries } from "../../../helper/constants";
 
-const Address = ({ register, errors, setValue, watch }) => {
+const Address = ({ register, errors, setValue }) => {
   const postcodeRef = useRef();
   const [manual, setManual] = useState(false);
   const [postcode, setPostcode] = useState("");
   const [address, setAddress] = useState(null);
+  const [line1, setLine1] = useState("");
+  const [line2, setLine2] = useState("");
+  const [city, setCity] = useState("");
+  const [location, setLocation] = useState("");
   const previousPostcode = useRef("");
-  // const [postcode, line1, line2, city] = watch([
-  //   "postcode",
-  //   "line1",
-  //   "line2",
-  //   "city",
-  // ]);
   const {
     data: addresses = [],
     isLoading,
@@ -25,19 +23,30 @@ const Address = ({ register, errors, setValue, watch }) => {
   } = useAddressQuery(postcode);
 
   const postcodeChangeHandler = (e) => setPostcode(e.target.value);
-
   const addressChangeHandler = (e, newValue) => setAddress(newValue);
-
-  const addressFocusHandler = async () => {
+  const addressFocusHandler = () => {
     if (previousPostcode.current === postcode || !postcode) return;
     refetch();
     previousPostcode.current = postcode;
+  };
+  const manualClickHandler = () => {
+    setManual((value) => !value);
+    postcodeRef.current.focus();
+    setPostcode(currentAddress?.postcode || postcode);
+    setLine1(currentAddress?.addressline1 || "");
+    setLine2(currentAddress?.addressline2 || "");
+    setCity(currentAddress?.posttown || "");
+    setLocation(geo);
+    setValue("postcode", currentAddress?.postcode || postcode);
+    setValue("city", currentAddress?.posttown || "");
+    setValue("line1", currentAddress?.addressline1 || "");
+    setValue("line2", currentAddress?.addressline2 || "");
+    setValue("geo", geo);
   };
 
   const addressOptions = useMemo(() => {
     return addresses.map(({ summaryline }) => summaryline);
   }, [addresses]);
-
   const currentAddress = useMemo(
     () => addresses.find(({ summaryline }) => summaryline === address) || {},
     [addresses, address],
@@ -51,24 +60,20 @@ const Address = ({ register, errors, setValue, watch }) => {
   );
 
   useEffect(() => {
-    currentAddress?.postcode && setValue("postcode", currentAddress.postcode);
+    if (currentAddress?.postcode) {
+      setValue("postcode", currentAddress.postcode);
+      setPostcode(currentAddress.postcode);
+    }
     setValue("city", currentAddress?.posttown || "");
     setValue("line1", currentAddress?.addressline1 || "");
     setValue("line2", currentAddress?.addressline2 || "");
-    setValue(
-      "geo",
-      currentAddress?.latitude && currentAddress?.longitude
-        ? `${currentAddress?.latitude}, ${currentAddress?.longitude}`
-        : "",
-    );
-  }, [setValue, currentAddress]);
+    setValue("geo", geo);
+  }, [setValue, currentAddress, geo]);
 
-  const manualClickHandler = () => {
-    setManual(true);
-    postcodeRef.current.focus();
-  };
-  const { inputRef, ...postcodeRegister } = register("postcode");
-
+  const { inputRef, ...postcodeRegister } = register("postcode", {
+    onChange: postcodeChangeHandler,
+  });
+  console.log(postcode);
   return (
     <Grid
       columnCount={2}
@@ -99,7 +104,7 @@ const Address = ({ register, errors, setValue, watch }) => {
         }}
       >
         <GradientButton onClick={manualClickHandler}>
-          Enter Address Manually
+          {manual ? "Enter Address Automatically" : "Enter Address Manually"}
         </GradientButton>
       </Box>
       <TextField
@@ -108,6 +113,7 @@ const Address = ({ register, errors, setValue, watch }) => {
           inputRef(e);
           postcodeRef.current = e;
         }}
+        value={postcode}
         error={!!errors?.postcode?.message}
         variant="filled"
         label="Enter a postcode*"
@@ -128,21 +134,21 @@ const Address = ({ register, errors, setValue, watch }) => {
         )}
       />
       <TextField
-        {...register("line1")}
-        value={(manual ? undefined : currentAddress?.addressline1) || ""}
+        {...register("line1", { onChange: (e) => setLine1(e.target.value) })}
+        value={(manual ? line1 : currentAddress?.addressline1) || ""}
         error={!!errors?.line1?.message}
         variant="filled"
         label="Address Line 1*"
       />
       <TextField
-        {...register("line2")}
-        value={(manual ? undefined : currentAddress?.addressline2) || ""}
+        {...register("line2", { onChange: (e) => setLine2(e.target.value) })}
+        value={(manual ? line2 : currentAddress?.addressline2) || ""}
         variant="filled"
         label="Address Line 2"
       />
       <TextField
-        {...register("city")}
-        value={(manual ? undefined : currentAddress?.posttown) || ""}
+        {...register("city", { onChange: (e) => setCity(e.target.value) })}
+        value={(manual ? city : currentAddress?.posttown) || ""}
         error={!!errors?.city?.message}
         variant="filled"
         label="City / Town*"
@@ -166,8 +172,8 @@ const Address = ({ register, errors, setValue, watch }) => {
           ))}
       </TextField>
       <TextField
-        {...register("geo")}
-        value={geo}
+        {...register("geo", { onChange: (e) => setLocation(e.target.value) })}
+        value={manual ? location : geo}
         variant="filled"
         label="Geo Location"
       />
