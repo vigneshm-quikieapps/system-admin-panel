@@ -1,5 +1,6 @@
 import { styled } from "@mui/material/styles";
 import { TextField } from "@mui/material";
+import { useController } from "react-hook-form";
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   "& .Mui-disabled": {
@@ -77,6 +78,28 @@ StyledTextField.defaultProps = {
       sx: menuSX,
     },
   },
+};
+
+// Used with react-hook-form
+export const Input = ({ name: inputName, control, defaultValue, ...props }) => {
+  const {
+    field: { onChange, onBlur, name, value, ref },
+    // fieldState: { invalid, isTouched, isDirty },
+    // formState: { touchedFields, dirtyFields },
+  } = useController({
+    name: inputName,
+    control,
+    // rules: { required: true },
+    defaultValue: defaultValue || "",
+  });
+
+  return (
+    <StyledTextField
+      {...{ onChange, onBlur, name, value: value }}
+      {...props}
+      inputRef={ref}
+    />
+  );
 };
 
 export default StyledTextField;

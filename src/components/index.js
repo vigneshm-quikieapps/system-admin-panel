@@ -14,7 +14,7 @@ export { default as Checkbox } from "./styled-checkbox";
 export { default as Table, TableHeading } from "./table";
 export { default as TableMui } from "./table-mui";
 export { default as TabNav } from "./tabular-navigation";
-export { default as TextField, menuSX } from "./textfield";
+export { default as TextField, Input, menuSX } from "./textfield";
 export { default as Tooltip } from "./tooltip";
 export { default as TimePicker } from "./time-picker";
 export { default as WarningDialog } from "./warning-dialog";
