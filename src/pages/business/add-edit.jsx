@@ -52,6 +52,7 @@ const validationSchema = Yup.object()
     line1: Yup.string().required().label("Address Line 1"),
     city: Yup.string().required().label("City / Town"),
     country: Yup.string().required().label("Country"),
+    about: Yup.string(),
   })
   .required();
 
@@ -62,13 +63,16 @@ const AddBusinessPage = () => {
 
   const {
     register,
+    control,
     handleSubmit,
     setValue,
+    setFocus,
     watch,
     formState: { errors, isValid },
   } = useForm({
     resolver: yupResolver(validationSchema),
     reValidateMode: "onChange",
+    defaultValues: { line1: "test", about: "about" },
   });
 
   const muiRegister = useMuiRegister(register);
@@ -173,6 +177,7 @@ const AddBusinessPage = () => {
           <TextField variant="filled" label="Primary Contact Telephone" />
           <TextField variant="filled" label="Primary Contact Mobile" />
           <TextField
+            {...muiRegister("about")}
             variant="filled"
             label="About this Business"
             multiline
@@ -184,8 +189,10 @@ const AddBusinessPage = () => {
           />
           <Address
             register={muiRegister}
+            control={control}
             errors={errors}
             setValue={setValue}
+            setFocus={setFocus}
             watch={watch}
           />
         </Grid>

@@ -1,4 +1,5 @@
-import { useState, useRef, useMemo, useEffect } from "react";
+import { useState, useRef, useMemo, useEffect, memo } from "react";
+import { useWatch } from "react-hook-form";
 import {
   Box,
   Typography,
@@ -8,19 +9,20 @@ import {
 } from "@mui/material";
 
 import { useAddressQuery } from "../../../services/address-services";
-import { Grid, TextField, GradientButton } from "../../../components";
+import { Grid, Input, TextField, GradientButton } from "../../../components";
 import { countries } from "../../../helper/constants";
+import { useMounted } from "../../../hooks";
 
-const Address = ({ register, errors, setValue }) => {
-  const postcodeRef = useRef();
+const Address = ({ errors, setValue, setFocus, control }) => {
+  const mounted = useMounted();
   const [manual, setManual] = useState(false);
-  const [postcode, setPostcode] = useState("");
   const [address, setAddress] = useState(null);
-  const [line1, setLine1] = useState("");
-  const [line2, setLine2] = useState("");
-  const [city, setCity] = useState("");
-  const [location, setLocation] = useState("");
   const previousPostcode = useRef("");
+  const postcode = useWatch({
+    name: "postcode",
+    defaultValue: "",
+    control: control,
+  });
   const {
     data: addresses = [],
     isLoading,
@@ -29,7 +31,6 @@ const Address = ({ register, errors, setValue }) => {
     refetch,
   } = useAddressQuery(postcode);
 
-  const postcodeChangeHandler = (e) => setPostcode(e.target.value);
   const addressChangeHandler = (e, newValue) => setAddress(newValue);
   const postcodeBlurHandler = () => {
     if (manual || previousPostcode.current === postcode || !postcode) return;
@@ -38,12 +39,7 @@ const Address = ({ register, errors, setValue }) => {
   };
   const manualClickHandler = () => {
     setManual((value) => !value);
-    postcodeRef.current.focus();
-    setPostcode(currentAddress?.postcode || postcode);
-    setLine1(currentAddress?.addressline1 || "");
-    setLine2(currentAddress?.addressline2 || "");
-    setCity(currentAddress?.posttown || "");
-    setLocation(geo);
+    setFocus("postcode");
     setValue("postcode", currentAddress?.postcode || postcode);
     setValue("city", currentAddress?.posttown || "");
     setValue("line1", currentAddress?.addressline1 || "");
@@ -67,19 +63,28 @@ const Address = ({ register, errors, setValue }) => {
   );
 
   useEffect(() => {
-    if (currentAddress?.postcode) {
-      setValue("postcode", currentAddress.postcode);
-      setPostcode(currentAddress.postcode);
+    // for keeping default form values on mount
+    if (!mounted) return;
+    if (!manual) {
+      // checks are for keeping default or old values when no address is selected
+      currentAddress?.postcode && setValue("postcode", currentAddress.postcode);
+      currentAddress?.posttown && setValue("city", currentAddress.posttown);
+      currentAddress?.addressline1 &&
+        setValue("line1", currentAddress.addressline1);
+      currentAddress?.addressline2 &&
+        setValue("line2", currentAddress.addressline2);
+      geo && setValue("geo", geo);
     }
-    setValue("city", currentAddress?.posttown || "");
-    setValue("line1", currentAddress?.addressline1 || "");
-    setValue("line2", currentAddress?.addressline2 || "");
-    setValue("geo", geo);
-  }, [setValue, currentAddress, geo]);
+    // // Will clear address fields when switching from automatic to manual
+    // else {
+    //   setValue("postcode", currentAddress?.postcode || "");
+    //   setValue("city", currentAddress?.posttown || "");
+    //   setValue("line1", currentAddress?.addressline1 || "");
+    //   setValue("line2", currentAddress?.addressline2 || "");
+    // }
+  }, [mounted, manual, setValue, currentAddress, geo]);
 
-  const { inputRef, ...postcodeRegister } = register("postcode", {
-    onChange: postcodeChangeHandler,
-  });
+  console.log("rendering");
   return (
     <Grid
       columnCount={2}
@@ -127,13 +132,9 @@ const Address = ({ register, errors, setValue }) => {
           {manual ? "Enter Address Automatically" : "Enter Address Manually"}
         </GradientButton>
       </Box>
-      <TextField
-        {...postcodeRegister}
-        inputRef={(e) => {
-          inputRef(e);
-          postcodeRef.current = e;
-        }}
-        value={postcode}
+      <Input
+        name="postcode"
+        control={control}
         onBlur={postcodeBlurHandler}
         error={!!errors?.postcode?.message}
         variant="filled"
@@ -153,28 +154,32 @@ const Address = ({ register, errors, setValue }) => {
           />
         )}
       />
-      <TextField
-        {...register("line1", { onChange: (e) => setLine1(e.target.value) })}
-        value={(manual ? line1 : currentAddress?.addressline1) || ""}
+      <Input
+        name="line1"
+        control={control}
         error={!!errors?.line1?.message}
         variant="filled"
         label="Address Line 1*"
+        inputProps={{ readOnly: !manual }}
       />
-      <TextField
-        {...register("line2", { onChange: (e) => setLine2(e.target.value) })}
-        value={(manual ? line2 : currentAddress?.addressline2) || ""}
+      <Input
+        name="line2"
+        control={control}
         variant="filled"
         label="Address Line 2"
+        inputProps={{ readOnly: !manual }}
       />
-      <TextField
-        {...register("city", { onChange: (e) => setCity(e.target.value) })}
-        value={(manual ? city : currentAddress?.posttown) || ""}
+      <Input
+        name="city"
+        control={control}
         error={!!errors?.city?.message}
         variant="filled"
         label="City / Town*"
+        inputProps={{ readOnly: !manual }}
       />
-      <TextField
-        {...register("country")}
+      <Input
+        name="country"
+        control={control}
         error={!!errors?.country?.message}
         variant="filled"
         label="Country*"
@@ -190,15 +195,16 @@ const Address = ({ register, errors, setValue }) => {
               {label}
             </MenuItem>
           ))}
-      </TextField>
-      <TextField
-        {...register("geo", { onChange: (e) => setLocation(e.target.value) })}
-        value={manual ? location : geo}
+      </Input>
+      <Input
+        name="geo"
+        control={control}
         variant="filled"
         label="Geo Location"
+        inputProps={{ readOnly: !manual }}
       />
     </Grid>
   );
 };
 
-export default Address;
+export default memo(Address);
