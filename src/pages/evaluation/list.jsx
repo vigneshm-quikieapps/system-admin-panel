@@ -10,14 +10,12 @@ import {
   WarningDialog,
 } from "../../components";
 import EvaluationTable from "./components/evaluation-table";
-import { Box, InputAdornment, Typography } from "@mui/material";
+import { Box, InputAdornment } from "@mui/material";
 import { SearchOutlined as SearchIcon } from "@mui/icons-material";
 import { useEvaluationSchemesQuery } from "../../services/list-services";
 import { transformError, toPascal } from "../../utils";
 
 const EvaluationList = () => {
-  const [status, setStatus] = useState("ACTIVE");
-
   const [page, setPage] = useState(1);
   const [searchValue, setSearchValue] = useState("");
   const [filters, setFilters] = useState();

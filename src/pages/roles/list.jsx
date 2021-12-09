@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, InputAdornment } from "@mui/material";
+import { Box, InputAdornment, MenuItem } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 
 import {
@@ -11,10 +11,121 @@ import {
   PageHeader,
   WarningDialog,
   GradientButton,
+  Grid,
 } from "../../components";
 import { useRoleListQuery } from "../../services/list-services";
 import RoleTable from "./components/role-table";
 import { transformError, toPascal } from "../../utils";
+
+const AdvancedSearch = ({
+  open,
+  setOpen,
+  name,
+  setName,
+  setFilters,
+  setPage,
+}) => {
+  const [state, setState] = useState({
+    name,
+    operator: "STARTS_WITH",
+    code: "",
+  });
+
+  const changeHandler = (e, fieldName) => {
+    const value = e.target.value;
+    setState((prevState) => ({ ...prevState, [fieldName]: value }));
+  };
+  const filters = useMemo(() => {
+    let theFilters = Object.keys(state).map((field) =>
+      field !== "operator"
+        ? {
+            field,
+            type: state.operator,
+            value: state[field],
+          }
+        : undefined,
+    );
+    return theFilters.filter((theFilter) => !!theFilter);
+  }, [state]);
+
+  const searchHandler = () => {
+    setPage(1);
+    setFilters(filters);
+  };
+
+  return (
+    open && (
+      <Box
+        sx={{
+          display: open ? "flex" : "none",
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+          "&>*": { marginBottom: "16px !important" },
+        }}
+      >
+        <TextField
+          placeholder="Search for a role"
+          sx={{
+            width: "calc(100% - 220px)",
+            mr: "20px",
+            backgroundColor: (theme) => theme.palette.highlight.main,
+          }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start" sx={{ mr: "-10px" }}>
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          variant="outlined"
+          disabled
+        />
+        <Button
+          active
+          sx={{ width: "200px !important", justifySelf: "flex-end" }}
+          onClick={() => {
+            setName(state.setSearchValue);
+            setOpen(false);
+          }}
+        >
+          Basic Search
+        </Button>
+        <Box sx={{ display: "flex", gap: 2, width: "100%" }}>
+          <Grid sx={{ width: "calc(100% - 220px)" }}>
+            <TextField
+              select
+              label="Operator"
+              value={state.operator}
+              onChange={(e) => changeHandler(e, "operator")}
+            >
+              <MenuItem value="EQUALS">Equals to</MenuItem>
+              <MenuItem value="STARTS_WITH">Starts with</MenuItem>
+            </TextField>
+
+            <TextField
+              label="Name"
+              value={name}
+              onChange={(e) => changeHandler(e, "name")}
+            />
+
+            <TextField
+              label="Role code"
+              value={state.code}
+              onChange={(e) => changeHandler(e, "code")}
+            />
+          </Grid>
+
+          <GradientButton
+            sx={{ width: "200px !important" }}
+            onClick={searchHandler}
+          >
+            Search
+          </GradientButton>
+        </Box>
+      </Box>
+    )
+  );
+};
 
 const RoleList = () => {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
@@ -49,7 +160,6 @@ const RoleList = () => {
   };
 
   const searchChangeHandler = (e) => setSearchValue(e.target.value);
-
   const tableRows = useMemo(
     () =>
       data?.docs?.map(({ _id, name, code, roleID }) => ({
@@ -71,7 +181,6 @@ const RoleList = () => {
     const searchTimer = setTimeout(() => {
       if (!searchValue) return setFilters([]);
       setFilters([{ field: "name", type: "STARTS_WITH", value: searchValue }]);
-      setFilters([{ field: "code", type: "STARTS_WITH", value: searchValue }]);
     }, 500);
     return () => clearTimeout(searchTimer);
   }, [searchValue]);
@@ -83,80 +192,6 @@ const RoleList = () => {
       onChange={pageChangeHandler}
     />
   );
-  const AdvancedSearch = ({ open, setOpen, name, setName, code, setCode }) => {
-    const [nameOperator, setNameOperator] = useState("STARTS_WITH");
-    const nameChangeHandler = (e) => setName(e.target.value);
-    const codeChangeHandler = (e) => setCode(e.target.value);
-
-    const nameOperatorChangeHandler = (e) => setNameOperator(e.target.value);
-
-    return (
-      open && (
-        <Box
-          sx={{
-            display: open ? "flex" : "none",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-            "&>*": { width: "30%", marginBottom: "16px !important" },
-          }}
-        >
-          <TextField
-            placeholder="Search for a role"
-            sx={{
-              width: "calc(100% - 220px)",
-              mr: "20px",
-              backgroundColor: (theme) => theme.palette.highlight.main,
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start" sx={{ mr: "-10px" }}>
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            variant="outlined"
-            disabled
-          />
-          <Button
-            active
-            sx={{ width: "200px !important", justifySelf: "flex-end" }}
-            onClick={() => setOpen(false)}
-          >
-            Basic Search
-          </Button>
-
-          <TextField
-            select
-            sx={{ width: "calc(50% - 120px)" }}
-            label="Operator"
-            value={nameOperator}
-            onChange={nameOperatorChangeHandler}
-          >
-            <option value="EQUALS">Equals to</option>
-            <option value="STARTS_WITH">Starts with</option>
-          </TextField>
-
-          <TextField
-            label="Name"
-            onChange={nameChangeHandler}
-            value={name}
-            sx={{ width: "calc(50% - 120px)" }}
-          />
-
-          <TextField
-            label="Role code"
-            onChange={codeChangeHandler}
-            value={code}
-            sx={{ width: "200px" }}
-          />
-
-          <GradientButton sx={{ width: "200px !important" }}>
-            Search
-          </GradientButton>
-        </Box>
-      )
-    );
-  };
 
   return (
     <>
@@ -184,9 +219,9 @@ const RoleList = () => {
         open={showAdvancedSearch}
         setOpen={setShowAdvancedSearch}
         setFilters={setFilters}
+        setPage={setPage}
         name={searchValue}
         setName={setSearchValue}
-        setCode={0}
       />
       {isError ? (
         <WarningDialog
