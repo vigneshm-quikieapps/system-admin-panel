@@ -1,15 +1,21 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Box, CircularProgress, Typography } from "@mui/material";
 
 import { Card, CardTitle, Outputs } from "../../components";
-import { toPascal } from "../../utils";
-import { useBusinessInfoQuery } from "../../services/business-services";
+import { toPascal, transformError } from "../../utils";
+import { useGetBusiness } from "../../services/queries";
+import { countries } from "../../helper/constants";
 
 const BusinessBasicInfo = ({ setPageTitle }) => {
   useEffect(() => setPageTitle("Basic Info"));
   const { id } = useParams();
-  const { data = { business: {} } } = useBusinessInfoQuery(id);
-  console.log("data", data);
+  const {
+    data = { business: {} },
+    isLoading,
+    isError,
+    error,
+  } = useGetBusiness(id);
 
   const {
     business: {
@@ -30,6 +36,7 @@ const BusinessBasicInfo = ({ setPageTitle }) => {
       about,
     },
   } = data;
+  const countryName = countries.find(({ code }) => code === country)?.label;
   const items = {
     "Business Registered Name": toPascal(name),
     "Business Code": code,
@@ -42,14 +49,41 @@ const BusinessBasicInfo = ({ setPageTitle }) => {
     "Primary Contact Mobile": primaryMobileNo,
     About: toPascal(about),
     Address: toPascal(
-      line1 + "  " + line2 + "  " + city + "  " + country + "  " + postcode,
+      postcode +
+        "  / " +
+        line1 +
+        " " +
+        line2 +
+        " / " +
+        city +
+        " / " +
+        countryName,
     ),
   };
 
   return (
     <Card>
-      <CardTitle>{toPascal(name)}</CardTitle>
-      <Outputs items={data.business?.name ? items : []} columnCount={4} />
+      {isError ? (
+        <Typography color="error" component="pre">
+          {"Something went wrong: " + transformError(error)}
+        </Typography>
+      ) : isLoading ? (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "200px",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          <CardTitle>{toPascal(name)}</CardTitle>
+          <Outputs items={data.business?.name ? items : []} columnCount={4} />
+        </>
+      )}
     </Card>
   );
 };
