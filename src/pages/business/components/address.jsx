@@ -13,9 +13,9 @@ import { Grid, Input, TextField, GradientButton } from "../../../components";
 import { countries } from "../../../helper/constants";
 import { useMounted } from "../../../hooks";
 
-const Address = ({ errors, setValue, setFocus, control }) => {
+const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
   const mounted = useMounted();
-  const [manual, setManual] = useState(false);
+  const [manual, setManual] = useState(isEdit);
   const [address, setAddress] = useState(null);
   const previousPostcode = useRef("");
   const postcode = useWatch({

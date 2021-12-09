@@ -275,6 +275,7 @@ const AddBusinessPage = () => {
               }}
             />
             <Address
+              isEdit={!!id}
               control={control}
               errors={errors}
               setValue={setValue}
