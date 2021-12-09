@@ -1,4 +1,4 @@
-import { cloneElement, useState } from "react";
+import { cloneElement, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
@@ -18,7 +18,8 @@ import {
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 
-import { usePostBusiness } from "../../services/mutations";
+import { usePostBusiness, usePutBusiness } from "../../services/mutations";
+import { useGetBusiness } from "../../services/queries";
 import { transformError } from "../../utils";
 import { Input, GradientButton, Grid, WarningDialog } from "../../components";
 import Address from "./components/address";
@@ -68,16 +69,32 @@ const validationSchema = Yup.object()
 
 const AddBusinessPage = () => {
   const navigate = useNavigate();
-  const { id } = useParams;
+  const { id } = useParams();
+  console.log(id);
   const [showWarning, setShowWarning] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [error, setError] = useState("");
   const [contentRef, setContentRef] = useState();
-  const {
-    error,
-    isLoading,
-    isError,
-    reset: resetQueryError,
-    mutate: postBusiness,
-  } = usePostBusiness();
+  const { data, isLoading: getIsLoading } = useGetBusiness(id, {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    onError: (error) => {
+      setShowError(true);
+      setError(error);
+    },
+  });
+  const { isLoading, mutate: postBusiness } = usePostBusiness({
+    onError: (error) => {
+      setShowError(true);
+      setError(error);
+    },
+  });
+  const { isLoading: isPutLoading, mutate: putBusiness } = usePutBusiness({
+    onError: (error) => {
+      setShowError(true);
+      setError(error);
+    },
+  });
 
   const {
     control,
@@ -95,13 +112,20 @@ const AddBusinessPage = () => {
   });
 
   const onSubmit = (data) => {
-    postBusiness(data, { onSuccess: () => navigate("/business") });
+    id
+      ? putBusiness(data, { onSuccess: () => navigate("/business") })
+      : postBusiness(data, { onSuccess: () => navigate("/business") });
   };
 
   const handleClose = () => navigate("/business");
   const handleDiscard = () => {
     setShowWarning(true);
   };
+
+  useEffect(() => {
+    data?.business && resetFormData(data.business);
+  }, [resetFormData, data]);
+
   return (
     <>
       <FormModal open={true} maxWidth="xl">
@@ -129,7 +153,7 @@ const AddBusinessPage = () => {
           <CloseIcon />
         </IconButton>
         <DialogContent ref={(e) => setContentRef(e)}>
-          {isLoading && (
+          {(isLoading || getIsLoading || isPutLoading) && (
             <Box
               sx={{
                 display: "flex",
@@ -177,6 +201,7 @@ const AddBusinessPage = () => {
               error={!!errors?.code?.message}
               variant="filled"
               label="Business Code*"
+              inputProps={{ readOnly: !!id }}
             />
             <Input
               name="tradename"
@@ -285,8 +310,11 @@ const AddBusinessPage = () => {
         )}
       </FormModal>
       <WarningDialog
-        open={isError}
-        onAccept={() => resetQueryError()}
+        open={showError}
+        onAccept={() => {
+          setError("");
+          setShowError(false);
+        }}
         title="Something went Wrong!"
         acceptButtonTitle="Discard"
         description={transformError(error)}
