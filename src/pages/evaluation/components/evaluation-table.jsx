@@ -7,7 +7,7 @@ const Heading = ({ onAdd }) => (
   </TableHeading>
 );
 
-const headers = ["Evaluation Scheme", "Status", "Scheme ID", "Action"];
+const headers = ["Evaluation Scheme", "Status", "Action"];
 
 const EvaluationTable = ({ rows, pagination, isLoading, isFetching }) => {
   const navigate = useNavigate();

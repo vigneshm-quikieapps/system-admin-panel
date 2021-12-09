@@ -53,12 +53,11 @@ const EvaluationList = () => {
       ACTIVE: "Active",
       INACTIVE: "Inactive",
     };
-    return data?.docs?.map(({ _id, name, status, levelCount }) => ({
+    return data?.docs?.map(({ _id, name, status }) => ({
       onClick: () => rowClickHandler(_id),
       items: [
         toPascal(name),
         <Status status={statusColors[status]} title={statusText[status]} />,
-        levelCount,
         <Actions
           onDelete={(e) => deleteHandler(e, _id)}
           onEdit={(e) => editHandler(e, _id)}
