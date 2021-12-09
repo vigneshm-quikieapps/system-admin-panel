@@ -14,8 +14,8 @@ import {
   Grid,
 } from "../../components";
 import { useRoleListQuery } from "../../services/list-services";
-import RoleTable from "./components/role-table";
 import { transformError, toPascal } from "../../utils";
+import RoleTable from "./components/role-table";
 
 const AdvancedSearch = ({
   open,
@@ -35,6 +35,7 @@ const AdvancedSearch = ({
     const value = e.target.value;
     setState((prevState) => ({ ...prevState, [fieldName]: value }));
   };
+
   const filters = useMemo(() => {
     let theFilters = Object.keys(state).map((field) =>
       field !== "operator"
@@ -101,20 +102,17 @@ const AdvancedSearch = ({
               <MenuItem value="EQUALS">Equals to</MenuItem>
               <MenuItem value="STARTS_WITH">Starts with</MenuItem>
             </TextField>
-
             <TextField
               label="Name"
               value={name}
               onChange={(e) => changeHandler(e, "name")}
             />
-
             <TextField
               label="Role code"
               value={state.code}
               onChange={(e) => changeHandler(e, "code")}
             />
           </Grid>
-
           <GradientButton
             sx={{ width: "200px !important" }}
             onClick={searchHandler}
@@ -167,7 +165,6 @@ const RoleList = () => {
         items: [
           toPascal(name),
           toPascal(code),
-          _id,
           <Actions
             onDelete={(e) => deleteHandler(e, _id)}
             onEdit={(e) => editHandler(e, _id)}

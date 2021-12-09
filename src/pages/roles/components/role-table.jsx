@@ -7,7 +7,7 @@ const Heading = ({ onAdd }) => (
     <AddButton onClick={onAdd} />
   </TableHeading>
 );
-const headers = ["Role Name ", "Role Code", "Role ID", "Action"];
+const headers = ["Role Name ", "Role Code", "Action"];
 
 const RoleTable = ({ rows, pagination, isLoading, isFetching }) => {
   const navigate = useNavigate();
