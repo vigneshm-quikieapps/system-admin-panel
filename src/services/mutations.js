@@ -10,3 +10,12 @@ export const usePostBusiness = (options) =>
 
 export const usePutBusiness = (options) =>
   useMutation((businessData) => putBusiness(businessData), options);
+
+const postRole = (roleData) => axios.post("roles", roleData);
+const putRole = (roleData) => axios.put(`roles/${roleData._id}`, roleData);
+
+export const usePostRole = (options) =>
+  useMutation((roleDate) => postRole(roleDate), options);
+
+export const usePutRole = (options) =>
+  useMutation((roleData) => putRole(roleData), options);

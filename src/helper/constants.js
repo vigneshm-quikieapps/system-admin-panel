@@ -39,6 +39,27 @@ export const navItems = [
   },
 ];
 
+export const privilegeTypes = {
+  BUSINESS_DEFINITION: "Business Definition",
+  BUSINESS_FINANCE: "Business Finance Info",
+  CLASS_ATTENDANCE: "Class Attendance",
+  CLASS_CATEGORY: "Class Categories",
+  CLASS_DEFINITION: "Class Definition",
+  CLASS_ENROLMENT: "Class Enrolments",
+  DISCOUNT: "Discount",
+  EVALUATION_SCHEME: "Evaluation Schemes",
+  MEMBERS: "Members",
+  //   MEMBER_EVALUATION: "Member Evaluation",
+  MEMBER_ENROLMENTS: "Member Enrolments",
+  PROGRESS_RECORD: "Member's Progress",
+  SESSION_DEFINITION: "Class Sessions",
+  TERM: "Term Definition",
+  USERS: "User Definition",
+  ROLES: "Role Definition",
+  // FINANCE_CHARGES: "Finance Charges",
+  // FINANCE_TRANSACTIONS: "Finance Transactions",
+};
+
 export const countries = [
   { code: "AD", label: "Andorra", phone: "376" },
   {
