@@ -1,6 +1,7 @@
-import Checkbox from "@mui/material/Checkbox";
 import { styled } from "@mui/material/styles";
-import CheckIcon from "@mui/icons-material/Check";
+import { Checkbox } from "@mui/material";
+import { Check as CheckIcon } from "@mui/icons-material";
+import { useController } from "react-hook-form";
 
 const StyledCheckIcon = styled(CheckIcon)({
   width: "18px",
@@ -27,6 +28,30 @@ const StyledCheckbox = styled(Checkbox)(({ theme }) => {
 
 StyledCheckbox.defaultProps = {
   checkedIcon: <StyledCheckIcon />,
+};
+
+export const FormCheckbox = ({
+  name: inputName,
+  control,
+  defaultValue,
+  ...props
+}) => {
+  const {
+    field: { onChange, onBlur, name, value, ref },
+  } = useController({
+    name: inputName,
+    control,
+    defaultValue: defaultValue || "",
+  });
+
+  return (
+    <StyledCheckbox
+      {...{ onChange, onBlur, name }}
+      checked={value}
+      {...props}
+      inputRef={ref}
+    />
+  );
 };
 
 export default StyledCheckbox;
