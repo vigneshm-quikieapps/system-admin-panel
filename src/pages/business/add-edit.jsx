@@ -70,7 +70,6 @@ const validationSchema = Yup.object()
 const AddBusinessPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  console.log(id);
   const [showWarning, setShowWarning] = useState(false);
   const [showError, setShowError] = useState(false);
   const [error, setError] = useState("");

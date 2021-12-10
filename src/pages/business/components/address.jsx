@@ -84,7 +84,6 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
     // }
   }, [mounted, manual, setValue, currentAddress, geo]);
 
-  console.log("rendering");
   return (
     <Grid
       columnCount={2}
