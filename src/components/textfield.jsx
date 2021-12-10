@@ -84,18 +84,15 @@ StyledTextField.defaultProps = {
 export const Input = ({ name: inputName, control, defaultValue, ...props }) => {
   const {
     field: { onChange, onBlur, name, value, ref },
-    // fieldState: { invalid, isTouched, isDirty },
-    // formState: { touchedFields, dirtyFields },
   } = useController({
     name: inputName,
     control,
-    // rules: { required: true },
     defaultValue: defaultValue || "",
   });
 
   return (
     <StyledTextField
-      {...{ onChange, onBlur, name, value: value }}
+      {...{ onChange, onBlur, name, value }}
       {...props}
       inputRef={ref}
     />
