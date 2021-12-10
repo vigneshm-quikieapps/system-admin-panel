@@ -103,7 +103,7 @@ const AddBusinessPage = () => {
     watch,
     // for setting default values from back-end
     reset: resetFormData,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm({
     resolver: yupResolver(validationSchema),
     reValidateMode: "onChange",
@@ -291,7 +291,7 @@ const AddBusinessPage = () => {
             </GradientButton>
           </Box>
         </DialogContent>
-        {!isValid && (
+        {!!Object.keys(errors).length && (
           <DialogActions
             sx={{ flexDirection: "column", alignItems: "flex-start", p: 2 }}
           >

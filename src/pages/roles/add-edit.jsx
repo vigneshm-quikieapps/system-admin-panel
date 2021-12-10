@@ -110,7 +110,7 @@ const AddRolePage = () => {
     handleSubmit,
     // for setting default values from back-end
     reset: resetFormData,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm({
     resolver: yupResolver(validationSchema),
     reValidateMode: "onChange",
@@ -262,7 +262,7 @@ const AddRolePage = () => {
             </GradientButton>
           </Box>
         </DialogContent>
-        {!isValid && (
+        {!!Object.keys(errors).length && (
           <DialogActions
             sx={{ flexDirection: "column", alignItems: "flex-start", p: 2 }}
           >
