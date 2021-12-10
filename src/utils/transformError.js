@@ -1,5 +1,4 @@
 const transformError = (error, customMessage = "Something went wrong!") => {
-  console.log(error);
   error = error?.response?.data;
   let message = error?.message || customMessage;
   let errors = error?.errors;
