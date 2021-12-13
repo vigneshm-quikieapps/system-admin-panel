@@ -31,7 +31,7 @@ const AdvancedSearch = ({ setOpen, name, setName, setFilters, setPage }) => {
 
   const filters = useMemo(() => {
     let theFilters = Object.keys(state).map((field) =>
-      field !== "operator"
+      field !== "operator" && state[field]
         ? {
             field,
             type: state.operator,
