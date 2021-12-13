@@ -13,9 +13,12 @@ import {
 import { tableCellClasses } from "@mui/material/TableCell";
 import { Box } from "@mui/system";
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
+const StyledTableCell = styled(TableCell, {
+  shouldForwardProp: (prop) => (prop === "cellWidth" ? false : true),
+})(({ cellWidth }) => ({
   [`&.${tableCellClasses.head}`]: {
     fontWeight: "bold",
+    width: cellWidth ? cellWidth : undefined,
   },
   [`&.${tableCellClasses.root}`]: { border: 0 },
 }));
@@ -67,6 +70,7 @@ const CustomTable = ({
   pagination,
   isLoading,
   isFetching,
+  headerCellWidth,
 }) => {
   return (
     <CustomContainer>
@@ -76,7 +80,11 @@ const CustomTable = ({
           <TableHead>
             <TableRow>
               {headers.map((header, index) => (
-                <StyledTableCell key={index} component="th">
+                <StyledTableCell
+                  key={index}
+                  component="th"
+                  cellWidth={headerCellWidth}
+                >
                   {header}
                 </StyledTableCell>
               ))}
