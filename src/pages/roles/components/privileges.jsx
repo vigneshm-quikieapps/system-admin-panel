@@ -26,7 +26,7 @@ const Privileges = ({ control }) => {
     () =>
       Object.entries(privilegeTypes).map(([_, label], index) => ({
         items: [
-          <Typography sx={{ flex: 1 }}>{label}</Typography>,
+          <Typography sx={{ minWidth: "450px" }}>{label}</Typography>,
           <Checkbox
             name={`functionalPrivileges.${index}.permission.create`}
             control={control}
@@ -50,6 +50,7 @@ const Privileges = ({ control }) => {
   return (
     <Box sx={{ gridColumnEnd: "span 2" }}>
       <Table
+        headerCellWidth="90px"
         heading={tableHeading}
         headers={["Privilege", "Create", "Read", "Update", "Delete"]}
         rows={tableRows}
