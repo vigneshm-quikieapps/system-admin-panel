@@ -16,14 +16,7 @@ import UserListTable from "./components/user-table";
 import { useUserListQuery } from "../../services/list-services";
 import { transformError, toPascal } from "../../utils";
 
-const AdvancedSearch = ({
-  open,
-  setOpen,
-  name,
-  setName,
-  setFilters,
-  setPage,
-}) => {
+const AdvancedSearch = ({ setOpen, name, setName, setFilters, setPage }) => {
   const [state, setState] = useState({
     name,
     operator: "STARTS_WITH",
@@ -38,7 +31,7 @@ const AdvancedSearch = ({
   };
   const filters = useMemo(() => {
     let theFilters = Object.keys(state).map((field) =>
-      field !== "operator"
+      field !== "operator" && state[field]
         ? {
             field,
             type: state.operator,
@@ -55,88 +48,85 @@ const AdvancedSearch = ({
   };
 
   return (
-    open && (
-      <Box
-        sx={{
-          display: open ? "flex" : "none",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          "&>*": { width: "30%", marginBottom: "16px !important" },
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateAreas: `"basic-input basic-input basic-button"
+                            "name       email      operator"
+                            "contact    status     search-button"`,
+        gridTemplateColumns: "1fr 1fr 200px",
+        gap: 2,
+        mb: 2,
+      }}
+    >
+      <TextField
+        placeholder="Search for a role"
+        sx={{ bgcolor: "highlight.main", gridArea: "basic-input" }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start" sx={{ mr: "-10px" }}>
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+        variant="outlined"
+        disabled
+      />
+      <Button
+        active
+        sx={{ gridArea: "basic-button" }}
+        onClick={() => {
+          setName(state.name);
+          setOpen(false);
         }}
       >
-        <TextField
-          placeholder="Search for a role"
-          sx={{
-            width: "calc(100% - 220px)",
-            mr: "20px",
-            backgroundColor: (theme) => theme.palette.highlight.main,
-          }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start" sx={{ mr: "-10px" }}>
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          variant="outlined"
-          disabled
-        />
-        <Button
-          active
-          sx={{ width: "200px !important", justifySelf: "flex-end" }}
-          onClick={() => {
-            setName(state.name);
-            setOpen(false);
-          }}
-        >
-          Basic Search
-        </Button>
-        <TextField
-          select
-          sx={{ width: "calc(50% - 120px)" }}
-          label="Operator"
-          value={state.operator}
-          onChange={(e) => changeHandler(e, "operator")}
-        >
-          <MenuItem value="EQUALS">Equals to</MenuItem>
-          <MenuItem value="STARTS_WITH">Starts with</MenuItem>
-        </TextField>
-        <TextField
-          label="Name"
-          value={state.name}
-          onChange={(e) => changeHandler(e, "name")}
-          sx={{ width: "calc(50% - 120px)" }}
-        />
-        <TextField
-          label="Email"
-          value={state.email}
-          onChange={(e) => changeHandler(e, "email")}
-          sx={{ width: "200px" }}
-        />
-        <TextField
-          label="Contact Number"
-          value={state.mobileNo}
-          onChange={(e) => changeHandler(e, "mobileNo")}
-          sx={{ width: "calc(50% - 120px)" }}
-        />
-        <TextField
-          label="Status"
-          value={state.status}
-          onChange={(e) => changeHandler(e, "status")}
-          sx={{ width: "calc(50% - 120px)" }}
-          select
-        >
-          <MenuItem value="ACTIVE">Active</MenuItem>
-          <MenuItem value="INACTIVE">In-Active</MenuItem>
-        </TextField>
-        <GradientButton
-          sx={{ width: "200px !important" }}
-          onClick={searchHandler}
-        >
-          Search
-        </GradientButton>
-      </Box>
-    )
+        Basic Search
+      </Button>
+      <TextField
+        select
+        sx={{ gridArea: "operator" }}
+        label="Operator"
+        value={state.operator}
+        onChange={(e) => changeHandler(e, "operator")}
+      >
+        <MenuItem value="EQUALS">Equals to</MenuItem>
+        <MenuItem value="STARTS_WITH">Starts with</MenuItem>
+      </TextField>
+      <TextField
+        label="Name"
+        value={state.name}
+        onChange={(e) => changeHandler(e, "name")}
+        sx={{ gridArea: "name" }}
+      />
+      <TextField
+        label="Email"
+        value={state.email}
+        onChange={(e) => changeHandler(e, "email")}
+        sx={{ gridArea: "email" }}
+      />
+      <TextField
+        label="Contact Number"
+        value={state.mobileNo}
+        onChange={(e) => changeHandler(e, "mobileNo")}
+        sx={{ gridArea: "contact" }}
+      />
+      <TextField
+        label="Status"
+        value={state.status}
+        onChange={(e) => changeHandler(e, "status")}
+        sx={{ gridArea: "status" }}
+        select
+      >
+        <MenuItem value="ACTIVE">Active</MenuItem>
+        <MenuItem value="INACTIVE">In-Active</MenuItem>
+      </TextField>
+      <GradientButton
+        sx={{ gridArea: "search-button" }}
+        onClick={searchHandler}
+      >
+        Search
+      </GradientButton>
+    </Box>
   );
 };
 
@@ -173,10 +163,6 @@ const UserList = () => {
   };
   const searchChangeHandler = (e) => {
     setSearchValue(e.target.value);
-    // setFilters([{ field: "name", type: "STARTS_WITH", value: e.target.value }]);
-    // setFilters([
-    //   { field: "mobileNo", type: "STARTS_WITH", value: e.target.value },
-    // ]);
   };
 
   const tableRows = useMemo(
@@ -229,34 +215,36 @@ const UserList = () => {
         </Typography>
       </Box>
 
-      <Box sx={{ display: showAdvancedSearch ? "none" : "flex", mb: 1 }}>
-        <TextField
-          value={searchValue}
-          onChange={searchChangeHandler}
-          placeholder="Search for a role"
-          sx={{ flex: 1, mr: "20px" }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start" sx={{ mr: "-10px" }}>
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          variant="outlined"
+      {!showAdvancedSearch && (
+        <Box sx={{ display: "flex", mb: 1 }}>
+          <TextField
+            value={searchValue}
+            onChange={searchChangeHandler}
+            placeholder="Search for a role"
+            sx={{ flex: 1, mr: "20px" }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start" sx={{ mr: "-10px" }}>
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            variant="outlined"
+          />
+          <Button onClick={() => setShowAdvancedSearch(true)} active>
+            Advanced Search
+          </Button>
+        </Box>
+      )}
+      {showAdvancedSearch && (
+        <AdvancedSearch
+          setOpen={setShowAdvancedSearch}
+          setFilters={setFilters}
+          setPage={setPage}
+          name={searchValue}
+          setName={setSearchValue}
         />
-        <Button onClick={() => setShowAdvancedSearch(true)} active>
-          Advanced Search
-        </Button>
-      </Box>
-      <AdvancedSearch
-        open={showAdvancedSearch}
-        setOpen={setShowAdvancedSearch}
-        setFilters={setFilters}
-        setPage={setPage}
-        name={searchValue}
-        setName={setSearchValue}
-      />
-
+      )}
       {isError ? (
         <WarningDialog
           open={showError}
