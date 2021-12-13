@@ -17,14 +17,7 @@ import { useRoleListQuery } from "../../services/list-services";
 import { transformError, toPascal } from "../../utils";
 import RoleTable from "./components/role-table";
 
-const AdvancedSearch = ({
-  open,
-  setOpen,
-  name,
-  setName,
-  setFilters,
-  setPage,
-}) => {
+const AdvancedSearch = ({ setOpen, name, setName, setFilters, setPage }) => {
   const [state, setState] = useState({
     name,
     operator: "STARTS_WITH",
@@ -53,75 +46,72 @@ const AdvancedSearch = ({
     setPage(1);
     setFilters(filters);
   };
-
   return (
-    open && (
-      <Box
+    <Box
+      sx={{
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+        "&>*": { marginBottom: "16px !important" },
+      }}
+    >
+      <TextField
+        placeholder="Search for a role"
         sx={{
-          display: open ? "flex" : "none",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          "&>*": { marginBottom: "16px !important" },
+          width: "calc(100% - 220px)",
+          mr: "20px",
+          backgroundColor: (theme) => theme.palette.highlight.main,
+        }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start" sx={{ mr: "-10px" }}>
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+        variant="outlined"
+        disabled
+      />
+      <Button
+        active
+        sx={{ width: "200px !important", justifySelf: "flex-end" }}
+        onClick={() => {
+          setName(state.name);
+          setOpen(false);
         }}
       >
-        <TextField
-          placeholder="Search for a role"
-          sx={{
-            width: "calc(100% - 220px)",
-            mr: "20px",
-            backgroundColor: (theme) => theme.palette.highlight.main,
-          }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start" sx={{ mr: "-10px" }}>
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          variant="outlined"
-          disabled
-        />
-        <Button
-          active
-          sx={{ width: "200px !important", justifySelf: "flex-end" }}
-          onClick={() => {
-            setName(state.setSearchValue);
-            setOpen(false);
-          }}
-        >
-          Basic Search
-        </Button>
-        <Box sx={{ display: "flex", gap: 2, width: "100%" }}>
-          <Grid sx={{ width: "calc(100% - 220px)" }}>
-            <TextField
-              select
-              label="Operator"
-              value={state.operator}
-              onChange={(e) => changeHandler(e, "operator")}
-            >
-              <MenuItem value="EQUALS">Equals to</MenuItem>
-              <MenuItem value="STARTS_WITH">Starts with</MenuItem>
-            </TextField>
-            <TextField
-              label="Name"
-              value={name}
-              onChange={(e) => changeHandler(e, "name")}
-            />
-            <TextField
-              label="Role code"
-              value={state.code}
-              onChange={(e) => changeHandler(e, "code")}
-            />
-          </Grid>
-          <GradientButton
-            sx={{ width: "200px !important" }}
-            onClick={searchHandler}
+        Basic Search
+      </Button>
+      <Box sx={{ display: "flex", gap: 2, width: "100%" }}>
+        <Grid sx={{ width: "calc(100% - 220px)" }}>
+          <TextField
+            select
+            label="Operator"
+            value={state.operator}
+            onChange={(e) => changeHandler(e, "operator")}
           >
-            Search
-          </GradientButton>
-        </Box>
+            <MenuItem value="EQUALS">Equals to</MenuItem>
+            <MenuItem value="STARTS_WITH">Starts with</MenuItem>
+          </TextField>
+          <TextField
+            label="Name"
+            value={state.name}
+            onChange={(e) => changeHandler(e, "name")}
+          />
+          <TextField
+            label="Role code"
+            value={state.code}
+            onChange={(e) => changeHandler(e, "code")}
+          />
+        </Grid>
+        <GradientButton
+          sx={{ width: "200px !important" }}
+          onClick={searchHandler}
+        >
+          Search
+        </GradientButton>
       </Box>
-    )
+    </Box>
   );
 };
 
@@ -193,33 +183,36 @@ const RoleList = () => {
   return (
     <>
       <PageHeader title="Role" description="Manage roles from here" />
-      <Box sx={{ display: showAdvancedSearch ? "none" : "flex", mb: 1 }}>
-        <TextField
-          value={searchValue}
-          onChange={searchChangeHandler}
-          placeholder="Search for a role"
-          sx={{ flex: 1, mr: "20px" }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start" sx={{ mr: "-10px" }}>
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          variant="outlined"
+      {!showAdvancedSearch && (
+        <Box sx={{ display: "flex", mb: 1 }}>
+          <TextField
+            value={searchValue}
+            onChange={searchChangeHandler}
+            placeholder="Search for a role"
+            sx={{ flex: 1, mr: "20px" }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start" sx={{ mr: "-10px" }}>
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            variant="outlined"
+          />
+          <Button onClick={() => setShowAdvancedSearch(true)} active>
+            Advanced Search
+          </Button>
+        </Box>
+      )}
+      {showAdvancedSearch && (
+        <AdvancedSearch
+          setOpen={setShowAdvancedSearch}
+          setFilters={setFilters}
+          setPage={setPage}
+          name={searchValue}
+          setName={setSearchValue}
         />
-        <Button onClick={() => setShowAdvancedSearch(true)} active>
-          Advanced Search
-        </Button>
-      </Box>
-      <AdvancedSearch
-        open={showAdvancedSearch}
-        setOpen={setShowAdvancedSearch}
-        setFilters={setFilters}
-        setPage={setPage}
-        name={searchValue}
-        setName={setSearchValue}
-      />
+      )}
       {isError ? (
         <WarningDialog
           open={showError}
