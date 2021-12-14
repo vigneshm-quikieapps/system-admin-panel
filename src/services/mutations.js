@@ -19,3 +19,12 @@ export const usePostRole = (options) =>
 
 export const usePutRole = (options) =>
   useMutation((roleData) => putRole(roleData), options);
+
+const postUser = (userData) => axios.post("users", userData);
+const putUser = (userData) => axios.put(`users/${userData._id}`, userData);
+
+export const usePostUser = (options) =>
+  useMutation((UserData) => postUser(UserData), options);
+
+export const usePutUser = (options) =>
+  useMutation((userData) => putUser(userData), options);
