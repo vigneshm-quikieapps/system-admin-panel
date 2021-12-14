@@ -1,4 +1,4 @@
-import { cloneElement, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
@@ -13,7 +13,6 @@ import {
   Typography,
   MenuItem,
   IconButton,
-  useScrollTrigger,
   CircularProgress,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
@@ -21,26 +20,19 @@ import { Close as CloseIcon } from "@mui/icons-material";
 import { usePostBusiness, usePutBusiness } from "../../services/mutations";
 import { useGetBusiness } from "../../services/queries";
 import { transformError } from "../../utils";
-import { Input, GradientButton, Grid, WarningDialog } from "../../components";
+import {
+  ElevationScroll,
+  Input,
+  GradientButton,
+  Grid,
+  WarningDialog,
+} from "../../components";
 import Address from "./components/address";
 
 const FormModal = styled(Dialog)(({ theme }) => ({
   "& .MuiPaper-root": { borderRadius: theme.shape.borderRadiuses.ternary },
   "& label": { lineHeight: "initial !important" },
 }));
-
-function ElevationScroll(props) {
-  const { children, targetRef } = props;
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 65,
-    target: targetRef ? targetRef : undefined,
-  });
-
-  return cloneElement(children, {
-    style: trigger ? { boxShadow: "0 0px 6px #0006" } : {},
-  });
-}
 
 const validationSchema = Yup.object()
   .shape({
