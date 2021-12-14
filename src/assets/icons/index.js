@@ -1,7 +1,7 @@
 export { default as addIcon } from "./icon-add.png";
 export { default as allergyIcon } from "./icon-allergy.png";
-export { default as arrowDownLightIcon } from "./icon-arrow-down.png";
-export { default as arrowDownIcon } from "./icon-arrow-down-dark.png";
+export { default as arrowDownLightIcon } from "./icon-arrow-down-light.png";
+export { default as arrowDownIcon } from "./icon-arrow-down.png";
 export { default as backIcon } from "./icon-back.png";
 export { default as calendarIcon } from "./icon-calendar.png";
 export { default as classIcon } from "./icon-class.png";
