@@ -24,3 +24,4 @@ export { default as Popover } from "./popover";
 export { default as Card, CardTitle, CardActions } from "./card";
 export { default as NavLink } from "./nav-link";
 export { default as PageHeader } from "./page-header";
+export { default as ElevationScroll } from "./elevation-scroll";
