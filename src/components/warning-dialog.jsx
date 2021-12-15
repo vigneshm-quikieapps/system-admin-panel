@@ -25,7 +25,7 @@ export default function DialogBox({
     >
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <DialogContentText>{description}</DialogContentText>
+        <DialogContentText component="pre">{description}</DialogContentText>
       </DialogContent>
       <DialogActions>
         {showReject && (
