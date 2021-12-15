@@ -9,7 +9,6 @@ import {
 
 import {
   Accordion,
-  GradientButton,
   Table,
   IconButton,
   ImgIcon,
