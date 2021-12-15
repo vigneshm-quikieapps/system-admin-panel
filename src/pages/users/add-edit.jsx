@@ -119,7 +119,7 @@ const AddUserPage = () => {
     watch,
     getValues,
     setValue,
-    formState: { errors },
+    formState: { errors, dirtyFields },
   } = useForm({
     resolver: yupResolver(validationSchema),
     reValidateMode: "onChange",
@@ -144,11 +144,13 @@ const AddUserPage = () => {
   const onSubmit = (data) => {
     const updatedRoles = data.roles.map(({ _id }) => _id);
     const updatedList = data.dataPrivileges.list.map(({ _id }) => _id);
-    const updatedData = {
-      ...data,
+    const { email, mobileNo, ...otherData } = data;
+    let updatedData = {
+      ...otherData,
       roles: updatedRoles,
       dataPrivileges: { ...data.dataPrivileges, list: updatedList },
     };
+    if (!dirtyFields.password) delete updatedData.password;
     id
       ? putUser(updatedData, { onSuccess: () => navigate("/users") })
       : postUser(updatedData, { onSuccess: () => navigate("/users") });
@@ -191,10 +193,11 @@ const AddUserPage = () => {
 
   useEffect(() => {
     if (data?.user) {
-      const userInfo = { ...data.user, password: "" };
+      const userInfo = { ...data.user, password: "a@mnzb731xHG" };
       resetFormData(userInfo);
     }
   }, [resetFormData, data]);
+
   return (
     <>
       <FormModal open={true} maxWidth="xl">
@@ -266,6 +269,7 @@ const AddUserPage = () => {
               label="Email Address*"
               type="email"
               autoComplete="off"
+              inputProps={{ readOnly: !!id }}
             />
             <Input
               name="password"
@@ -275,6 +279,7 @@ const AddUserPage = () => {
               label="password*"
               type="password"
               inputProps={{ autoComplete: "new-password" }}
+              onFocus={() => setValue("password", "")}
             />
             <Input
               name="mobileNo"
@@ -282,6 +287,7 @@ const AddUserPage = () => {
               error={!!errors?.mobileNo?.message}
               variant="filled"
               label="Contact Number*"
+              inputProps={{ readOnly: !!id }}
             />
             <Input
               name="name"
