@@ -38,18 +38,46 @@ const FormModal = styled(Dialog)(({ theme }) => ({
 const validationSchema = Yup.object()
   .shape({
     email: Yup.string().email().required().label("Email address"),
-    password: Yup.string().min(6).label("Password"),
+    password: Yup.string()
+      .min(6)
+      .matches(
+        /(?=.*[A-Z])/,
+        "Password should contain at least one Upper Case letter",
+      )
+      .matches(
+        /(?=.*[a-z])/,
+        "Password should contain at least one lower case letter",
+      )
+      .matches(/(?=.*[0-9])/, "Password should contain at least one digit")
+      .label("Password"),
     name: Yup.string().min(5).label("Full Name"),
-    mobileNo: Yup.string().required(),
+    mobileNo: Yup.string().required().label("Contact Number"),
     status: Yup.string()
       .oneOf(["ACTIVE", "INACTIVE"])
       .required()
       .label("Status"),
-    roles: Yup.array().min(1).required().of(Yup.string().required()),
+    roles: Yup.array()
+      .min(1)
+      .required()
+      .of(
+        Yup.object()
+          .shape({
+            _id: Yup.string().required(),
+            name: Yup.string().required(),
+          })
+          .required(),
+      ),
     isCoach: Yup.boolean(),
     dataPrivileges: Yup.object().shape({
       all: Yup.boolean().required(),
-      list: Yup.array().of(Yup.string()),
+      list: Yup.array().of(
+        Yup.object()
+          .shape({
+            _id: Yup.string().required(),
+            name: Yup.string().required(),
+          })
+          .required(),
+      ),
     }),
   })
   .required();
@@ -111,11 +139,19 @@ const AddUserPage = () => {
   });
 
   const roles = watch("roles");
+  const businesses = watch("dataPrivileges.list");
 
   const onSubmit = (data) => {
+    const updatedRoles = data.roles.map(({ _id }) => _id);
+    const updatedList = data.dataPrivileges.list.map(({ _id }) => _id);
+    const updatedData = {
+      ...data,
+      roles: updatedRoles,
+      dataPrivileges: { ...data.dataPrivileges, list: updatedList },
+    };
     id
-      ? putUser(data, { onSuccess: () => navigate("/users") })
-      : postUser(data, { onSuccess: () => navigate("/users") });
+      ? putUser(updatedData, { onSuccess: () => navigate("/users") })
+      : postUser(updatedData, { onSuccess: () => navigate("/users") });
   };
 
   const handleClose = () => navigate("/users");
@@ -136,13 +172,29 @@ const AddUserPage = () => {
     setValue("roles", updatedRoles);
   };
 
+  const handleAddBusiness = (id, name) => {
+    const updatedBusinesses = [...getValues("dataPrivileges.list")];
+    if (
+      updatedBusinesses.findIndex(({ _id: businessId }) => businessId === id) >
+      -1
+    )
+      return;
+    updatedBusinesses.push({ _id: id, name });
+    setValue("dataPrivileges.list", updatedBusinesses);
+  };
+
+  const handleDeleteBusiness = (id) => {
+    const currentBusinesses = [...getValues("dataPrivileges.list")];
+    const updatedBusinesses = currentBusinesses.filter(({ _id }) => _id !== id);
+    setValue("dataPrivileges.list", updatedBusinesses);
+  };
+
   useEffect(() => {
-    if (data?.role) {
-      const userInfo = data.user;
+    if (data?.user) {
+      const userInfo = { ...data.user, password: "" };
       resetFormData(userInfo);
     }
   }, [resetFormData, data]);
-
   return (
     <>
       <FormModal open={true} maxWidth="xl">
@@ -222,7 +274,7 @@ const AddUserPage = () => {
               variant="filled"
               label="password*"
               type="password"
-              autoComplete="new-password"
+              inputProps={{ autoComplete: "new-password" }}
             />
             <Input
               name="mobileNo"
@@ -256,7 +308,12 @@ const AddUserPage = () => {
               onAdd={handleAddRole}
               onDelete={handleDeleteRole}
             />
-            <DataPrivileges control={control} />
+            <DataPrivileges
+              control={control}
+              businesses={businesses}
+              onAdd={handleAddBusiness}
+              onDelete={handleDeleteBusiness}
+            />
           </Grid>
           <Box sx={{ display: "flex", gap: 2, py: 2 }}>
             <GradientButton onClick={handleSubmit(onSubmit)} size="large">
