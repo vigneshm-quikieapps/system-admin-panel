@@ -145,6 +145,10 @@ const AddUserPage = () => {
     const updatedRoles = data.roles.map(({ _id }) => _id);
     const updatedList = data.dataPrivileges.list.map(({ _id }) => _id);
     const { email, mobileNo, ...otherData } = data;
+    if (!id) {
+      otherData.email = email;
+      otherData.mobileNo = mobileNo;
+    }
     let updatedData = {
       ...otherData,
       roles: updatedRoles,
