@@ -4,6 +4,8 @@ import { Box, InputAdornment } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 
 import { useBusinessListQuery } from "../../services/list-services";
+import { useDeleteBusiness } from "../../services/mutations";
+
 import {
   Actions,
   Pagination,
@@ -16,14 +18,31 @@ import BusinessTable from "./components/business-table";
 import { transformError, toPascal } from "../../utils";
 
 const BusinessList = () => {
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState();
-
   const [showError, setShowError] = useState(false);
-  const navigate = useNavigate();
-  const { isLoading, isError, error, data, isFetching, isPreviousData } =
-    useBusinessListQuery(page, filters);
+  const [error, setError] = useState("");
+
+  const { isLoading, data, isFetching, isPreviousData } = useBusinessListQuery(
+    page,
+    filters,
+    {
+      onError: (error) => {
+        setShowError(true);
+        setError(error);
+      },
+    },
+  );
+
+  const { isLoading: isDeleteLoading, mutate: deleteBusiness } =
+    useDeleteBusiness({
+      onError: (error) => {
+        setShowError(true);
+        setError(error);
+      },
+    });
 
   const rowClickHandler = useCallback(
     (id) => navigate(`details/${id}`),
@@ -38,9 +57,13 @@ const BusinessList = () => {
     [navigate],
   );
 
-  const deleteHandler = useCallback((e, id) => {
-    e.stopPropagation();
-  }, []);
+  const deleteHandler = useCallback(
+    (e, id) => {
+      e.stopPropagation();
+      deleteBusiness(id);
+    },
+    [deleteBusiness],
+  );
 
   const pageChangeHandler = (_, value) => {
     setPage(value);
@@ -65,8 +88,6 @@ const BusinessList = () => {
       })),
     [data, editHandler, deleteHandler, rowClickHandler],
   );
-
-  useEffect(() => setShowError(isError), [isError]);
 
   useEffect(() => {
     const searchTimer = setTimeout(() => {
@@ -103,7 +124,7 @@ const BusinessList = () => {
         />
         <Button active>Advanced Search</Button>
       </Box>
-      {isError ? (
+      {showError ? (
         <WarningDialog
           open={showError}
           title="Error"
@@ -115,7 +136,7 @@ const BusinessList = () => {
         <BusinessTable
           rows={tableRows}
           pagination={pagination}
-          isLoading={isLoading}
+          isLoading={isLoading || isDeleteLoading}
           isFetching={isFetching}
         />
       )}

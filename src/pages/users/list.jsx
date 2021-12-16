@@ -14,6 +14,7 @@ import {
 
 import UserListTable from "./components/user-table";
 import { useUserListQuery } from "../../services/list-services";
+import { useDeleteUser } from "../../services/mutations";
 import { transformError, toPascal } from "../../utils";
 
 const AdvancedSearch = ({ setOpen, name, setName, setFilters, setPage }) => {
@@ -131,15 +132,31 @@ const AdvancedSearch = ({ setOpen, name, setName, setFilters, setPage }) => {
 };
 
 const UserList = () => {
+  const navigate = useNavigate();
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState();
   const [searchValue, setSearchValue] = useState("");
   const [showError, setShowError] = useState(false);
-  const navigate = useNavigate();
+  const [error, setError] = useState("");
 
-  const { isLoading, isError, error, data, isFetching, isPreviousData } =
-    useUserListQuery(page, filters);
+  const { isLoading, data, isFetching, isPreviousData } = useUserListQuery(
+    page,
+    filters,
+    {
+      onError: (error) => {
+        setShowError(true);
+        setError(error);
+      },
+    },
+  );
+
+  const { isLoading: isDeleteLoading, mutate: deleteUser } = useDeleteUser({
+    onError: (error) => {
+      setShowError(true);
+      setError(error);
+    },
+  });
 
   const rowClickHandler = useCallback(
     (id) => navigate(`details/${id}`),
@@ -154,9 +171,13 @@ const UserList = () => {
     [navigate],
   );
 
-  const deleteHandler = useCallback((e, id) => {
-    e.stopPropagation();
-  }, []);
+  const deleteHandler = useCallback(
+    (e, id) => {
+      e.stopPropagation();
+      deleteUser(id);
+    },
+    [deleteUser],
+  );
 
   const pageChangeHandler = (_, value) => {
     setPage(value);
@@ -245,7 +266,7 @@ const UserList = () => {
           setName={setSearchValue}
         />
       )}
-      {isError ? (
+      {showError ? (
         <WarningDialog
           open={showError}
           title="Error"
@@ -257,7 +278,7 @@ const UserList = () => {
         <UserListTable
           rows={tableRows}
           pagination={pagination}
-          isLoading={isLoading}
+          isLoading={isLoading || isDeleteLoading}
           isFetching={isFetching}
         />
       )}

@@ -14,6 +14,7 @@ import {
   Grid,
 } from "../../components";
 import { useRoleListQuery } from "../../services/list-services";
+import { useDeleteRole } from "../../services/mutations";
 import { transformError, toPascal } from "../../utils";
 import RoleTable from "./components/role-table";
 
@@ -116,15 +117,31 @@ const AdvancedSearch = ({ setOpen, name, setName, setFilters, setPage }) => {
 };
 
 const RoleList = () => {
+  const navigate = useNavigate();
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState();
   const [searchValue, setSearchValue] = useState("");
   const [showError, setShowError] = useState(false);
-  const navigate = useNavigate();
+  const [error, setError] = useState("");
 
-  const { isLoading, isError, error, data, isFetching, isPreviousData } =
-    useRoleListQuery(page, filters);
+  const { isLoading, data, isFetching, isPreviousData } = useRoleListQuery(
+    page,
+    filters,
+    {
+      onError: (error) => {
+        setShowError(true);
+        setError(error);
+      },
+    },
+  );
+
+  const { isLoading: isDeleteLoading, mutate: deleteRole } = useDeleteRole({
+    onError: (error) => {
+      setShowError(true);
+      setError(error);
+    },
+  });
 
   const rowClickHandler = useCallback(
     (id) => navigate(`details/${id}`),
@@ -139,15 +156,20 @@ const RoleList = () => {
     [navigate],
   );
 
-  const deleteHandler = useCallback((e, id) => {
-    e.stopPropagation();
-  }, []);
+  const deleteHandler = useCallback(
+    (e, id) => {
+      e.stopPropagation();
+      deleteRole(id);
+    },
+    [deleteRole],
+  );
 
   const pageChangeHandler = (_, value) => {
     setPage(value);
   };
 
   const searchChangeHandler = (e) => setSearchValue(e.target.value);
+
   const tableRows = useMemo(
     () =>
       data?.docs?.map(({ _id, name, code, roleID }) => ({
@@ -213,7 +235,7 @@ const RoleList = () => {
           setName={setSearchValue}
         />
       )}
-      {isError ? (
+      {showError ? (
         <WarningDialog
           open={showError}
           title="Error"
@@ -225,7 +247,7 @@ const RoleList = () => {
         <RoleTable
           rows={tableRows}
           pagination={pagination}
-          isLoading={isLoading}
+          isLoading={isLoading || isDeleteLoading}
           isFetching={isFetching}
         />
       )}

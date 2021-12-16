@@ -13,17 +13,33 @@ import EvaluationTable from "./components/evaluation-table";
 import { Box, InputAdornment } from "@mui/material";
 import { SearchOutlined as SearchIcon } from "@mui/icons-material";
 import { useEvaluationSchemesQuery } from "../../services/list-services";
+import { useDeleteEvaluationScheme } from "../../services/mutations";
 import { transformError, toPascal } from "../../utils";
 
 const EvaluationList = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [searchValue, setSearchValue] = useState("");
   const [filters, setFilters] = useState();
   const [showError, setShowError] = useState(false);
+  const [error, setError] = useState("");
 
-  const navigate = useNavigate();
-  const { isLoading, isError, error, data, isFetching, isPreviousData } =
-    useEvaluationSchemesQuery(page, filters);
+  const { isLoading, data, isFetching, isPreviousData } =
+    useEvaluationSchemesQuery(page, filters, {
+      onError: (error) => {
+        setShowError(true);
+        setError(error);
+      },
+    });
+
+  const { isLoading: isDeleteLoading, mutate: deleteScheme } =
+    useDeleteEvaluationScheme({
+      onError: (error) => {
+        setShowError(true);
+        setError(error);
+      },
+    });
+
   const rowClickHandler = useCallback(
     (id) => navigate(`details/${id}`),
     [navigate],
@@ -37,9 +53,13 @@ const EvaluationList = () => {
     [navigate],
   );
 
-  const deleteHandler = useCallback((e, id) => {
-    e.stopPropagation();
-  }, []);
+  const deleteHandler = useCallback(
+    (e, id) => {
+      e.stopPropagation();
+      deleteScheme(id);
+    },
+    [deleteScheme],
+  );
 
   const pageChangeHandler = (_, value) => {
     setPage(value);
@@ -65,8 +85,6 @@ const EvaluationList = () => {
       ],
     }));
   }, [data, editHandler, deleteHandler, rowClickHandler]);
-
-  useEffect(() => setShowError(isError), [isError]);
 
   useEffect(() => {
     const searchTimer = setTimeout(() => {
@@ -106,7 +124,7 @@ const EvaluationList = () => {
         />
         <Button active>Advanced Search</Button>
       </Box>
-      {isError ? (
+      {showError ? (
         <WarningDialog
           open={showError}
           title="Error"
@@ -118,7 +136,7 @@ const EvaluationList = () => {
         <EvaluationTable
           rows={tableRows}
           pagination={pagination}
-          isLoading={isLoading}
+          isLoading={isLoading || isDeleteLoading}
           isFetching={isFetching}
         />
       )}
