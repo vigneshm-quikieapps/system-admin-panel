@@ -1,13 +1,13 @@
 import { useState } from "react";
+import { Navigate, useLocation, Link, Outlet } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
-import { Link, Outlet } from "react-router-dom";
 
 import Header from "./header";
 import Footer from "./footer";
 import SideNav from "./side-nav";
 import Main from "./main";
-import logo from "../../assets/images/Logo.png";
+import { logo } from "../../assets/images";
 import { navItems } from "../../helper/constants";
 
 const drawerWidth = 270;
@@ -45,8 +45,18 @@ const NavHeader = (
 );
 
 const MainLayout = ({ children }) => {
+  const location = useLocation();
   const [navOpen, setNavOpen] = useState(true);
   const toggleNav = () => setNavOpen((open) => !open);
+
+  const userName = localStorage.getItem("userName");
+  if (!userName) {
+    // Redirect them to the /login page, but save the current location they were
+    // trying to go to when they were redirected. This allows us to send them
+    // along to that page after they login, which is a nicer user experience
+    // than dropping them off on the home page.
+    return <Navigate to="/login" state={{ from: location }} />;
+  }
 
   return (
     <>

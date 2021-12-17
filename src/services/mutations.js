@@ -3,13 +3,18 @@ import { useMutation } from "react-query";
 import axios from "../utils/axios-instance";
 import { queryClient } from "../App.jsx";
 
+const login = (data) => axios.post("sign-in", data).then(({ data }) => data);
+
+export const useLoginMutation = (options) =>
+  useMutation((data) => login(data), options);
+
 const postBusiness = (businessData) => axios.post("businesses", businessData);
 const putBusiness = (businessData) =>
   axios.put(`businesses/${businessData._id}`, businessData);
 const deleteBusiness = (businessId) => axios.delete(`businesses/${businessId}`);
 
 export const usePostBusiness = (options) =>
-  useMutation((businessDate) => postBusiness(businessDate), options);
+  useMutation((businessData) => postBusiness(businessData), options);
 
 export const usePutBusiness = (options) =>
   useMutation((businessData) => putBusiness(businessData), options);
@@ -26,7 +31,7 @@ const putRole = (roleData) => axios.put(`roles/${roleData._id}`, roleData);
 const deleteRole = (roleId) => axios.delete(`roles/${roleId}`);
 
 export const usePostRole = (options) =>
-  useMutation((roleDate) => postRole(roleDate), options);
+  useMutation((roleData) => postRole(roleData), options);
 
 export const usePutRole = (options) =>
   useMutation((roleData) => putRole(roleData), options);

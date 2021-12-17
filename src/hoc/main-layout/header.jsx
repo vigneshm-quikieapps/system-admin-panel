@@ -1,4 +1,5 @@
 import { cloneElement, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import {
   Box,
@@ -59,6 +60,7 @@ const Header = ({
   userName,
   ...otherProps
 }) => {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -69,7 +71,10 @@ const Header = ({
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {};
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
 
   return (
     <>
