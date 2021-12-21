@@ -2,7 +2,11 @@
   "name": "system-admin-panel",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
+  "engines": {
+    "npm": "6.14.15",
+    "node": "14.17.6"
+  },
+  "devDependencies": {
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
     "@fontsource/roboto": "^4.5.1",
