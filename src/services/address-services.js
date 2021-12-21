@@ -1,13 +1,11 @@
-import axios from "axios";
+import axios from "../utils/axios-instance";
 import { useQuery } from "react-query";
 
-const fetchAddress = (postcode) =>
-  axios
-    .get(
-      `https://ws.postcoder.com/pcw/${process.env.REACT_APP_POSTCODER_API_KEY}/address/uk/${postcode}?format=json&lines=2&addtags=latitude,longitude,country`,
-    )
-    .then(({ data }) => data);
+const fetchAddress = (postcode, countryCode = "UK") =>
+  axios.post("/address", { postcode, countryCode }).then(({ data }) => data);
 
-export const useAddressQuery = (postcode) => {
-  return useQuery("address", () => fetchAddress(postcode), { enabled: false });
+export const useAddressQuery = (postcode, countryCode) => {
+  return useQuery("address", () => fetchAddress(postcode, countryCode), {
+    enabled: false,
+  });
 };

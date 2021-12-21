@@ -23,13 +23,19 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
     defaultValue: "",
     control: control,
   });
+  const countryCode = useWatch({
+    name: "country",
+    defaultValue: "UK",
+    control: control,
+  });
+
   const {
     data: addresses = [],
     isLoading,
     isFetching,
     isError,
     refetch,
-  } = useAddressQuery(postcode);
+  } = useAddressQuery(postcode, countryCode);
 
   const addressChangeHandler = (e, newValue) => setAddress(newValue);
   const postcodeBlurHandler = () => {
@@ -183,17 +189,13 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
         variant="filled"
         label="Country*"
         select
-        defaultValue="GB"
+        defaultValue="UK"
       >
-        {countries
-          .sort(({ label: labelA }, { label: labelB }) =>
-            labelA > labelB ? 1 : -1,
-          )
-          .map(({ code, label }) => (
-            <MenuItem key={code} value={code}>
-              {label}
-            </MenuItem>
-          ))}
+        {countries.map(({ code, label }) => (
+          <MenuItem key={code} value={code}>
+            {label}
+          </MenuItem>
+        ))}
       </Input>
       <Input
         name="geo"
