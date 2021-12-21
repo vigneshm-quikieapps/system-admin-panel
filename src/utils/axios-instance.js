@@ -2,7 +2,7 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
-  withCredentials: true,
+  withCredentials: process.env.NODE_ENV === "production" ? true : false,
 });
 
 axiosInstance.interceptors.request.use(
@@ -39,8 +39,8 @@ axiosInstance.interceptors.response.use(
           localStorage.setItem("accessToken", accessToken);
           const { config } = error;
           config.headers = { Authorization: `Bearer ${accessToken}` };
-          ///
-          // config.withCredentials = true;
+          config.withCredentials =
+            process.env.NODE_ENV === "production" ? true : false;
           return new Promise((resolve) => resolve(axios(config)));
         })
         .catch((error) => {
