@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Navigate, useLocation, Link, Outlet } from "react-router-dom";
 import { styled } from "@mui/material/styles";
-import { Typography } from "@mui/material";
+import { Backdrop, CircularProgress, Typography } from "@mui/material";
 
 import Header from "./header";
 import Footer from "./footer";
@@ -44,8 +44,9 @@ const NavHeader = (
   </>
 );
 
-const MainLayout = ({ children }) => {
+const MainLayout = () => {
   const location = useLocation();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [navOpen, setNavOpen] = useState(true);
   const toggleNav = () => setNavOpen((open) => !open);
 
@@ -60,12 +61,21 @@ const MainLayout = ({ children }) => {
 
   return (
     <>
+      {
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={isLoggingOut}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      }
       <Header
         drawerOpen={navOpen}
         drawerWidth={drawerWidth}
         userRole="System Admin"
         userName={localStorage.getItem("userName") || "Static Name"}
         handleDrawerOpen={toggleNav}
+        setIsLoggingOut={setIsLoggingOut}
       />
       <SideNav
         header={NavHeader}

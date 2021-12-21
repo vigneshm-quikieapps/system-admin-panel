@@ -4,9 +4,12 @@ import axios from "../utils/axios-instance";
 import { queryClient } from "../App.jsx";
 
 const login = (data) => axios.post("sign-in", data).then(({ data }) => data);
-
 export const useLoginMutation = (options) =>
   useMutation((data) => login(data), options);
+
+const logout = () => axios.post("logout");
+export const useLogoutMutation = (options) =>
+  useMutation(() => logout(), options);
 
 const postBusiness = (businessData) => axios.post("businesses", businessData);
 const putBusiness = (businessData) =>

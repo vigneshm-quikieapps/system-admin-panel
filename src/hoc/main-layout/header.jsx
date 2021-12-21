@@ -1,5 +1,5 @@
-import { cloneElement, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { cloneElement, useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import {
   Box,
@@ -10,11 +10,15 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { Link } from "react-router-dom";
 
-import IconButton from "../../components/icon-button";
-import ImgIcon from "../../components/img-icon";
-import Notifications from "../../components/notifications";
+import { useLogoutMutation } from "../../services/mutations";
+import { transformError } from "../../utils";
+import {
+  IconButton,
+  ImgIcon,
+  Notifications,
+  WarningDialog,
+} from "../../components";
 import { menuIcon, homeIcon, userIcon } from "../../assets/icons";
 
 const AppBar = styled(MuiAppBar, {
@@ -58,11 +62,25 @@ const Header = ({
   drawerWidth,
   userRole,
   userName,
+  setIsLoggingOut,
   ...otherProps
 }) => {
   const navigate = useNavigate();
+  const [error, setError] = useState(false);
+  const [showError, setShowError] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
+  const { isLoading, mutate: logout } = useLogoutMutation({
+    onSuccess: () => {
+      localStorage.clear();
+      navigate("/login");
+    },
+    onError: (error) => {
+      setShowError(true);
+      setError(error);
+    },
+  });
 
   const handleAvatarClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -72,9 +90,10 @@ const Header = ({
   };
 
   const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
+    logout();
   };
+
+  useEffect(() => setIsLoggingOut(isLoading), [setIsLoggingOut, isLoading]);
 
   return (
     <>
@@ -189,6 +208,15 @@ const Header = ({
         </AppBar>
       </ElevationScroll>
       <Toolbar />
+      {
+        <WarningDialog
+          open={showError}
+          title="Logout Error"
+          description={transformError(error)}
+          acceptButtonTitle="Discard"
+          onAccept={() => setShowError(false)}
+        />
+      }
     </>
   );
 };
