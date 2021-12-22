@@ -16,6 +16,7 @@ import { useMounted } from "../../../hooks";
 const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
   const mounted = useMounted();
   const [manual, setManual] = useState(isEdit);
+  const [showError, setShowError] = useState(false);
   const [address, setAddress] = useState(null);
   const previousPostcode = useRef("");
   const postcode = useWatch({
@@ -33,9 +34,10 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
     data: addresses = [],
     isLoading,
     isFetching,
-    isError,
     refetch,
-  } = useAddressQuery(postcode, countryCode);
+  } = useAddressQuery(postcode, countryCode, {
+    onError: () => setShowError(true),
+  });
 
   const addressChangeHandler = (e, newValue) => setAddress(newValue);
   const postcodeBlurHandler = () => {
@@ -101,7 +103,7 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
         position: "relative",
       }}
     >
-      {isError && (
+      {showError && (
         <Typography
           color="error"
           sx={{ position: "absolute", top: "20px", right: "20px" }}
