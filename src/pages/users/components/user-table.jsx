@@ -7,7 +7,7 @@ const Heading = ({ onAdd }) => (
   </TableHeading>
 );
 
-const headers = ["Role Name ", "Email", "Contact Number", "User ID", "Action"];
+const headers = ["User Name ", "Email", "Contact Number", "Action"];
 
 const UserListTable = ({ rows, pagination, isLoading, isFetching }) => {
   const addHandler = () => navigate("add");

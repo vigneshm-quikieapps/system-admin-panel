@@ -68,6 +68,7 @@ const validationSchema = Yup.object()
           .required(),
       ),
     isCoach: Yup.boolean(),
+    isParent: Yup.boolean(),
     dataPrivileges: Yup.object().shape({
       all: Yup.boolean().required(),
       list: Yup.array().of(
@@ -131,6 +132,7 @@ const AddUserPage = () => {
       status: "ACTIVE",
       roles: [],
       isCoach: false,
+      isParent: false,
       dataPrivileges: {
         all: false,
         list: [],

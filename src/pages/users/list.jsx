@@ -40,6 +40,7 @@ const AdvancedSearch = ({ setOpen, name, setName, setFilters, setPage }) => {
           }
         : undefined,
     );
+    theFilters.push({ field: "isParent", type: "NOT_EQUALS", value: true });
     return theFilters.filter((theFilter) => !!theFilter);
   }, [state]);
 
@@ -61,7 +62,7 @@ const AdvancedSearch = ({ setOpen, name, setName, setFilters, setPage }) => {
       }}
     >
       <TextField
-        placeholder="Search for a role"
+        placeholder="Search for a user"
         sx={{ bgcolor: "highlight.main", gridArea: "basic-input" }}
         InputProps={{
           startAdornment: (
@@ -135,7 +136,9 @@ const UserList = () => {
   const navigate = useNavigate();
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [page, setPage] = useState(1);
-  const [filters, setFilters] = useState();
+  const [filters, setFilters] = useState([
+    { field: "isParent", type: "NOT_EQUALS", value: true },
+  ]);
   const [searchValue, setSearchValue] = useState("");
   const [showError, setShowError] = useState(false);
   const [error, setError] = useState("");
@@ -188,13 +191,12 @@ const UserList = () => {
 
   const tableRows = useMemo(
     () =>
-      data?.docs?.map(({ _id, name, email, mobileNo, userID }) => ({
+      data?.docs?.map(({ _id, name, email, mobileNo }) => ({
         onClick: () => rowClickHandler(_id),
         items: [
           toPascal(name),
           toPascal(email),
           mobileNo,
-          _id,
           <Actions
             onDelete={(e) => deleteHandler(e, _id)}
             onEdit={(e) => editHandler(e, _id)}
@@ -206,8 +208,14 @@ const UserList = () => {
 
   useEffect(() => {
     const searchTimer = setTimeout(() => {
-      if (!searchValue) return setFilters([]);
-      setFilters([{ field: "name", type: "STARTS_WITH", value: searchValue }]);
+      if (!searchValue)
+        return setFilters([
+          { field: "isParent", type: "NOT_EQUALS", value: true },
+        ]);
+      setFilters([
+        { field: "name", type: "STARTS_WITH", value: searchValue },
+        { field: "isParent", type: "NOT_EQUALS", value: true },
+      ]);
     }, 500);
     return () => clearTimeout(searchTimer);
   }, [searchValue]);
@@ -241,7 +249,7 @@ const UserList = () => {
           <TextField
             value={searchValue}
             onChange={searchChangeHandler}
-            placeholder="Search for a role"
+            placeholder="Search for a user"
             sx={{ flex: 1, mr: "20px" }}
             InputProps={{
               startAdornment: (
