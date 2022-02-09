@@ -10,6 +10,14 @@ export const useGetBusiness = (id, options) =>
     ...options,
   });
 
+const fetchBusinessFinance = (id) =>
+  axios.get(`businesses/${id}/finance`).then(({ data }) => data);
+export const useGetBusinessFinance = (id, options) =>
+  useQuery(["businessFinance", id], () => fetchBusinessFinance(id), {
+    enabled: !!id,
+    ...options,
+  });
+
 const fetchRole = (id) => axios.get(`roles/${id}`).then(({ data }) => data);
 export const useGetRole = (id, options) =>
   useQuery(["role", id], () => fetchRole(id), {
