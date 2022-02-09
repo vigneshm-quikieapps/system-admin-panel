@@ -67,7 +67,6 @@ const Page = ({ setPageTitle }) => {
     }
   };
   const changeHandler = (e, field, index) => {
-    console.log(e.target.value, field);
     const value =
       [
         "Account Holder Name",
@@ -141,7 +140,11 @@ const Page = ({ setPageTitle }) => {
     else if (type === "Discount")
       setStatus((initial) => ({ ...initial, discountStatus: status }));
   };
-  console.log(bankDetails, paymentChannels, paymentMethods, discountSchemes);
+  const updateData = async () => {
+    await updateFinance(id, bankDetails, paymentChannels, paymentMethods);
+  };
+  // console.log(bankDetails, paymentChannels, paymentMethods, discountSchemes);
+
   return (
     <>
       <AccordionContainer>
@@ -168,7 +171,7 @@ const Page = ({ setPageTitle }) => {
           </AccordionSummary>
           <AccordionDetails>
             <TextField
-              sx={{ minWidth: "600px", marginBottom: "20px" }}
+              sx={{ minWidth: "500px", marginBottom: "20px" }}
               variant="filled"
               label="Account Holder Name"
               value={bankDetails?.accHolderName || ""}
@@ -177,7 +180,7 @@ const Page = ({ setPageTitle }) => {
               }}
             ></TextField>
             <TextField
-              sx={{ minWidth: "600px", float: "right" }}
+              sx={{ minWidth: "500px", float: "right" }}
               variant="filled"
               label="Bank Name"
               value={bankDetails?.bankName || ""}
@@ -186,7 +189,7 @@ const Page = ({ setPageTitle }) => {
               }}
             ></TextField>
             <TextField
-              sx={{ minWidth: "600px" }}
+              sx={{ minWidth: "500px" }}
               variant="filled"
               label="Sort Code"
               value={bankDetails?.sortCode || ""}
@@ -195,7 +198,7 @@ const Page = ({ setPageTitle }) => {
               }}
             ></TextField>
             <TextField
-              sx={{ minWidth: "600px", float: "right" }}
+              sx={{ minWidth: "500px", float: "right" }}
               variant="filled"
               label="Account Number"
               value={bankDetails?.accNo || ""}
@@ -233,7 +236,7 @@ const Page = ({ setPageTitle }) => {
                 }}
               />
               <Typography sx={{ display: "inline-block" }}>
-                Online Payment (Strip)
+                S Online Payment (Strip)
               </Typography>
             </Box>
             <Box>
@@ -351,7 +354,9 @@ const Page = ({ setPageTitle }) => {
                     marginRight: "7%",
                     float: "right",
                   }}
-                  onClick={() => {}}
+                  onClick={() => {
+                    // deleteHandler(index);
+                  }}
                 >
                   <ImgIcon>{deleteIcon}</ImgIcon>
                 </IconButton>
@@ -516,6 +521,7 @@ const Page = ({ setPageTitle }) => {
             paymentMethods,
             discountSchemes,
           });
+          updateData();
         }}
       >
         Save
