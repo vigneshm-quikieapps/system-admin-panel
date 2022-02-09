@@ -4,29 +4,19 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import {
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  CircularProgress,
-  Divider,
-  Typography,
-} from "@mui/material";
-import {
-  Accordion,
   Card,
   CardTitle,
   IconButton,
   ImgIcon,
-  Output,
   Outputs,
   FormCheckbox as Checkbox,
-  Table,
 } from "../../components";
 import { backIcon } from "../../assets/icons";
 import { useGetRole } from "../../services/queries";
 import { toPascal, transformError } from "../../utils";
-import Privileges from "./components/privileges";
+import Privileges from "./role-privileges/Privileges";
 import { privilegeTypes } from "../../helper/constants";
 
 const RoleDetail = () => {
@@ -34,6 +24,7 @@ const RoleDetail = () => {
   const { id } = useParams();
   const { data = { role: {} }, isLoading, isError, error } = useGetRole(id);
   console.log("roleData", data);
+  console.log("roleid", id);
   const {
     role: { name, code, description, _id },
   } = data;
@@ -42,22 +33,29 @@ const RoleDetail = () => {
     "Role Code": code,
     Description: toPascal(description),
   };
-  const functionalPrivileges = data.role.functionalPrivileges;
-
-  const { control } = useForm({
-    resolver: yupResolver(),
-    defaultValues: {
-      functionalPrivileges: Object.keys(privilegeTypes).map((type) => ({
-        type,
-        permission:
-          data.role.functionalPrivileges[
-            data.role.functionalPrivileges.findIndex(
-              ({ type: privilegeType }) => privilegeType === type,
-            )
-          ].permission,
-      })),
-    },
-  });
+  // const functionalPrivileges = data.role.functionalPrivileges;
+  // console.log("functionalPrivileges", functionalPrivileges);
+  const functionalPrivileges = Object.keys(privilegeTypes).map((type) => ({
+    type,
+  }));
+  // const {} = useForm({
+  //   resolver: yupResolver(),
+  //   defaultValues: {
+  //     functionalPrivileges: Object.entries(privilegeTypes).map((type) => ({
+  //       type,
+  //       permission:
+  //         data.role.functionalPrivileges[
+  //           data.role.functionalPrivileges.findIndex(
+  //             ({ type: privilegeType }) => privilegeType === type,
+  //           )
+  //         ].permission,
+  //     })),
+  //   },
+  // });
+  // const {
+  //   role: {
+  //     functionalPrivileges: {},
+  // }} = data;
 
   return (
     <>
@@ -113,7 +111,7 @@ const RoleDetail = () => {
           )}
         </Card>
       </Box>
-      <Privileges control={control} />
+      <Privileges />
     </>
   );
 };

@@ -153,7 +153,6 @@ const UserList = () => {
       },
     },
   );
-
   const { isLoading: isDeleteLoading, mutate: deleteUser } = useDeleteUser({
     onError: (error) => {
       setShowError(true);
