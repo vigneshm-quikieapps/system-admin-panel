@@ -24,7 +24,11 @@ import {
 } from "../../components";
 import deleteIcon from "../../assets/icons/icon-delete.png";
 import { useGetBusiness, useGetBusinessFinance } from "../../services/queries";
-import { updateFinance } from "../../services/businessServices";
+import {
+  updateFinance,
+  getDiscount,
+  addDiscount,
+} from "../../services/businessServices";
 import { da } from "date-fns/locale";
 
 const Page = ({ setPageTitle }) => {
@@ -49,8 +53,8 @@ const Page = ({ setPageTitle }) => {
     setBankDetails(finance?.bankDetails);
     setPaymentChannels(finance?.paymentChannels);
     setPaymentMethods(finance?.paymentMethods);
-    setDiscountSchemes(finance?.discountSchemes);
-  }, [finance]);
+    setDiscountSchemes(getDiscount(id));
+  }, [finance, id]);
   const checkboxHandler = (name, e) => {
     if (name === "Online") {
       setPaymentChannels((initial) => ({
@@ -142,6 +146,9 @@ const Page = ({ setPageTitle }) => {
   };
   const updateData = async () => {
     await updateFinance(id, bankDetails, paymentChannels, paymentMethods);
+  };
+  const addNewDiscount = async () => {
+    await addDiscount(id, bankDetails, paymentChannels, paymentMethods);
   };
   // console.log(bankDetails, paymentChannels, paymentMethods, discountSchemes);
 
@@ -326,7 +333,9 @@ const Page = ({ setPageTitle }) => {
                     marginRight: "7%",
                     float: "right",
                   }}
-                  onClick={() => {}}
+                  onClick={() => {
+                    setStatus((initial) => ({ ...initial, payMethod: false }));
+                  }}
                 >
                   <ImgIcon>{deleteIcon}</ImgIcon>
                 </IconButton>
@@ -355,7 +364,9 @@ const Page = ({ setPageTitle }) => {
                     float: "right",
                   }}
                   onClick={() => {
-                    // deleteHandler(index);
+                    const newState = [...paymentMethods];
+                    newState.splice(index, index + 1);
+                    setPaymentMethods(newState);
                   }}
                 >
                   <ImgIcon>{deleteIcon}</ImgIcon>
@@ -420,7 +431,7 @@ const Page = ({ setPageTitle }) => {
               </Typography>
             </Box>
           </AccordionDetails>
-          {status.discountStatus && (
+          {/* {status.discountStatus && (
             <AccordionDetails>
               <Box>
                 <TextField
@@ -446,7 +457,12 @@ const Page = ({ setPageTitle }) => {
                     marginRight: "7%",
                     float: "right",
                   }}
-                  onClick={() => {}}
+                  onClick={() => {
+                    setStatus((initial) => ({
+                      ...initial,
+                      discountStatus: false,
+                    }));
+                  }}
                 >
                   <ImgIcon>{deleteIcon}</ImgIcon>
                 </IconButton>
@@ -474,7 +490,7 @@ const Page = ({ setPageTitle }) => {
                     width: "60%",
                   }}
                   variant="filled"
-                  value={discount?._}
+                  value={discount?.name || ""}
                   placeholder="Enter Method"
                   label="Discount"
                   onChange={(e) => {
@@ -486,7 +502,11 @@ const Page = ({ setPageTitle }) => {
                     marginRight: "7%",
                     float: "right",
                   }}
-                  onClick={() => {}}
+                  onClick={() => {
+                    const newState = [...discountSchemes];
+                    newState.splice(index, index + 1);
+                    setDiscountSchemes(newState);
+                  }}
                 >
                   <ImgIcon>{deleteIcon}</ImgIcon>
                 </IconButton>
@@ -499,12 +519,12 @@ const Page = ({ setPageTitle }) => {
                     "& .MuiFilledInput-input": { py: 0 },
                   }}
                   variant="filled"
-                  value={discount?._}
+                  value={discount?.value || 0}
                   placeholder="%"
                 ></TextField>
               </Box>
             </AccordionDetails>
-          ))}
+          ))} */}
         </Accordion>
       </AccordionContainer>
       <GradientButton
@@ -522,6 +542,7 @@ const Page = ({ setPageTitle }) => {
             discountSchemes,
           });
           updateData();
+          addNewDiscount();
         }}
       >
         Save

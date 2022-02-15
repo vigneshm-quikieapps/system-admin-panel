@@ -1,3 +1,5 @@
-const Page = () => <>Evaluation Scheme Info</>;
+const Page = () => {
+  return <>Evaluation</>;
+};
 
 export default Page;
