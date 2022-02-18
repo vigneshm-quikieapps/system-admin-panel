@@ -52,7 +52,7 @@ const DataPrivileges = ({ businesses = [], onAdd, onDelete, control }) => {
         />
       )}
       <Accordion
-        sx={{ bgcolor: "#ECEBF0", gridColumnEnd: "span 2" }}
+        sx={{ bgcolor: "#ECEBF0", gridColumnEnd: "span 3" }}
         defaultExpanded
       >
         <AccordionSummary expandIcon={<ImgIcon>{arrowDownIcon}</ImgIcon>}>

@@ -31,6 +31,7 @@ const EvaluationList = () => {
         setError(error);
       },
     });
+  console.log("evaldata", data);
 
   const { isLoading: isDeleteLoading, mutate: deleteScheme } =
     useDeleteEvaluationScheme({
@@ -122,7 +123,7 @@ const EvaluationList = () => {
             ),
           }}
         />
-        <Button active>Advanced Search</Button>
+        <Button active>Search</Button>
       </Box>
       {showError ? (
         <WarningDialog

@@ -50,8 +50,8 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
     setFocus("postcode");
     setValue("postcode", currentAddress?.postcode || postcode);
     setValue("city", currentAddress?.posttown || "");
-    setValue("line1", currentAddress?.addressline1 || "");
-    setValue("line2", currentAddress?.addressline2 || "");
+    setValue("addressLine1", currentAddress?.addressline1 || "");
+    setValue("addressLine2", currentAddress?.addressline2 || "");
     setValue("geo", geo);
   };
 
@@ -78,17 +78,17 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
       currentAddress?.postcode && setValue("postcode", currentAddress.postcode);
       currentAddress?.posttown && setValue("city", currentAddress.posttown);
       currentAddress?.addressline1 &&
-        setValue("line1", currentAddress.addressline1);
+        setValue("addressLine1", currentAddress.addressline1);
       currentAddress?.addressline2 &&
-        setValue("line2", currentAddress.addressline2);
+        setValue("addressLine2", currentAddress.addressline2);
       geo && setValue("geo", geo);
     }
     // // Will clear address fields when switching from automatic to manual
     // else {
     //   setValue("postcode", currentAddress?.postcode || "");
     //   setValue("city", currentAddress?.posttown || "");
-    //   setValue("line1", currentAddress?.addressline1 || "");
-    //   setValue("line2", currentAddress?.addressline2 || "");
+    //   setValue("addressLine1", currentAddress?.addressline1 || "");
+    //   setValue("addressLine2", currentAddress?.addressline2 || "");
     // }
   }, [mounted, manual, setValue, currentAddress, geo]);
 
@@ -161,15 +161,15 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
         )}
       />
       <Input
-        name="line1"
+        name="addressLine1"
         control={control}
-        error={!!errors?.line1?.message}
+        error={!!errors?.addressLine1?.message}
         variant="filled"
         label="Address Line 1*"
         inputProps={{ readOnly: !manual }}
       />
       <Input
-        name="line2"
+        name="addressLine2"
         control={control}
         variant="filled"
         label="Address Line 2"
