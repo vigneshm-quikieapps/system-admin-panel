@@ -88,8 +88,8 @@ const validationSchema = Yup.object()
       ),
     }),
     postcode: Yup.string().min(6).label("Postcode"),
-    line1: Yup.string().required().label("Address Line 1"),
-    line2: Yup.string().label("Address Line 2"),
+    addressLine1: Yup.string().required().label("Address Line 1"),
+    addressLine2: Yup.string().label("Address Line 2"),
     city: Yup.string().required().label("City / Town"),
     country: Yup.string().required().label("Country"),
   })
@@ -111,6 +111,7 @@ const AddUserPage = () => {
       setError(error);
     },
   });
+  console.log("dataus", data);
   const { isLoading, mutate: postUser } = usePostUser({
     onError: (error) => {
       setShowError(true);
@@ -325,6 +326,17 @@ const AddUserPage = () => {
             >
               <MenuItem value="ACTIVE">Active</MenuItem>
               <MenuItem value="INACTIVE">Inactive</MenuItem>
+            </Input>
+            <Input
+              name="isCoach"
+              control={control}
+              error={!!errors?.isCoach?.message}
+              variant="filled"
+              label="User Type"
+              select
+            >
+              <MenuItem value="true">Coach</MenuItem>
+              <MenuItem value="false">Other Staff</MenuItem>
             </Input>
 
             <Box />

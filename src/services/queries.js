@@ -23,3 +23,10 @@ export const useGetUser = (id, options) =>
     enabled: !!id,
     ...options,
   });
+const fetchEvaluation = (id) =>
+  axios.get(`evaluations/${id}`).then(({ data }) => data);
+export const useGetEvaluation = (id, options) =>
+  useQuery(["evaluation", id], () => fetchEvaluation(id), {
+    enabled: !!id,
+    ...options,
+  });

@@ -70,7 +70,7 @@ const RoleDetail = () => {
           Role Definition
         </Typography>
       </Box>
-      <Box>
+      <Box sx={{ mb: "20px" }}>
         <Card>
           {isError ? (
             <Typography color="error" component="pre">

@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import {
   Box,
@@ -9,19 +9,13 @@ import {
   Divider,
 } from "@mui/material";
 
-import {
-  Accordion,
-  Table,
-  IconButton,
-  ImgIcon,
-  AddButton,
-} from "../../../../components";
+import { Accordion, Table, ImgIcon } from "../../../../components";
 import { arrowDownIcon } from "../../../../assets/icons";
 import { useGetUser } from "../../../../services/queries";
 
 const Roles = () => {
   const { id } = useParams();
-  const { data = { user: {} }, isLoading, isError, error } = useGetUser(id);
+  const { data, isLoading, isError, error } = useGetUser(id);
   console.log("userLiistindex", data);
   console.log("roleuserid", id);
   const tableRows = useMemo(
@@ -45,7 +39,7 @@ const Roles = () => {
         </AccordionSummary>
         <AccordionDetails sx={{ p: 0 }}>
           <Divider />
-          <Table headers={["Role Name", "", ""]} rows={tableRows} />
+          <Table headers={["Role Name", ""]} rows={tableRows} />
         </AccordionDetails>
       </Accordion>
     </>

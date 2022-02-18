@@ -1,6 +1,8 @@
 import { useMemo } from "react";
+import { styled } from "@mui/material/styles";
 import { Box, Typography, Divider, Checkbox } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
+import { Check as CheckIcon } from "@mui/icons-material";
 
 import { Table } from "../../../components";
 import { privilegeTypes } from "../../../helper/constants";
@@ -28,27 +30,41 @@ const Privileges = () => {
   const { data = { role: {} } } = useGetRole(id);
   console.log("roleData12233", data);
   const check = data.role.functionalPrivileges;
-  //   const tableRows = useMemo(
-  //     () =>
-  //       Object.keys(privilegeTypes).map(([_, label], index) => ({
-  //         items: [
-  //           <Typography sx={{ minWidth: "450px" }}>{label}</Typography>,
-  //           <Checkbox name={`functionalPrivileges.${index}.permission.create`} />,
-  //           <Checkbox name={`functionalPrivileges.${index}.permission.read`} />,
-  //           <Checkbox name={`functionalPrivileges.${index}.permission.update`} />,
-  //           <Checkbox name={`functionalPrivileges.${index}.permission.delete`} />,
-  //         ],
-  //       })),
-  //     [],
-  //   );
+  const StyledCheckIcon = styled(CheckIcon)({
+    width: "18px",
+    height: "18px",
+    color: "#fff",
+  });
+
+  const StyledCheckbox = styled(Checkbox)(({ theme }) => {
+    return {
+      "&.Mui-checked": {
+        backgroundImage: theme.palette.gradients.diagonal,
+        borderColor: "transparent !important",
+      },
+      "&.MuiCheckbox-root": {
+        width: "30px",
+        height: "28px",
+        borderRadius: "8px",
+        border: `1px solid ${theme.palette.checkbox.border}`,
+        backgroundColor: theme.palette.checkbox.background,
+        color: "transparent",
+      },
+    };
+  });
+
+  StyledCheckbox.defaultProps = {
+    checkedIcon: <StyledCheckIcon />,
+  };
+
   const tableRows = useMemo(() =>
     Object.entries(privilegeTypes).map(([_, label], index) => ({
       items: [
         <Typography sx={{ minWidth: "450px" }}>{label}</Typography>,
-        <Checkbox name={`check.${index}.permission.create`} />,
-        <Checkbox name={`check.${index}.permission.rows`} />,
-        <Checkbox name={`check.${index}.permission.update`} />,
-        <Checkbox name={`check.${index}.permission.delete`} />,
+        <StyledCheckbox checked={`check[index].permission.create`} />,
+        <StyledCheckbox checked={`check[index].permission.rows`} />,
+        <StyledCheckbox checked={`check[index].permission.update`} />,
+        <StyledCheckbox checked={`check[index].permission.delete`} />,
       ],
     })),
   );

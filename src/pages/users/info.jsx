@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import {
+  AccordionDetails,
   AccordionSummary,
   Box,
   CircularProgress,
@@ -18,6 +19,7 @@ import {
 import { useGetUser } from "../../services/queries";
 import { toPascal, transformError } from "../../utils";
 import { countries } from "../../helper/constants";
+import { arrowDownIcon } from "../../assets/icons";
 import Roles from "./components/role-detail";
 import DataPrivilege from "./components/role-detail/data-privileges";
 
@@ -34,13 +36,16 @@ const UserDetailPage = () => {
       mobileNo,
       _id,
       status,
-      line1,
-      line2,
+      addressLine1,
+      addressLine2,
       city,
       country,
       postcode,
+      roles,
+      dataPrivileges,
     },
   } = data;
+  console.log("datalist", data);
   const countryName = countries.find(({ code }) => code === country)?.label;
 
   const items = {
@@ -53,13 +58,13 @@ const UserDetailPage = () => {
     Address: toPascal(
       postcode +
         "  / " +
-        line1 +
+        addressLine1 +
         " " +
-        line2 +
+        addressLine2 +
         " / " +
         city +
         " / " +
-        countryName,
+        country,
     ),
   };
   return (
@@ -116,8 +121,88 @@ const UserDetailPage = () => {
           )}
         </Card>
       </Box>
-      <Roles />
-      <DataPrivilege />
+      {roles &&
+        roles.map((roleData, index) => {
+          console.log("roleDtaa", roleData);
+          return (
+            <Accordion defaultExpanded>
+              <AccordionSummary expandIcon={<ImgIcon>{arrowDownIcon}</ImgIcon>}>
+                <Box
+                  sx={{ flex: 1, mr: 1, display: "flex", alignItems: "center" }}
+                >
+                  <Typography>Roles</Typography>
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails sx={{ padding: 0, paddingBottom: "10px" }}>
+                <Box
+                  sx={{
+                    padding: " 10px 17px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    borderTop: `1px solid #e9e7f1`,
+                    borderBottom: `1px solid #e9e7f1`,
+                  }}
+                >
+                  <Typography variant="subtitle2" component="div">
+                    Role Name
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    border: "1px solid #e9e7f1",
+                    height: "44px",
+                    margin: "6px 40px 9px 22px",
+                    padding: " 12px 442px 12px 12px",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <Typography>{roleData.name}</Typography>
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+          );
+        })}
+      <Accordion defaultExpanded>
+        <AccordionSummary expandIcon={<ImgIcon>{arrowDownIcon}</ImgIcon>}>
+          <Box sx={{ flex: 1, mr: 1, display: "flex", alignItems: "center" }}>
+            <Typography> Data Privileges</Typography>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails sx={{ padding: 0, paddingBottom: "10px" }}>
+          <Box
+            sx={{
+              padding: " 10px 17px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              borderTop: `1px solid #e9e7f1`,
+              borderBottom: `1px solid #e9e7f1`,
+            }}
+          >
+            <Typography variant="subtitle2" component="div">
+              Business Name
+            </Typography>
+          </Box>
+          {dataPrivileges?.list &&
+            dataPrivileges?.list?.map((listData) => {
+              console.log("listData", listData);
+              return (
+                <Box
+                  sx={{
+                    border: "1px solid #e9e7f1",
+                    height: "44px",
+                    margin: "6px 40px 9px 22px",
+                    padding: " 12px 442px 12px 12px",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <Typography>{listData.name}</Typography>
+                </Box>
+              );
+            })}
+        </AccordionDetails>
+      </Accordion>
     </>
   );
 };
