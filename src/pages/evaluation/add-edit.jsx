@@ -37,7 +37,7 @@ import deleteIcon from "../../assets/icons/icon-delete.png";
 import { number } from "yup/lib/locale";
 import { CenterFocusStrong } from "@mui/icons-material";
 import { useEvaluationSchemesQuery } from "../../services/list-services";
-
+import { updateEvaluation } from "../../services/businessServices";
 const validationSchema = yup
   .object()
   .shape({
@@ -53,7 +53,7 @@ const Page = () => {
 
   const pathTo = (path) => path + "/" + businessId;
   // const [evaluationName, setEvaluationName] = useState("");
-  const [status, setStatus] = useState(false);
+
   // const [levelCount, setLevelCount] = useState(0);
 
   const [page, setPage] = useState(1);
@@ -80,52 +80,50 @@ const Page = () => {
     resolver: yupResolver(validationSchema),
     reValidateMode: "onChange",
     defaultValues: {
-      evaluationName: evaluationData?.name || "",
-      status: evaluationData?.status || "",
-      levelCount: evaluationData?.levelCount || 1,
+      evaluationName: "",
+      status: "ACTIVE",
+      levelCount: 1,
     },
   });
-  // useEffect(() => {
-  //   if (!isLoading) {
-  //     // console.log(data);
-  //     // const temp = data?.docs?.find((item) => item._id == businessId);
-  //     // if (temp) {
-  //     //   setValue("evaluationName", temp.name);
-  //     //   setValue("status", temp.status);
-  //     //   setValue("levelCount", temp.levelCount);
-  //     //   setLevel(temp.levels);
-  //     // }
-  //     // setLevel(Array(Number(control._formValues.levelCount)).fill({}));
-  //   }
-  // }, [data]);
-
+  const [addStatus, setAddStatus] = useState(false);
+  const [skillCount, setSkillCount] = useState([]);
   useEffect(() => {
-    if (!isLoading) {
-      const temp = data?.docs?.find((item) => item._id == businessId);
-      if (temp) {
-        setValue("evaluationName", temp.name);
-        setValue("status", temp.status);
-        setValue("levelCount", temp.levelCount);
-        setLevel(temp.levels);
+    if (businessId) {
+      if (!isLoading) {
+        const temp = data?.docs?.find((item) => item._id == businessId);
+        if (temp) {
+          setValue("evaluationName", temp.name || "");
+          setValue("status", temp.status || "ACTIVE");
+          setValue("levelCount", temp.levelCount || 1);
+          setLevel(temp.levels || []);
+          setSkillCount(Array(control._formValues.levelCount).fill(0));
+        }
       }
-      // setLevel(Array(Number(control._formValues.levelCount)).fill({}));
+    } else {
+      setValue("evaluationName", "");
+      setValue("status", "ACTIVE");
+      setValue("levelCount", 1);
+      setLevel([]);
     }
   }, [data]);
 
-  const onSubmit = (data) => {
-    console.log(control._formValues);
+  const onSubmit = async () => {
+    await updateEvaluation(businessId, {
+      name: control._formValues.evaluationName,
+      status: control._formValues.status,
+      levelCount: control._formValues.levelCount,
+      levels: level,
+    });
   };
 
-  // const onChange = (data) => {
-  //   console.log(control._formValues);
-  // };
   const addNewSkill = () => {
-    setStatus(true);
+    setAddStatus(true);
   };
   const handleClose = () => navigate("/evaluation");
   const handleDiscard = () => {
     setShowWarning(true);
   };
+
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
@@ -134,65 +132,53 @@ const Page = () => {
         </IconButton>
         <Typography sx={{ fontSize: "25px" }}>Evaluations</Typography>
       </Box>
-      <Card sx={{ display: "flex", justifyContent: "space-evenly" }}>
-        <Box>
-          <Typography sx={{ marginBottom: "10px", fontSize: "17px" }}>
-            Evaluation Name
-          </Typography>
-          <Input
-            label="Evaluation Name"
-            type="text"
-            control={control}
-            name="evaluationName"
-            variant="filled"
-          />
-        </Box>
-        <Box>
-          <Typography sx={{ marginBottom: "10px", fontSize: "17px" }}>
-            Status
-          </Typography>
-          <Input
-            label="Status"
-            control={control}
-            name="status"
-            select
-            sx={{ width: "200px" }}
-            variant="filled"
-          >
-            <MenuItem value="ACTIVE">Active</MenuItem>
-            <MenuItem value="NOT_ACTIVE">Not Active</MenuItem>
-          </Input>
-        </Box>
-        <Box>
-          <Typography sx={{ marginBottom: "10px", fontSize: "17px" }}>
-            No. of Levels
-          </Typography>
-          <Input
-            sx={{ width: "200px" }}
-            label="Level Count"
-            control={control}
-            name="levelCount"
-            type="number"
-            InputProps={{ inputProps: { min: "0", max: "10", step: "1" } }}
-            variant="filled"
-            onChange={(data) => {
-              let temp = [...level];
-              if (temp.length > data.target.value) {
-                temp.pop();
-                setValue("levelCount", data.target.value);
-                setLevel(temp);
-              } else if (data.target.value && temp.length < data.target.value) {
-                setValue("levelCount", data.target.value);
-                for (var i = temp.length; i < data.target.value; i++) {
-                  temp.push({ skills: [] });
-                }
-                setLevel(temp);
-              } else {
+      <Grid columnGap={3}>
+        <Input
+          label="Evaluation Name"
+          type="text"
+          control={control}
+          name="evaluationName"
+          variant="filled"
+          sx={{ width: "100%" }}
+        />
+
+        <Input
+          label="Status"
+          control={control}
+          name="status"
+          select
+          sx={{ width: "100%" }}
+          variant="filled"
+        >
+          <MenuItem value="ACTIVE">Active</MenuItem>
+          <MenuItem value="NOT_ACTIVE">Not Active</MenuItem>
+        </Input>
+
+        <Input
+          sx={{ width: "100%" }}
+          label="Level Count"
+          control={control}
+          name="levelCount"
+          type="number"
+          InputProps={{ inputProps: { min: "0", max: "10", step: "1" } }}
+          variant="filled"
+          onChange={(data) => {
+            let temp = [...level];
+            if (temp.length > data.target.value) {
+              temp.pop();
+              setValue("levelCount", data.target.value);
+              setLevel(temp);
+            } else if (data.target.value && temp.length < data.target.value) {
+              setValue("levelCount", data.target.value);
+              for (var i = temp.length; i < data.target.value; i++) {
+                temp.push({ skills: [] });
               }
-            }}
-          ></Input>
-        </Box>
-      </Card>
+              setLevel(temp);
+            } else {
+            }
+          }}
+        ></Input>
+      </Grid>
       {level?.map((data, index1) => (
         <AccordionContainer>
           <Accordion defaultExpanded={true}>
@@ -239,7 +225,7 @@ const Page = () => {
                 </Typography>
               </Box>
             </AccordionDetails>
-            {status && (
+            {addStatus && (
               <AccordionDetails>
                 <Box>
                   <TextField
@@ -255,6 +241,10 @@ const Page = () => {
                         const temp = [...level];
                         temp[index1].skills.unshift(e.target.value);
                         setLevel(temp);
+                        const newState = [...skillCount];
+                        newState[index1] = data.length;
+                        setSkillCount(newState);
+                        setAddStatus(false);
                       }
                     }}
                   ></TextField>
@@ -264,7 +254,7 @@ const Page = () => {
                       float: "right",
                     }}
                     onClick={() => {
-                      setStatus(false);
+                      setAddStatus(false);
                     }}
                   >
                     <ImgIcon>{deleteIcon}</ImgIcon>
@@ -296,7 +286,11 @@ const Page = () => {
                       marginRight: "7%",
                       float: "right",
                     }}
-                    onClick={() => {}}
+                    onClick={() => {
+                      const temp = [...level];
+                      temp[index1].skills.splice(index2, 1);
+                      setLevel(temp);
+                    }}
                   >
                     <ImgIcon>{deleteIcon}</ImgIcon>
                   </IconButton>
@@ -306,13 +300,14 @@ const Page = () => {
           </Accordion>
         </AccordionContainer>
       ))}
+
       <GradientButton
-        sx={{ maxWidth: "fit-content" }}
+        sx={{ maxWidth: "fit-content", marginRight: "10px", marginTop: "20px" }}
         onClick={handleSubmit(onSubmit)}
       >
         Save
       </GradientButton>
-      <GradientButton onClick={handleDiscard} invert>
+      <GradientButton onClick={handleDiscard} invert sx={{ marginTop: "20px" }}>
         Discard
       </GradientButton>
       {!!Object.keys(errors).length && (

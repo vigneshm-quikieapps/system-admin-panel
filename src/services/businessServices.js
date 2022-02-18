@@ -50,3 +50,14 @@ export async function updateOtherInfo(id, payload) {
     throw error;
   }
 }
+
+export async function updateEvaluation(id, payload) {
+  try {
+    const api = `/evaluations/${id}`;
+    const response = await axios.put(api, payload);
+    console.log(response);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
