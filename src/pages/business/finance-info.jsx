@@ -13,6 +13,12 @@ import {
 import { styled } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
+  Done as DoneIcon,
+  Save as AddIcon,
+  Undo as RestoreDefaultsIcon,
+  ClearRounded as CancelIcon,
+} from "@mui/icons-material";
+import {
   GradientButton,
   Grid,
   AddButton,
@@ -32,46 +38,46 @@ import {
   updateFinance,
   getDiscount,
   addDiscount,
+  updateDiscount,
+  deleteDiscount,
 } from "../../services/businessServices";
 import { da } from "date-fns/locale";
 
 const Page = ({ setPageTitle }) => {
   const navigate = useNavigate();
-
+  // const [touched, setTouched] = useState(false);
   const [bankDetails, setBankDetails] = useState({});
   const [paymentChannels, setPaymentChannels] = useState({});
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [discountSchemes, setDiscountSchemes] = useState([]);
   const [errors, setErrors] = useState({});
   const [showWarning, setShowWarning] = useState(false);
-  const [status, setStatus] = useState({
-    payMethod: false,
-    discountStatus: false,
-  });
+
   useEffect(() => setPageTitle("Finance Info"));
 
   const { id } = useParams();
   const { data = { business: {} } } = useGetBusiness(id);
   const {
-    business: { name, finance },
+    business: { name, finance, type },
   } = data;
   useEffect(() => {
     setBankDetails(finance?.bankDetails);
     setPaymentChannels(finance?.paymentChannels);
-    setPaymentMethods(finance?.paymentMethods);
+    const newState = finance?.paymentMethods.map((pay) => ({
+      pay,
+    }));
+    setPaymentMethods(newState);
     getDiscount(id).then((data) => setDiscountSchemes(data));
   }, [data]);
   const checkboxHandler = (name, e) => {
     if (name === "Online") {
       setPaymentChannels((initial) => ({
         ...initial,
-        online: e.target.checked, //true
-        manual: false,
+        online: e.target.checked,
       }));
     } else {
       setPaymentChannels((initial) => ({
         ...initial,
-        online: false, //false
         manual: e.target.checked, //true
       }));
     }
@@ -83,10 +89,6 @@ const Page = ({ setPageTitle }) => {
         "Bank Name",
         "Sort Code",
         "Account Number",
-        "Pay Method",
-        "Add New Method",
-        "Discount",
-        "Add New Discount",
       ].indexOf(field) > -1
         ? e.target.value
         : e;
@@ -115,54 +117,29 @@ const Page = ({ setPageTitle }) => {
           accNo: value,
         }));
       }
-      case "Pay Method": {
-        const newState = [...paymentMethods];
-        newState[index] = value;
-        setPaymentMethods(newState);
-        return;
-      }
-      case "Add New Method": {
-        const newState = [...paymentMethods];
-        newState.unshift(value);
-        setPaymentMethods(newState);
-        return;
-      }
-      case "Discount": {
-        const newState = [...discountSchemes];
-        newState[index] = value;
-        setDiscountSchemes(newState);
-        return;
-      }
-      case "Add New Discount": {
-        const newState = [...discountSchemes];
-        newState.unshift(value);
-        setDiscountSchemes(newState);
-        return;
-      }
       default: {
         return;
       }
     }
   };
-  const addNewData = (type, status) => {
-    if (type === "PayMethod")
-      setStatus((initial) => ({ ...initial, payMethod: status }));
-    else if (type === "Discount")
-      setStatus((initial) => ({ ...initial, discountStatus: status }));
-  };
   const updateData = async () => {
-    await updateFinance(id, {
+    await updateFinance(finance._id, {
       bankDetails,
       paymentChannels,
-      paymentMethods,
-      discountSchemes,
+      paymentMethods: paymentMethods?.map((data) => data.pay),
     });
   };
-  const addNewDiscount = async () => {
-    await addDiscount({ businessId: id, name: "discount 100", value: 100 });
+  const addNewDiscount = async (name, value) => {
+    await addDiscount({ businessId: id, name, value });
+  };
+  const updateDiscountData = async (_id, name, value) => {
+    await updateDiscount(_id, { name, value });
+  };
+  const deleteDiscountData = async (_id) => {
+    await deleteDiscount(_id);
   };
 
-  const handleClose = () => navigate("/evaluation");
+  const handleClose = () => navigate(`/business/details/${id}`);
   const handleDiscard = () => {
     setShowWarning(true);
   };
@@ -293,7 +270,9 @@ const Page = ({ setPageTitle }) => {
                 style={{ marginRight: "1%" }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  addNewData("PayMethod", true);
+                  const newState = [...paymentMethods];
+                  newState.unshift({ pay: "", add: true });
+                  setPaymentMethods(newState);
                 }}
               />
             </Box>
@@ -322,70 +301,73 @@ const Page = ({ setPageTitle }) => {
               </Typography>
             </Box>
           </AccordionDetails>
-          {status?.payMethod && (
+          {paymentMethods?.map((data, index) => (
             <AccordionDetails>
-              <Box>
+              <Box sx={{ display: "flex", justifyContent: "space-around" }}>
                 <TextField
                   sx={{
                     height: "44px",
                     "& .MuiFilledInput-input": { py: 0 },
-                    width: "80%",
-                  }}
-                  placeholder="Enter Method"
-                  label="Add New Method"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      changeHandler(e, "Add New Method");
-                      setStatus((initial) => ({
-                        ...initial,
-                        payMethod: false,
-                      }));
-                    }
-                  }}
-                ></TextField>
-                <IconButton
-                  style={{
-                    marginRight: "7%",
-                    float: "right",
-                  }}
-                  onClick={() => {
-                    setStatus((initial) => ({ ...initial, payMethod: false }));
-                  }}
-                >
-                  <ImgIcon>{deleteIcon}</ImgIcon>
-                </IconButton>
-              </Box>
-            </AccordionDetails>
-          )}
-          {paymentMethods?.map((pay, index) => (
-            <AccordionDetails>
-              <Box>
-                <TextField
-                  sx={{
-                    height: "44px",
-                    "& .MuiFilledInput-input": { py: 0 },
-                    width: "80%",
+                    width: "75%",
                   }}
                   variant="filled"
-                  value={pay}
+                  value={data.pay}
                   placeholder="Enter Method"
                   onChange={(e) => {
-                    changeHandler(e, "Pay Method", index);
-                  }}
-                ></TextField>
-                <IconButton
-                  style={{
-                    marginRight: "7%",
-                    float: "right",
-                  }}
-                  onClick={() => {
                     const newState = [...paymentMethods];
-                    newState.splice(index, index + 1);
+                    newState[index].pay = e.target.value;
+                    newState[index].touched = true;
                     setPaymentMethods(newState);
                   }}
-                >
-                  <ImgIcon>{deleteIcon}</ImgIcon>
-                </IconButton>
+                ></TextField>
+                <Box sx={{ width: "10%", marginLeft: "9%" }}>
+                  {data.add && (
+                    <IconButton
+                      onClick={() => {
+                        const newState = [...paymentMethods];
+                        newState.splice(index, 1);
+                        setPaymentMethods(newState);
+                      }}
+                    >
+                      <CancelIcon color="secondary" />
+                    </IconButton>
+                  )}
+                  {!data.touched && !data.add && (
+                    <IconButton
+                      onClick={() => {
+                        const newState = [...paymentMethods];
+                        newState.splice(index, 1);
+                        setPaymentMethods(newState);
+                      }}
+                    >
+                      <ImgIcon>{deleteIcon}</ImgIcon>
+                    </IconButton>
+                  )}
+                  {data.touched && (
+                    <IconButton
+                      onClick={() => {
+                        const newState = [...paymentMethods];
+
+                        newState[index].add = false;
+                        newState[index].touched = false;
+                        setPaymentMethods(newState);
+                      }}
+                    >
+                      {data.add ? <AddIcon /> : <DoneIcon color="success" />}
+                    </IconButton>
+                  )}
+                  {!data.add && data.touched && (
+                    <IconButton
+                      onClick={() => {
+                        const newState = [...paymentMethods];
+                        newState[index].touched = false;
+                        setPaymentMethods(newState);
+                      }}
+                    >
+                      <RestoreDefaultsIcon />
+                    </IconButton>
+                  )}
+                </Box>
               </Box>
             </AccordionDetails>
           ))}
@@ -406,7 +388,11 @@ const Page = ({ setPageTitle }) => {
                 style={{ marginRight: "1%" }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  addNewData("Discount", true);
+                  const newState = [...discountSchemes];
+                  newState.unshift({
+                    add: true,
+                  });
+                  setDiscountSchemes(newState);
                 }}
               />
             </Box>
@@ -446,58 +432,14 @@ const Page = ({ setPageTitle }) => {
               </Typography>
             </Box>
           </AccordionDetails>
-          {status.discountStatus && (
-            <AccordionDetails>
-              <Box>
-                <TextField
-                  sx={{
-                    height: "44px",
-                    "& .MuiFilledInput-input": { py: 0 },
-                    width: "60%",
-                  }}
-                  variant="filled"
-                  placeholder="Enter Discount"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      changeHandler(e, "Add New Discount");
-                      setStatus((initial) => ({
-                        ...initial,
-                        discountStatus: false,
-                      }));
-                    }
-                  }}
-                ></TextField>
-                <IconButton
-                  style={{
-                    marginRight: "7%",
-                    float: "right",
-                  }}
-                  onClick={() => {
-                    setStatus((initial) => ({
-                      ...initial,
-                      discountStatus: false,
-                    }));
-                  }}
-                >
-                  <ImgIcon>{deleteIcon}</ImgIcon>
-                </IconButton>
-                <TextField
-                  sx={{
-                    marginRight: "7%",
-                    width: "6%",
-                    float: "right",
-                    height: "44px",
-                    "& .MuiFilledInput-input": { py: 0 },
-                  }}
-                  variant="filled"
-                  placeholder="%"
-                ></TextField>
-              </Box>
-            </AccordionDetails>
-          )}
           {discountSchemes?.map((discount, index) => (
             <AccordionDetails>
-              <Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-around",
+                }}
+              >
                 <TextField
                   sx={{
                     height: "44px",
@@ -508,34 +450,93 @@ const Page = ({ setPageTitle }) => {
                   value={discount?.name || ""}
                   placeholder="Enter Method"
                   onChange={(e) => {
-                    changeHandler(e, "Discount", index);
-                  }}
-                ></TextField>
-                <IconButton
-                  style={{
-                    marginRight: "7%",
-                    float: "right",
-                  }}
-                  onClick={() => {
                     const newState = [...discountSchemes];
-                    newState.splice(index, index + 1);
+                    newState[index].name = e.target.value;
+                    newState[index].touched = true;
                     setDiscountSchemes(newState);
                   }}
-                >
-                  <ImgIcon>{deleteIcon}</ImgIcon>
-                </IconButton>
+                ></TextField>
                 <TextField
                   sx={{
-                    marginRight: "7%",
-                    width: "6%",
-                    float: "right",
+                    marginLeft: "7%",
+                    width: "7%",
                     height: "44px",
                     "& .MuiFilledInput-input": { py: 0 },
                   }}
                   variant="filled"
                   value={discount?.value || 0}
                   placeholder="%"
+                  onChange={(e) => {
+                    const newState = [...discountSchemes];
+                    newState[index].value = e.target.value;
+                    newState[index].touched = true;
+                    setDiscountSchemes(newState);
+                  }}
                 ></TextField>
+                <Box sx={{ width: "9%" }}>
+                  {discount.add && (
+                    <IconButton
+                      onClick={() => {
+                        const newState = [...discountSchemes];
+                        newState.splice(index, 1);
+                        setDiscountSchemes(newState);
+                      }}
+                    >
+                      <CancelIcon color="secondary" />
+                    </IconButton>
+                  )}
+                  {!discount.touched && !discount.add && (
+                    <IconButton
+                      onClick={() => {
+                        const newState = [...discountSchemes];
+                        newState.splice(index, 1);
+                        setDiscountSchemes(newState);
+                        deleteDiscountData(discount._id);
+                      }}
+                    >
+                      <ImgIcon>{deleteIcon}</ImgIcon>
+                    </IconButton>
+                  )}
+                  {discount.touched && (
+                    <IconButton
+                      onClick={() => {
+                        const newState = [...discountSchemes];
+                        if (!discount._id) {
+                          newState[index].touched = false;
+                          newState[index].add = false;
+                          setDiscountSchemes(newState);
+                          addNewDiscount(discount.name, discount.value);
+                        } else {
+                          newState[index].add = false;
+                          newState[index].touched = false;
+                          setDiscountSchemes(newState);
+                          updateDiscountData(
+                            discount._id,
+                            discount.name,
+                            discount.value,
+                          );
+                        }
+                      }}
+                    >
+                      {discount.add ? (
+                        <AddIcon />
+                      ) : (
+                        <DoneIcon color="success" />
+                      )}
+                    </IconButton>
+                  )}
+                  {!discount.add && discount.touched && (
+                    <IconButton
+                      onClick={() => {
+                        const newState = [...discountSchemes];
+                        newState[index].touched = false;
+                        setDiscountSchemes(newState);
+                      }}
+                    >
+                      <RestoreDefaultsIcon />
+                    </IconButton>
+                  )}
+                </Box>
               </Box>
             </AccordionDetails>
           ))}
@@ -544,13 +545,7 @@ const Page = ({ setPageTitle }) => {
       <GradientButton
         sx={{ maxWidth: "fit-content" }}
         onClick={() => {
-          setStatus((initial) => ({
-            ...initial,
-            payMethod: false,
-            discountStatus: false,
-          }));
           updateData();
-          // addNewDiscount();
         }}
       >
         Save
