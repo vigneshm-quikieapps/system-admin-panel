@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   AccordionSummary,
   AccordionDetails,
@@ -7,6 +7,7 @@ import {
   MenuItem,
   Typography,
   IconButton,
+  DialogActions,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
@@ -21,6 +22,7 @@ import {
   TextField,
   CheckBox,
   ImgIcon,
+  WarningDialog,
 } from "../../components";
 import deleteIcon from "../../assets/icons/icon-delete.png";
 import { useGetBusiness, useGetBusinessFinance } from "../../services/queries";
@@ -32,11 +34,14 @@ import {
 import { da } from "date-fns/locale";
 
 const Page = ({ setPageTitle }) => {
+  const navigate = useNavigate();
+
   const [bankDetails, setBankDetails] = useState({});
   const [paymentChannels, setPaymentChannels] = useState({});
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [discountSchemes, setDiscountSchemes] = useState([]);
-
+  const [errors, setErrors] = useState({});
+  const [showWarning, setShowWarning] = useState(false);
   const [status, setStatus] = useState({
     payMethod: false,
     discountStatus: false,
@@ -48,13 +53,12 @@ const Page = ({ setPageTitle }) => {
   const {
     business: { name, finance },
   } = data;
-
   useEffect(() => {
     setBankDetails(finance?.bankDetails);
     setPaymentChannels(finance?.paymentChannels);
     setPaymentMethods(finance?.paymentMethods);
-    setDiscountSchemes(getDiscount(id));
-  }, [finance, id]);
+    getDiscount(id).then((data) => setDiscountSchemes(data));
+  }, [data]);
   const checkboxHandler = (name, e) => {
     if (name === "Online") {
       setPaymentChannels((initial) => ({
@@ -145,17 +149,26 @@ const Page = ({ setPageTitle }) => {
       setStatus((initial) => ({ ...initial, discountStatus: status }));
   };
   const updateData = async () => {
-    await updateFinance(id, bankDetails, paymentChannels, paymentMethods);
+    await updateFinance(id, {
+      bankDetails,
+      paymentChannels,
+      paymentMethods,
+      discountSchemes,
+    });
   };
   const addNewDiscount = async () => {
-    await addDiscount(id, bankDetails, paymentChannels, paymentMethods);
+    await addDiscount({ businessId: id, name: "discount 100", value: 100 });
   };
-  // console.log(bankDetails, paymentChannels, paymentMethods, discountSchemes);
+
+  const handleClose = () => navigate("/evaluation");
+  const handleDiscard = () => {
+    setShowWarning(true);
+  };
 
   return (
     <>
       <AccordionContainer>
-        <Accordion defaultExpanded={false} enabled={false}>
+        <Accordion defaultExpanded={true} enabled={false}>
           <AccordionSummary style={{ height: "123px", cursor: "default" }}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Typography style={{ fontSize: "28px" }}>{name}</Typography>
@@ -168,7 +181,7 @@ const Page = ({ setPageTitle }) => {
         </Accordion>
       </AccordionContainer>
       <AccordionContainer>
-        <Accordion defaultExpanded={false}>
+        <Accordion defaultExpanded={true}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Typography style={{ fontSize: "20px" }}>
@@ -217,7 +230,7 @@ const Page = ({ setPageTitle }) => {
         </Accordion>
       </AccordionContainer>
       <AccordionContainer>
-        <Accordion defaultExpanded={false}>
+        <Accordion defaultExpanded={true}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Typography>Payment Channels (PBD)</Typography>
@@ -243,7 +256,7 @@ const Page = ({ setPageTitle }) => {
                 }}
               />
               <Typography sx={{ display: "inline-block" }}>
-                S Online Payment (Strip)
+                Online Payment (Strip)
               </Typography>
             </Box>
             <Box>
@@ -264,7 +277,7 @@ const Page = ({ setPageTitle }) => {
         </Accordion>
       </AccordionContainer>
       <AccordionContainer>
-        <Accordion defaultExpanded={false}>
+        <Accordion defaultExpanded={true}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Box
               sx={{
@@ -377,7 +390,7 @@ const Page = ({ setPageTitle }) => {
         </Accordion>
       </AccordionContainer>
       <AccordionContainer>
-        <Accordion defaultExpanded={false} onClick={() => {}}>
+        <Accordion defaultExpanded={true} onClick={() => {}}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Box
               sx={{
@@ -431,7 +444,7 @@ const Page = ({ setPageTitle }) => {
               </Typography>
             </Box>
           </AccordionDetails>
-          {/* {status.discountStatus && (
+          {status.discountStatus && (
             <AccordionDetails>
               <Box>
                 <TextField
@@ -469,7 +482,7 @@ const Page = ({ setPageTitle }) => {
                 <TextField
                   sx={{
                     marginRight: "7%",
-                    width: "4.5%",
+                    width: "6%",
                     float: "right",
                     height: "44px",
                     "& .MuiFilledInput-input": { py: 0 },
@@ -492,7 +505,6 @@ const Page = ({ setPageTitle }) => {
                   variant="filled"
                   value={discount?.name || ""}
                   placeholder="Enter Method"
-                  label="Discount"
                   onChange={(e) => {
                     changeHandler(e, "Discount", index);
                   }}
@@ -513,7 +525,7 @@ const Page = ({ setPageTitle }) => {
                 <TextField
                   sx={{
                     marginRight: "7%",
-                    width: "4.5%",
+                    width: "6%",
                     float: "right",
                     height: "44px",
                     "& .MuiFilledInput-input": { py: 0 },
@@ -524,7 +536,7 @@ const Page = ({ setPageTitle }) => {
                 ></TextField>
               </Box>
             </AccordionDetails>
-          ))} */}
+          ))}
         </Accordion>
       </AccordionContainer>
       <GradientButton
@@ -535,18 +547,44 @@ const Page = ({ setPageTitle }) => {
             payMethod: false,
             discountStatus: false,
           }));
-          updateFinance(id, {
-            bankDetails,
-            paymentChannels,
-            paymentMethods,
-            discountSchemes,
-          });
           updateData();
-          addNewDiscount();
+          // addNewDiscount();
         }}
       >
         Save
       </GradientButton>
+      <GradientButton
+        onClick={handleDiscard}
+        invert
+        sx={{ marginLeft: "20px" }}
+      >
+        Discard
+      </GradientButton>
+      {!!Object.keys(errors).length && (
+        <DialogActions
+          sx={{ flexDirection: "column", alignItems: "flex-start", p: 2 }}
+        >
+          {Object.values(errors)
+            .reverse()
+            .map(({ message }, index) => (
+              <Typography
+                key={index}
+                sx={{ color: "error.main", ml: "0 !important" }}
+                component="span"
+              >
+                {message}
+              </Typography>
+            ))}
+        </DialogActions>
+      )}
+      <WarningDialog
+        showReject
+        open={showWarning}
+        onAccept={handleClose}
+        onReject={() => setShowWarning(false)}
+        title="Warning!"
+        description="Are you sure you want to discard without saving?"
+      />
     </>
   );
 };

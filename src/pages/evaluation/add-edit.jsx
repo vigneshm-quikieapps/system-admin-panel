@@ -37,7 +37,10 @@ import deleteIcon from "../../assets/icons/icon-delete.png";
 import { number } from "yup/lib/locale";
 import { CenterFocusStrong } from "@mui/icons-material";
 import { useEvaluationSchemesQuery } from "../../services/list-services";
-import { updateEvaluation } from "../../services/businessServices";
+import {
+  updateEvaluation,
+  createEvaluation,
+} from "../../services/businessServices";
 const validationSchema = yup
   .object()
   .shape({
@@ -52,9 +55,6 @@ const Page = () => {
   const { id: businessId = "" } = useParams();
 
   const pathTo = (path) => path + "/" + businessId;
-  // const [evaluationName, setEvaluationName] = useState("");
-
-  // const [levelCount, setLevelCount] = useState(0);
 
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState();
@@ -85,8 +85,7 @@ const Page = () => {
       levelCount: 1,
     },
   });
-  const [addStatus, setAddStatus] = useState(false);
-  const [skillCount, setSkillCount] = useState([]);
+
   useEffect(() => {
     if (businessId) {
       if (!isLoading) {
@@ -96,28 +95,39 @@ const Page = () => {
           setValue("status", temp.status || "ACTIVE");
           setValue("levelCount", temp.levelCount || 1);
           setLevel(temp.levels || []);
-          setSkillCount(Array(control._formValues.levelCount).fill(0));
         }
       }
     } else {
       setValue("evaluationName", "");
       setValue("status", "ACTIVE");
       setValue("levelCount", 1);
-      setLevel([]);
+      setLevel([{ skills: [], isAddNewSkill: true }]);
     }
   }, [data]);
 
   const onSubmit = async () => {
-    await updateEvaluation(businessId, {
-      name: control._formValues.evaluationName,
-      status: control._formValues.status,
-      levelCount: control._formValues.levelCount,
-      levels: level,
-    });
+    if (businessId) {
+      await updateEvaluation(businessId, {
+        name: control._formValues.evaluationName,
+        status: control._formValues.status,
+        levelCount: control._formValues.levelCount,
+        levels: level,
+      });
+    } else {
+      await createEvaluation({
+        name: control._formValues.evaluationName,
+        status: control._formValues.status,
+        levelCount: control._formValues.levelCount,
+        levels: level,
+      });
+    }
   };
 
-  const addNewSkill = () => {
-    setAddStatus(true);
+  const addNewSkill = (index) => {
+    const newState = [...level];
+    newState[index].isAddNewSkill = true;
+    setLevel(newState);
+    // setAddStatus(true);
   };
   const handleClose = () => navigate("/evaluation");
   const handleDiscard = () => {
@@ -171,7 +181,7 @@ const Page = () => {
             } else if (data.target.value && temp.length < data.target.value) {
               setValue("levelCount", data.target.value);
               for (var i = temp.length; i < data.target.value; i++) {
-                temp.push({ skills: [] });
+                temp.push({ skills: [], isAddNewSkill: true });
               }
               setLevel(temp);
             } else {
@@ -196,7 +206,7 @@ const Page = () => {
                   style={{ marginRight: "1%" }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    addNewSkill();
+                    addNewSkill(index1);
                   }}
                 />
               </Box>
@@ -225,7 +235,7 @@ const Page = () => {
                 </Typography>
               </Box>
             </AccordionDetails>
-            {addStatus && (
+            {data?.isAddNewSkill && (
               <AccordionDetails>
                 <Box>
                   <TextField
@@ -241,10 +251,10 @@ const Page = () => {
                         const temp = [...level];
                         temp[index1].skills.unshift(e.target.value);
                         setLevel(temp);
-                        const newState = [...skillCount];
-                        newState[index1] = data.length;
-                        setSkillCount(newState);
-                        setAddStatus(false);
+
+                        const newState = [...level];
+                        newState[index1].isAddNewSkill = false;
+                        setLevel(newState);
                       }
                     }}
                   ></TextField>
@@ -254,7 +264,10 @@ const Page = () => {
                       float: "right",
                     }}
                     onClick={() => {
-                      setAddStatus(false);
+                      const newState = [...level];
+                      newState[index1].isAddNewSkill = false;
+                      setLevel(newState);
+                      // setAddStatus(false);
                     }}
                   >
                     <ImgIcon>{deleteIcon}</ImgIcon>
@@ -264,6 +277,39 @@ const Page = () => {
             )}
 
             {data.skills.map((skill, index2) => (
+              // <AccordionDetails>
+              //   <Box>
+              //     <TextField
+              //       sx={{
+              //         height: "44px",
+              //         "& .MuiFilledInput-input": { py: 0 },
+              //         width: "80%",
+              //       }}
+              //       key={index2}
+              //       value={skill}
+              //       placeholder="Enter Skill"
+              //       onChange={(e) => {
+              //         const temp = [...level];
+              //         temp[index1].skills[index2] = e.target.value;
+              //         setLevel(temp);
+              //       }}
+              //     ></TextField>
+              //     <IconButton
+              //       style={{
+              //         marginRight: "7%",
+              //         float: "right",
+              //       }}
+              //       onClick={() => {
+              //         const temp = [...level];
+              //         temp[index1].skills.splice(index2, 1);
+              //         setLevel(temp);
+              //       }}
+              //     >
+              //       <ImgIcon>{deleteIcon}</ImgIcon>
+              //     </IconButton>
+              //   </Box>
+              // </AccordionDetails>
+
               <AccordionDetails>
                 <Box>
                   <TextField

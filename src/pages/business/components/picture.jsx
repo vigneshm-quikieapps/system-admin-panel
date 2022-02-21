@@ -25,10 +25,12 @@ export default function Picture(props) {
   const onDrop = useCallback(
     (acceptedFiles) => {
       for (let i = 0; i < acceptedFiles.length; i++) {
-        const newState = pic;
+        const newState = [...pic];
         newState.push({ link: URL.createObjectURL(acceptedFiles[i]) });
         setPic(newState);
-        setNewPic(acceptedFiles[i]);
+        const temp = [...newPic];
+        temp.push(acceptedFiles[i][0]);
+        setNewPic(temp);
       }
       props.setNewPicData(newPic);
     },
@@ -36,7 +38,7 @@ export default function Picture(props) {
   );
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
-  // console.log("pic", pic);
+
   return (
     <>
       <Box>

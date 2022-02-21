@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import {
   AccordionSummary,
@@ -8,6 +8,7 @@ import {
   MenuItem,
   Typography,
   IconButton,
+  DialogActions,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
@@ -19,6 +20,7 @@ import {
   TextField,
   CheckBox,
   ImgIcon,
+  WarningDialog,
 } from "../../components";
 import deleteIcon from "../../assets/icons/icon-delete.png";
 import { useGetBusiness } from "../../services/queries";
@@ -29,6 +31,8 @@ const Page = ({ setPageTitle }) => {
   useEffect(() => {
     setPageTitle("Other Info");
   });
+
+  const navigate = useNavigate();
   const { id } = useParams();
   const [logo, setLogo] = useState([]);
   const [pic, setPic] = useState([]);
@@ -36,31 +40,31 @@ const Page = ({ setPageTitle }) => {
   const [newLogo, setNewLogo] = useState([]);
   const [newPic, setNewPic] = useState([]);
   const [isSocialDataUpdated, setIsSocialDataUpdated] = useState(false);
-
+  const [errors, setErrors] = useState({});
+  const [showWarning, setShowWarning] = useState(false);
   const temps = useGetBusiness(id);
   if (temps?.data?.business && !isSocialDataUpdated) {
     var temp = {
       name: temps?.data?.business?.name,
       socialMediaUrl: temps?.data?.business?.socialMediaUrl,
-      imageUrl: temps?.data?.business?.socialMediaUrl,
+      imageUrl: temps?.data?.business?.imageUrl,
       logoUrl: temps?.data?.business?.logoUrl,
       isLoading: temps?.isLoading,
     };
     setLogo(temp.logoUrl);
     setPic(temp.imageUrl);
+    for (let i = temp.socialMediaUrl.length; i < 4; i++) {
+      temp.socialMediaUrl.push({ link: "" });
+    }
     setLinks(temp.socialMediaUrl);
     setIsSocialDataUpdated(true);
   }
-  // const {
-  //   business: { name, socialMediaUrl, imageUrl, logoUrl, isLoading },
-  // } = data;
-  // const { data = { business: {} } } = useGetBusiness(id);
 
-  const setLogoData = (logo) => {
-    setLogo(logo);
+  const setNewLogoData = (init) => {
+    setNewLogo(init);
   };
-  const setPictureData = (pic) => {
-    setPic(pic);
+  const setNewPictureData = (init) => {
+    setNewPic(init);
   };
   const setlinksData = (link) => {
     setLinks(link);
@@ -68,13 +72,18 @@ const Page = ({ setPageTitle }) => {
 
   const updateOtherData = async () => {
     await updateOtherInfo(id, {
-      socialMediaUrl: links.join(","),
+      socialMediaUrl: links.map((data) => data.link).join(","),
       oldImagesLinks: pic.map((data) => data.link).join(","),
       oldLogoLinks: logo.map((data) => data.link).join(","),
       newImages: newPic,
       newLogos: newLogo,
     });
   };
+  const handleClose = () => navigate("/evaluation");
+  const handleDiscard = () => {
+    setShowWarning(true);
+  };
+
   // if (temps?.isLoading) {
   //   return (
   //     <AccordionContainer>
@@ -98,7 +107,7 @@ const Page = ({ setPageTitle }) => {
   return (
     <>
       <AccordionContainer>
-        <Accordion defaultExpanded={false} enabled={false}>
+        <Accordion defaultExpanded={true} enabled={false}>
           <AccordionSummary style={{ height: "123px", cursor: "default" }}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Typography style={{ fontSize: "28px" }}>
@@ -181,10 +190,12 @@ const Page = ({ setPageTitle }) => {
                 variant="filled"
                 placeholder="Enter Link"
                 onChange={(e) => {
-                  const temp = links;
+                  const temp = [...links];
+                  // if (temp[0] === undefined) {
+                  //   temp.p;
+                  // }
                   temp[0].link = e.target.value;
                   setlinksData(temp);
-                  console.log(links);
                 }}
               ></TextField>
               <IconButton
@@ -192,7 +203,11 @@ const Page = ({ setPageTitle }) => {
                   marginRight: "7%",
                   float: "right",
                 }}
-                onClick={() => {}}
+                onClick={() => {
+                  const temp = [...links];
+                  temp[0].link = "";
+                  setlinksData(temp);
+                }}
               >
                 <ImgIcon>{deleteIcon}</ImgIcon>
               </IconButton>
@@ -218,14 +233,22 @@ const Page = ({ setPageTitle }) => {
                 value={links[1]?.link || ""}
                 variant="filled"
                 placeholder="Enter Link"
-                onChange={(e) => {}}
+                onChange={(e) => {
+                  const temp = [...links];
+                  temp[1].link = e.target.value;
+                  setlinksData(temp);
+                }}
               ></TextField>
               <IconButton
                 style={{
                   marginRight: "7%",
                   float: "right",
                 }}
-                onClick={() => {}}
+                onClick={() => {
+                  const temp = [...links];
+                  temp[1].link = "";
+                  setlinksData(temp);
+                }}
               >
                 <ImgIcon>{deleteIcon}</ImgIcon>
               </IconButton>
@@ -251,14 +274,22 @@ const Page = ({ setPageTitle }) => {
                 value={links[2]?.link || ""}
                 variant="filled"
                 placeholder="Enter Link"
-                onChange={(e) => {}}
+                onChange={(e) => {
+                  const temp = [...links];
+                  temp[2].link = e.target.value;
+                  setlinksData(temp);
+                }}
               ></TextField>
               <IconButton
                 style={{
                   marginRight: "7%",
                   float: "right",
                 }}
-                onClick={() => {}}
+                onClick={() => {
+                  const temp = [...links];
+                  temp[2].link = "";
+                  setlinksData(temp);
+                }}
               >
                 <ImgIcon>{deleteIcon}</ImgIcon>
               </IconButton>
@@ -284,14 +315,22 @@ const Page = ({ setPageTitle }) => {
                 value={links[3]?.link || ""}
                 variant="filled"
                 placeholder="Enter Link"
-                onChange={(e) => {}}
+                onChange={(e) => {
+                  const temp = [...links];
+                  temp[3].link = e.target.value;
+                  setlinksData(temp);
+                }}
               ></TextField>
               <IconButton
                 style={{
                   marginRight: "7%",
                   float: "right",
                 }}
-                onClick={() => {}}
+                onClick={() => {
+                  const temp = [...links];
+                  temp[3].link = "";
+                  setlinksData(temp);
+                }}
               >
                 <ImgIcon>{deleteIcon}</ImgIcon>
               </IconButton>
@@ -309,10 +348,10 @@ const Page = ({ setPageTitle }) => {
             </Box>
           </AccordionSummary>
           <AccordionDetails>
-            <Logo setNewLogoData={() => setNewLogo(logo)} logoData={logo} />
+            <Logo setNewLogoData={setNewLogoData} logoData={logo} />
           </AccordionDetails>
           <AccordionDetails>
-            <Picture setNewPicData={() => setNewPic(pic)} picData={pic} />
+            <Picture setNewPicData={setNewPictureData} picData={pic} />
           </AccordionDetails>
         </Accordion>
       </AccordionContainer>
@@ -322,6 +361,38 @@ const Page = ({ setPageTitle }) => {
       >
         Save
       </GradientButton>
+      <GradientButton
+        onClick={handleDiscard}
+        invert
+        sx={{ marginLeft: "20px" }}
+      >
+        Discard
+      </GradientButton>
+      {!!Object.keys(errors).length && (
+        <DialogActions
+          sx={{ flexDirection: "column", alignItems: "flex-start", p: 2 }}
+        >
+          {Object.values(errors)
+            .reverse()
+            .map(({ message }, index) => (
+              <Typography
+                key={index}
+                sx={{ color: "error.main", ml: "0 !important" }}
+                component="span"
+              >
+                {message}
+              </Typography>
+            ))}
+        </DialogActions>
+      )}
+      <WarningDialog
+        showReject
+        open={showWarning}
+        onAccept={handleClose}
+        onReject={() => setShowWarning(false)}
+        title="Warning!"
+        description="Are you sure you want to discard without saving?"
+      />
     </>
   );
 };

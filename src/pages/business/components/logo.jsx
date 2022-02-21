@@ -25,10 +25,12 @@ export default function Logo(props) {
   const onDrop = useCallback(
     (acceptedFiles) => {
       for (let i = 0; i < acceptedFiles.length; i++) {
-        const newState = logo;
+        const newState = [...logo];
         newState.push({ link: URL.createObjectURL(acceptedFiles[i]) });
         setLogo(newState);
-        setNewLogo(acceptedFiles[i]);
+        const temp = [...newLogo];
+        temp.push(acceptedFiles[i]);
+        setNewLogo(temp);
       }
       props.setNewLogoData(newLogo);
     },
