@@ -18,8 +18,8 @@ import { transformError, toPascal } from "../../utils";
 
 const EvaluationList = () => {
   const navigate = useNavigate();
-  const [page, setPage] = useState(1);
   const [searchValue, setSearchValue] = useState("");
+  const [page, setPage] = useState(1);
   const [filters, setFilters] = useState();
   const [showError, setShowError] = useState(false);
   const [error, setError] = useState("");
@@ -47,9 +47,9 @@ const EvaluationList = () => {
   );
 
   const editHandler = useCallback(
-    (e, id) => {
+    (e, id, name, status, levelCount, levels) => {
       e.stopPropagation();
-      navigate(`add/${id}`);
+      navigate(`add/${id}`, { id, name, status, levelCount, levels });
     },
     [navigate],
   );
@@ -74,14 +74,14 @@ const EvaluationList = () => {
       ACTIVE: "Active",
       INACTIVE: "Inactive",
     };
-    return data?.docs?.map(({ _id, name, status }) => ({
+    return data?.docs?.map(({ _id, name, status, levelCount, levels }) => ({
       onClick: () => rowClickHandler(_id),
       items: [
         toPascal(name),
         <Status status={statusColors[status]} title={statusText[status]} />,
         <Actions
           onDelete={(e) => deleteHandler(e, _id)}
-          onEdit={(e) => editHandler(e, _id)}
+          onEdit={(e) => editHandler(e, _id, name, status, levelCount, levels)}
         />,
       ],
     }));
