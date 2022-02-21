@@ -9,8 +9,10 @@ import {
   Typography,
   IconButton,
   DialogActions,
+  Paper,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { styled } from "@mui/material/styles";
 import {
   GradientButton,
   Grid,
@@ -170,170 +172,154 @@ const Page = ({ setPageTitle }) => {
             </Box>
           </AccordionDetails>
           <AccordionDetails>
-            <Box>
-              <Box
-                style={{
-                  marginRight: "5%",
-                  fontSize: "18px",
-                  display: "inline-block",
-                }}
-              >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-around",
+              }}
+            >
+              <Box sx={{ width: "10%" }}>
                 <Typography>Facebook</Typography>
               </Box>
-              <TextField
-                sx={{
-                  height: "44px",
-                  "& .MuiFilledInput-input": { py: 0 },
-                  width: "60%",
-                }}
-                value={links[0]?.link || ""}
-                variant="filled"
-                placeholder="Enter Link"
-                onChange={(e) => {
-                  const temp = [...links];
-                  // if (temp[0] === undefined) {
-                  //   temp.p;
-                  // }
-                  temp[0].link = e.target.value;
-                  setlinksData(temp);
-                }}
-              ></TextField>
-              <IconButton
-                style={{
-                  marginRight: "7%",
-                  float: "right",
-                }}
-                onClick={() => {
-                  const temp = [...links];
-                  temp[0].link = "";
-                  setlinksData(temp);
-                }}
-              >
-                <ImgIcon>{deleteIcon}</ImgIcon>
-              </IconButton>
+              <Box sx={{ width: "75%" }}>
+                <TextField
+                  sx={{
+                    height: "44px",
+                    "& .MuiFilledInput-input": { py: 0 },
+                    width: "65%",
+                  }}
+                  value={links[0]?.link || ""}
+                  variant="filled"
+                  placeholder="Enter Link"
+                  onChange={(e) => {
+                    const temp = [...links];
+                    temp[0].link = e.target.value;
+                    setlinksData(temp);
+                  }}
+                ></TextField>
+              </Box>
+              <Box sx={{ width: "10%" }}>
+                <IconButton
+                  onClick={() => {
+                    const temp = [...links];
+                    temp[0].link = "";
+                    setlinksData(temp);
+                  }}
+                >
+                  <ImgIcon>{deleteIcon}</ImgIcon>
+                </IconButton>
+              </Box>
             </Box>
           </AccordionDetails>
           <AccordionDetails>
-            <Box>
-              <Box
-                style={{
-                  marginRight: "5%",
-                  fontSize: "18px",
-                  display: "inline-block",
-                }}
-              >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-around",
+              }}
+            >
+              <Box sx={{ width: "10%" }}>
                 <Typography>Instagram</Typography>
               </Box>
-              <TextField
-                sx={{
-                  height: "44px",
-                  "& .MuiFilledInput-input": { py: 0 },
-                  width: "60%",
-                }}
-                value={links[1]?.link || ""}
-                variant="filled"
-                placeholder="Enter Link"
-                onChange={(e) => {
-                  const temp = [...links];
-                  temp[1].link = e.target.value;
-                  setlinksData(temp);
-                }}
-              ></TextField>
-              <IconButton
-                style={{
-                  marginRight: "7%",
-                  float: "right",
-                }}
-                onClick={() => {
-                  const temp = [...links];
-                  temp[1].link = "";
-                  setlinksData(temp);
-                }}
-              >
-                <ImgIcon>{deleteIcon}</ImgIcon>
-              </IconButton>
+              <Box sx={{ width: "75%" }}>
+                <TextField
+                  sx={{
+                    height: "44px",
+                    "& .MuiFilledInput-input": { py: 0 },
+                    width: "65%",
+                  }}
+                  value={links[1]?.link || ""}
+                  variant="filled"
+                  placeholder="Enter Link"
+                  onChange={(e) => {
+                    const temp = [...links];
+                    temp[1].link = e.target.value;
+                    setlinksData(temp);
+                  }}
+                ></TextField>
+              </Box>
+              <Box sx={{ width: "10%" }}>
+                <IconButton
+                  onClick={() => {
+                    const temp = [...links];
+                    temp[1].link = "";
+                    setlinksData(temp);
+                  }}
+                >
+                  <ImgIcon>{deleteIcon}</ImgIcon>
+                </IconButton>
+              </Box>
             </Box>
           </AccordionDetails>
           <AccordionDetails>
-            <Box>
-              <Box
-                style={{
-                  marginRight: "5%",
-                  fontSize: "18px",
-                  display: "inline-block",
-                }}
-              >
+            <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+              <Box sx={{ width: "10%" }}>
                 <Typography>Pinterest</Typography>
               </Box>
-              <TextField
-                sx={{
-                  height: "44px",
-                  "& .MuiFilledInput-input": { py: 0 },
-                  width: "60%",
-                }}
-                value={links[2]?.link || ""}
-                variant="filled"
-                placeholder="Enter Link"
-                onChange={(e) => {
-                  const temp = [...links];
-                  temp[2].link = e.target.value;
-                  setlinksData(temp);
-                }}
-              ></TextField>
-              <IconButton
-                style={{
-                  marginRight: "7%",
-                  float: "right",
-                }}
-                onClick={() => {
-                  const temp = [...links];
-                  temp[2].link = "";
-                  setlinksData(temp);
-                }}
-              >
-                <ImgIcon>{deleteIcon}</ImgIcon>
-              </IconButton>
+              <Box sx={{ width: "75%" }}>
+                <TextField
+                  sx={{
+                    height: "44px",
+                    "& .MuiFilledInput-input": { py: 0 },
+                    width: "65%",
+                  }}
+                  value={links[2]?.link || ""}
+                  variant="filled"
+                  placeholder="Enter Link"
+                  onChange={(e) => {
+                    const temp = [...links];
+                    temp[2].link = e.target.value;
+                    setlinksData(temp);
+                  }}
+                ></TextField>
+              </Box>
+              <Box sx={{ width: "10%" }}>
+                <IconButton
+                  // sx={{ marginLeft: "20%" }}
+                  onClick={() => {
+                    const temp = [...links];
+                    temp[2].link = "";
+                    setlinksData(temp);
+                  }}
+                >
+                  <ImgIcon>{deleteIcon}</ImgIcon>
+                </IconButton>
+              </Box>
             </Box>
           </AccordionDetails>
           <AccordionDetails>
-            <Box>
-              <Box
-                style={{
-                  marginRight: "5%",
-                  fontSize: "18px",
-                  display: "inline-block",
-                }}
-              >
+            <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+              <Box sx={{ width: "10%" }}>
                 <Typography>LinkedIn</Typography>
               </Box>
-              <TextField
-                sx={{
-                  height: "44px",
-                  "& .MuiFilledInput-input": { py: 0 },
-                  width: "60%",
-                }}
-                value={links[3]?.link || ""}
-                variant="filled"
-                placeholder="Enter Link"
-                onChange={(e) => {
-                  const temp = [...links];
-                  temp[3].link = e.target.value;
-                  setlinksData(temp);
-                }}
-              ></TextField>
-              <IconButton
-                style={{
-                  marginRight: "7%",
-                  float: "right",
-                }}
-                onClick={() => {
-                  const temp = [...links];
-                  temp[3].link = "";
-                  setlinksData(temp);
-                }}
-              >
-                <ImgIcon>{deleteIcon}</ImgIcon>
-              </IconButton>
+              <Box sx={{ width: "75%" }}>
+                <TextField
+                  sx={{
+                    height: "44px",
+                    "& .MuiFilledInput-input": { py: 0 },
+                    width: "65%",
+                  }}
+                  value={links[3]?.link || ""}
+                  variant="filled"
+                  placeholder="Enter Link"
+                  onChange={(e) => {
+                    const temp = [...links];
+                    temp[3].link = e.target.value;
+                    setlinksData(temp);
+                  }}
+                ></TextField>
+              </Box>
+              <Box sx={{ width: "10%" }}>
+                <IconButton
+                  onClick={() => {
+                    const temp = [...links];
+                    temp[3].link = "";
+                    setlinksData(temp);
+                  }}
+                >
+                  <ImgIcon>{deleteIcon}</ImgIcon>
+                </IconButton>
+              </Box>
             </Box>
           </AccordionDetails>
         </Accordion>

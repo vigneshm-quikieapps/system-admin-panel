@@ -8,7 +8,9 @@ import {
   Typography,
   IconButton,
   DialogActions,
+  Paper,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   GradientButton,
@@ -190,42 +192,42 @@ const Page = ({ setPageTitle }) => {
             </Box>
           </AccordionSummary>
           <AccordionDetails>
-            <TextField
-              sx={{ minWidth: "500px", marginBottom: "20px" }}
-              variant="filled"
-              label="Account Holder Name"
-              value={bankDetails?.accHolderName || ""}
-              onChange={(e) => {
-                changeHandler(e, "Account Holder Name");
-              }}
-            ></TextField>
-            <TextField
-              sx={{ minWidth: "500px", float: "right" }}
-              variant="filled"
-              label="Bank Name"
-              value={bankDetails?.bankName || ""}
-              onChange={(e) => {
-                changeHandler(e, "Bank Name");
-              }}
-            ></TextField>
-            <TextField
-              sx={{ minWidth: "500px" }}
-              variant="filled"
-              label="Sort Code"
-              value={bankDetails?.sortCode || ""}
-              onChange={(e) => {
-                changeHandler(e, "Sort Code");
-              }}
-            ></TextField>
-            <TextField
-              sx={{ minWidth: "500px", float: "right" }}
-              variant="filled"
-              label="Account Number"
-              value={bankDetails?.accNo || ""}
-              onChange={(e) => {
-                changeHandler(e, "Account Number");
-              }}
-            ></TextField>
+            <Grid sx={{ gridTemplateColumns: "repeat(2, 1fr)" }}>
+              <TextField
+                variant="filled"
+                label="Account Holder Name"
+                value={bankDetails?.accHolderName || ""}
+                onChange={(e) => {
+                  changeHandler(e, "Account Holder Name");
+                }}
+              ></TextField>
+              <TextField
+                variant="filled"
+                label="Bank Name"
+                value={bankDetails?.bankName || ""}
+                onChange={(e) => {
+                  changeHandler(e, "Bank Name");
+                }}
+              ></TextField>
+              <TextField
+                variant="filled"
+                label="Sort Code"
+                value={bankDetails?.sortCode || ""}
+                onChange={(e) => {
+                  changeHandler(e, "Sort Code");
+                }}
+              ></TextField>
+              <TextField
+                item
+                xs={2}
+                variant="filled"
+                label="Account Number"
+                value={bankDetails?.accNo || ""}
+                onChange={(e) => {
+                  changeHandler(e, "Account Number");
+                }}
+              ></TextField>
+            </Grid>
           </AccordionDetails>
         </Accordion>
       </AccordionContainer>
@@ -364,9 +366,9 @@ const Page = ({ setPageTitle }) => {
                     "& .MuiFilledInput-input": { py: 0 },
                     width: "80%",
                   }}
+                  variant="filled"
                   value={pay}
                   placeholder="Enter Method"
-                  label="Pay Method"
                   onChange={(e) => {
                     changeHandler(e, "Pay Method", index);
                   }}

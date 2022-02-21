@@ -12,19 +12,16 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { GradientButton, ImgIcon } from "../../../components";
 import deleteIcon from "../../../assets/icons/icon-delete.png";
-import {
-  useGetBusiness,
-  useGetBusinessFinance,
-} from "../../../services/queries";
 
 export default function Logo(props) {
   const { id } = useParams();
 
   const [logo, setLogo] = useState(props.logoData);
+  console.log(props.logoData);
   const [newLogo, setNewLogo] = useState([]);
   const onDrop = useCallback(
     (acceptedFiles) => {
-      for (let i = 0; i < acceptedFiles.length; i++) {
+      for (let i = 0; i <= acceptedFiles.length; i++) {
         const newState = [...logo];
         newState.push({ link: URL.createObjectURL(acceptedFiles[i]) });
         setLogo(newState);

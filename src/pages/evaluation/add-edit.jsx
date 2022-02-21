@@ -142,7 +142,7 @@ const Page = () => {
         </IconButton>
         <Typography sx={{ fontSize: "25px" }}>Evaluations</Typography>
       </Box>
-      <Grid columnGap={3}>
+      <Grid columnspace={5}>
         <Input
           label="Evaluation Name"
           type="text"
