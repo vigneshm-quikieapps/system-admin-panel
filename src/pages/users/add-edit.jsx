@@ -14,18 +14,25 @@ import {
   IconButton,
   CircularProgress,
   MenuItem,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 
 import { usePostUser, usePutUser } from "../../services/mutations";
+import Address from "./components/address";
+import { arrowDownIcon } from "../../assets/icons";
 import { useGetUser } from "../../services/queries";
 import { transformError } from "../../utils";
 import {
+  Accordion,
   ElevationScroll,
   Input,
   GradientButton,
   Grid,
   WarningDialog,
+  ImgIcon,
+  TextField,
 } from "../../components";
 import Roles from "./components/roles";
 import DataPrivileges from "./components/data-privileges";
@@ -80,6 +87,11 @@ const validationSchema = Yup.object()
           .required(),
       ),
     }),
+    postcode: Yup.string().min(6).label("Postcode"),
+    addressLine1: Yup.string().required().label("Address Line 1"),
+    addressLine2: Yup.string().label("Address Line 2"),
+    city: Yup.string().required().label("City / Town"),
+    country: Yup.string().required().label("Country"),
   })
   .required();
 
@@ -99,6 +111,7 @@ const AddUserPage = () => {
       setError(error);
     },
   });
+  console.log("dataus", data);
   const { isLoading, mutate: postUser } = usePostUser({
     onError: (error) => {
       setShowError(true);
@@ -119,6 +132,7 @@ const AddUserPage = () => {
     reset: resetFormData,
     watch,
     getValues,
+    setFocus,
     setValue,
     formState: { errors, dirtyFields },
   } = useForm({
@@ -257,7 +271,7 @@ const AddUserPage = () => {
             User Details
           </Typography>
           <Grid
-            columnCount={2}
+            columnCount={3}
             component="form"
             rowGap="20px"
             sx={{
@@ -313,7 +327,27 @@ const AddUserPage = () => {
               <MenuItem value="ACTIVE">Active</MenuItem>
               <MenuItem value="INACTIVE">Inactive</MenuItem>
             </Input>
+            <Input
+              name="isCoach"
+              control={control}
+              error={!!errors?.isCoach?.message}
+              variant="filled"
+              label="User Type"
+              select
+            >
+              <MenuItem value="true">Coach</MenuItem>
+              <MenuItem value="false">Other Staff</MenuItem>
+            </Input>
+
             <Box />
+            <Address
+              isEdit={!!id}
+              control={control}
+              errors={errors}
+              setValue={setValue}
+              setFocus={setFocus}
+              watch={watch}
+            />
             <Roles
               control={control}
               roles={roles}
