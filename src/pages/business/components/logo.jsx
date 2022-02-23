@@ -16,20 +16,22 @@ import deleteIcon from "../../../assets/icons/icon-delete.png";
 export default function Logo(props) {
   const { id } = useParams();
 
-  const [logo, setLogo] = useState(props.logoData);
-  console.log(props.logoData);
+  const [logo, setLogo] = useState();
   const [newLogo, setNewLogo] = useState([]);
+  useEffect(() => {
+    setLogo(props.logoData);
+  }, []);
   const onDrop = useCallback(
     (acceptedFiles) => {
-      for (let i = 0; i <= acceptedFiles.length; i++) {
-        const newState = [...logo];
+      const newState = [...logo];
+      const temp = [...newLogo];
+      for (let i = 0; i < acceptedFiles.length; i++) {
         newState.push({ link: URL.createObjectURL(acceptedFiles[i]) });
-        setLogo(newState);
-        const temp = [...newLogo];
         temp.push(acceptedFiles[i]);
-        setNewLogo(temp);
       }
-      props.setNewLogoData(newLogo);
+      setLogo(newState);
+      setNewLogo(temp);
+      props.setNewLogoData1(temp);
     },
     [logo],
   );
@@ -95,8 +97,14 @@ export default function Logo(props) {
               }}
               onClick={() => {
                 const newState = [...logo];
-                newState.splice(index, index + 1);
+                newState.splice(index, 1);
                 setLogo(newState);
+                if (index > props.logoData.length) {
+                  const temp = [...newLogo];
+                  temp.splice(index - logo.length, 1);
+                  setNewLogo(temp);
+                  props.setNewLogoData1(temp);
+                }
               }}
             >
               <ImgIcon>{deleteIcon}</ImgIcon>

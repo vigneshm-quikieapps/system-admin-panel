@@ -6,7 +6,7 @@ export async function updateFinance(id, payload) {
     console.log(payload);
     const api = `businesses/finances/${id}`;
     const response = await axios.put(api, payload);
-    return response;
+    return response.data.message;
   } catch (error) {
     throw error;
   }
@@ -25,7 +25,7 @@ export async function addDiscount(payload) {
   try {
     const api = `discounts`;
     const response = await axios.post(api, payload);
-    console.log(response);
+
     return response;
   } catch (error) {
     throw error;
@@ -35,7 +35,7 @@ export async function updateDiscount(id, payload) {
   try {
     const api = `discounts/${id}`;
     const response = await axios.put(api, payload);
-    console.log(response);
+
     return response;
   } catch (error) {
     throw error;

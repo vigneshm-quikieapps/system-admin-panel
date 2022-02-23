@@ -10,6 +10,9 @@ import {
   IconButton,
   DialogActions,
   Paper,
+  Dialog,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { styled } from "@mui/material/styles";
@@ -23,7 +26,9 @@ import {
   CheckBox,
   ImgIcon,
   WarningDialog,
+  Button,
 } from "../../components";
+import informationIcon from "../../assets/icons/icon-information.png";
 import deleteIcon from "../../assets/icons/icon-delete.png";
 import { useGetBusiness } from "../../services/queries";
 import { updateOtherInfo } from "../../services/businessServices";
@@ -36,6 +41,7 @@ const Page = ({ setPageTitle }) => {
 
   const navigate = useNavigate();
   const { id } = useParams();
+  const [updateStatus, setUpdateStatus] = useState(false);
   const [logo, setLogo] = useState([]);
   const [pic, setPic] = useState([]);
   const [links, setLinks] = useState([]);
@@ -85,7 +91,10 @@ const Page = ({ setPageTitle }) => {
   const handleDiscard = () => {
     setShowWarning(true);
   };
-
+  const handleOnClickSubmit = () => {
+    setUpdateStatus(false);
+    navigate("/evaluation");
+  };
   // if (temps?.isLoading) {
   //   return (
   //     <AccordionContainer>
@@ -334,16 +343,19 @@ const Page = ({ setPageTitle }) => {
             </Box>
           </AccordionSummary>
           <AccordionDetails>
-            <Logo setNewLogoData={setNewLogoData} logoData={logo} />
+            <Logo setNewLogoData1={setNewLogoData} logoData={logo} />
           </AccordionDetails>
           <AccordionDetails>
-            <Picture setNewPicData={setNewPictureData} picData={pic} />
+            <Picture setNewPicData1={setNewPictureData} picData={pic} />
           </AccordionDetails>
         </Accordion>
       </AccordionContainer>
       <GradientButton
         sx={{ maxWidth: "fit-content" }}
-        onClick={updateOtherData}
+        onClick={() => {
+          // setUpdateStatus(true);
+          // updateOtherData();
+        }}
       >
         Save
       </GradientButton>
@@ -379,6 +391,30 @@ const Page = ({ setPageTitle }) => {
         title="Warning!"
         description="Are you sure you want to discard without saving?"
       />
+      <Dialog
+        open={updateStatus}
+        sx={{
+          "& .MuiDialog-paper": {
+            minWidth: "380px",
+            padding: "40px 30px",
+            margin: "27px 300px 31px 200px",
+            alignItems: "center",
+          },
+        }}
+      >
+        <ImgIcon>{informationIcon}</ImgIcon>
+        <DialogTitle>Information</DialogTitle>
+        <DialogContent>"Update Successful"</DialogContent>
+        <DialogActions>
+          <Button
+            sx={{ color: "#ff2c60" }}
+            onClick={handleOnClickSubmit}
+            autoFocus
+          >
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

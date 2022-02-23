@@ -12,7 +12,18 @@ import {
   DialogActions,
   IconButton,
   Menu,
+  Dialog,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
+import {
+  Done as DoneIcon,
+  Save as AddIcon,
+  Undo as RestoreDefaultsIcon,
+  ClearRounded as CancelIcon,
+} from "@mui/icons-material";
+import informationIcon from "../../assets/icons/icon-information.png";
+import warningIcon from "../../assets/icons/icon-warning.png";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   GradientButton,
@@ -28,6 +39,7 @@ import {
   ImgIcon,
   Input,
   WarningDialog,
+  Button,
 } from "../../components";
 import { useNavigate } from "react-router-dom";
 import { backIcon } from "../../assets/icons";
@@ -62,7 +74,9 @@ const Page = () => {
   const [error, setError] = useState("");
   const [showWarning, setShowWarning] = useState(false);
   const [level, setLevel] = useState([]);
-  const [evaluationData, setEvaluationData] = useState();
+  const [message, setMessage] = useState();
+  const [isSkillSaved, setIsSkillSaved] = useState(false);
+  const [onSaveUpdateStatus, setOnSaveUpdateStatus] = useState(false);
   const { isLoading, data, isFetching, isPreviousData } =
     useEvaluationSchemesQuery(page, filters, {
       onError: (error) => {
@@ -94,14 +108,20 @@ const Page = () => {
           setValue("evaluationName", temp.name || "");
           setValue("status", temp.status || "ACTIVE");
           setValue("levelCount", temp.levelCount || 1);
-          setLevel(temp.levels || []);
+          setLevel(
+            temp.levels || [
+              { skills: [], isAddNewSkill: true, add: false, touched: false },
+            ],
+          );
         }
       }
     } else {
       setValue("evaluationName", "");
       setValue("status", "ACTIVE");
       setValue("levelCount", 1);
-      setLevel([{ skills: [], isAddNewSkill: true }]);
+      setLevel([
+        { skills: [], isAddNewSkill: true, add: false, touched: false },
+      ]);
     }
   }, [data]);
 
@@ -112,28 +132,37 @@ const Page = () => {
         status: control._formValues.status,
         levelCount: control._formValues.levelCount,
         levels: level,
-      });
+      }).then((res) => setMessage(res.data.message));
+      setOnSaveUpdateStatus(true);
     } else {
       await createEvaluation({
         name: control._formValues.evaluationName,
         status: control._formValues.status,
         levelCount: control._formValues.levelCount,
         levels: level,
-      });
+      }).then((res) => setMessage(res.data.message));
+      setOnSaveUpdateStatus(true);
     }
   };
 
   const addNewSkill = (index) => {
     const newState = [...level];
     newState[index].isAddNewSkill = true;
+    newState[index].add = true;
+    newState[index].touched = false;
     setLevel(newState);
-    // setAddStatus(true);
   };
   const handleClose = () => navigate("/evaluation");
   const handleDiscard = () => {
     setShowWarning(true);
   };
-
+  const handleOnClickSubmitEvaluation = () => {
+    setOnSaveUpdateStatus(false);
+    navigate("/evaluation");
+  };
+  const handleOnClickSubmitWithoutSaving = () => {
+    setIsSkillSaved(false);
+  };
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
@@ -237,13 +266,14 @@ const Page = () => {
             </AccordionDetails>
             {data?.isAddNewSkill && (
               <AccordionDetails>
-                <Box>
+                <Box sx={{ display: "flex", justifyContent: "space-around" }}>
                   <TextField
                     sx={{
                       height: "44px",
                       "& .MuiFilledInput-input": { py: 0 },
                       width: "80%",
                     }}
+                    id="newSkill"
                     placeholder="Enter Skill"
                     label="Add New Skill"
                     onKeyDown={(e) => {
@@ -258,7 +288,7 @@ const Page = () => {
                       }
                     }}
                   ></TextField>
-                  <IconButton
+                  {/* <IconButton
                     style={{
                       marginRight: "7%",
                       float: "right",
@@ -267,11 +297,35 @@ const Page = () => {
                       const newState = [...level];
                       newState[index1].isAddNewSkill = false;
                       setLevel(newState);
-                      // setAddStatus(false);
                     }}
                   >
                     <ImgIcon>{deleteIcon}</ImgIcon>
-                  </IconButton>
+                  </IconButton> */}
+                  <Box sx={{ width: "10%", marginLeft: "9%" }}>
+                    {data?.isAddNewSkill && (
+                      <IconButton
+                        onClick={() => {
+                          const newState = [...level];
+                          newState[index1].isAddNewSkill = false;
+                          setLevel(newState);
+                        }}
+                      >
+                        <CancelIcon color="secondary" />
+                      </IconButton>
+                    )}
+                    <IconButton
+                      onClick={() => {
+                        const newState = [...level];
+                        newState[index1].skills.unshift(
+                          document.getElementById("newSkill").value,
+                        );
+                        newState[index1].isAddNewSkill = false;
+                        setLevel(newState);
+                      }}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </Box>
                 </Box>
               </AccordionDetails>
             )}
@@ -349,7 +403,13 @@ const Page = () => {
 
       <GradientButton
         sx={{ maxWidth: "fit-content", marginRight: "10px", marginTop: "20px" }}
-        onClick={handleSubmit(onSubmit)}
+        onClick={() => {
+          if (!level.some((data) => data.isAddNewSkill)) {
+            onSubmit();
+          } else {
+            setIsSkillSaved(true);
+          }
+        }}
       >
         Save
       </GradientButton>
@@ -381,6 +441,56 @@ const Page = () => {
         title="Warning!"
         description="Are you sure you want to discard without saving?"
       />
+      <Dialog
+        open={isSkillSaved}
+        sx={{
+          "& .MuiDialog-paper": {
+            minWidth: "380px",
+            padding: "40px 30px",
+            margin: "27px 300px 31px 200px",
+            alignItems: "center",
+          },
+        }}
+      >
+        <ImgIcon>{warningIcon}</ImgIcon>
+        <DialogTitle>Information</DialogTitle>
+        <DialogContent>
+          "Please save the new changes done before SAVING"
+        </DialogContent>
+        <DialogActions>
+          <Button
+            sx={{ color: "#ff2c60" }}
+            onClick={handleOnClickSubmitWithoutSaving}
+            autoFocus
+          >
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={onSaveUpdateStatus}
+        sx={{
+          "& .MuiDialog-paper": {
+            minWidth: "380px",
+            padding: "40px 30px",
+            margin: "27px 300px 31px 200px",
+            alignItems: "center",
+          },
+        }}
+      >
+        <ImgIcon>{informationIcon}</ImgIcon>
+        <DialogTitle>Information</DialogTitle>
+        <DialogContent>{message}</DialogContent>
+        <DialogActions>
+          <Button
+            sx={{ color: "#ff2c60" }}
+            onClick={handleOnClickSubmitEvaluation}
+            autoFocus
+          >
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

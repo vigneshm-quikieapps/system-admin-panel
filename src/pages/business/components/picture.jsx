@@ -24,15 +24,15 @@ export default function Picture(props) {
   const [newPic, setNewPic] = useState([]);
   const onDrop = useCallback(
     (acceptedFiles) => {
+      const newState = [...pic];
+      const temp = [...newPic];
       for (let i = 0; i < acceptedFiles.length; i++) {
-        const newState = [...pic];
         newState.push({ link: URL.createObjectURL(acceptedFiles[i]) });
-        setPic(newState);
-        const temp = [...newPic];
-        temp.push(acceptedFiles[i][0]);
-        setNewPic(temp);
+        temp.push(acceptedFiles[i]);
       }
-      props.setNewPicData(newPic);
+      setPic(newState);
+      setNewPic(temp);
+      props.setNewPicData1(temp);
     },
     [pic],
   );
@@ -99,8 +99,14 @@ export default function Picture(props) {
               }}
               onClick={() => {
                 const newState = [...pic];
-                newState.splice(index, index + 1);
+                newState.splice(index, 1);
                 setPic(newState);
+                if (index > props.picData.length) {
+                  const temp = [...newPic];
+                  temp.splice(index - pic.length, 1);
+                  setNewPic(temp);
+                  props.setNewPicData1(temp);
+                }
               }}
             >
               <ImgIcon>{deleteIcon}</ImgIcon>

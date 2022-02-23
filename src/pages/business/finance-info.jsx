@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+
 import {
   AccordionSummary,
   AccordionDetails,
@@ -9,8 +10,12 @@ import {
   IconButton,
   DialogActions,
   Paper,
+  Dialog,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import informationIcon from "../../assets/icons/icon-information.png";
+import warningIcon from "../../assets/icons/icon-warning.png";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Done as DoneIcon,
@@ -31,6 +36,7 @@ import {
   CheckBox,
   ImgIcon,
   WarningDialog,
+  Button,
 } from "../../components";
 import deleteIcon from "../../assets/icons/icon-delete.png";
 import { useGetBusiness, useGetBusinessFinance } from "../../services/queries";
@@ -45,14 +51,16 @@ import { da } from "date-fns/locale";
 
 const Page = ({ setPageTitle }) => {
   const navigate = useNavigate();
-  // const [touched, setTouched] = useState(false);
+
+  const [updateStatus, setUpdateStatus] = useState(false);
+  const [isDiscountSaved, setIsDiscountSaved] = useState(false);
   const [bankDetails, setBankDetails] = useState({});
   const [paymentChannels, setPaymentChannels] = useState({});
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [discountSchemes, setDiscountSchemes] = useState([]);
   const [errors, setErrors] = useState({});
   const [showWarning, setShowWarning] = useState(false);
-
+  const [financeMessage, setFinanceMessage] = useState("");
   useEffect(() => setPageTitle("Finance Info"));
 
   const { id } = useParams();
@@ -127,7 +135,8 @@ const Page = ({ setPageTitle }) => {
       bankDetails,
       paymentChannels,
       paymentMethods: paymentMethods?.map((data) => data.pay),
-    });
+    }).then((response) => setFinanceMessage(response));
+    setUpdateStatus(true);
   };
   const addNewDiscount = async (name, value) => {
     await addDiscount({ businessId: id, name, value });
@@ -143,7 +152,18 @@ const Page = ({ setPageTitle }) => {
   const handleDiscard = () => {
     setShowWarning(true);
   };
-
+  const handleOnClickSubmitFinance = () => {
+    setUpdateStatus(false);
+    navigate(`/business/details/${id}`);
+  };
+  const handleOnClickSubmitDiscount = () => {
+    setIsDiscountSaved(false);
+  };
+  // const getIsDiscountSaved = () =>
+  //   setIsDiscountSaved(
+  //     discountSchemes.some((discount) => discount.add || discount.touched) ||
+  //       paymentMethods.some((pay) => pay.add || pay.touched),
+  //   );
   return (
     <>
       <AccordionContainer>
@@ -545,7 +565,17 @@ const Page = ({ setPageTitle }) => {
       <GradientButton
         sx={{ maxWidth: "fit-content" }}
         onClick={() => {
-          updateData();
+          if (
+            !(
+              discountSchemes.some(
+                (discount) => discount.add || discount.touched,
+              ) || paymentMethods.some((pay) => pay.add || pay.touched)
+            )
+          )
+            updateData();
+          else {
+            setIsDiscountSaved(true);
+          }
         }}
       >
         Save
@@ -582,6 +612,56 @@ const Page = ({ setPageTitle }) => {
         title="Warning!"
         description="Are you sure you want to discard without saving?"
       />
+      <Dialog
+        open={isDiscountSaved}
+        sx={{
+          "& .MuiDialog-paper": {
+            minWidth: "380px",
+            padding: "40px 30px",
+            margin: "27px 300px 31px 200px",
+            alignItems: "center",
+          },
+        }}
+      >
+        <ImgIcon>{warningIcon}</ImgIcon>
+        <DialogTitle>Information</DialogTitle>
+        <DialogContent>
+          "Please save the new changes done before SAVING"
+        </DialogContent>
+        <DialogActions>
+          <Button
+            sx={{ color: "#ff2c60" }}
+            onClick={handleOnClickSubmitDiscount}
+            autoFocus
+          >
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={updateStatus}
+        sx={{
+          "& .MuiDialog-paper": {
+            minWidth: "380px",
+            padding: "40px 30px",
+            margin: "27px 300px 31px 200px",
+            alignItems: "center",
+          },
+        }}
+      >
+        <ImgIcon>{informationIcon}</ImgIcon>
+        <DialogTitle>Information</DialogTitle>
+        <DialogContent>{financeMessage}</DialogContent>
+        <DialogActions>
+          <Button
+            sx={{ color: "#ff2c60" }}
+            onClick={handleOnClickSubmitFinance}
+            autoFocus
+          >
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
