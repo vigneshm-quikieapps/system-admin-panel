@@ -3,7 +3,6 @@ import axios from "../utils/axios-instance";
 
 export async function updateFinance(id, payload) {
   try {
-    console.log(payload);
     const api = `businesses/finances/${id}`;
     const response = await axios.put(api, payload);
     return response.data.message;
@@ -45,7 +44,7 @@ export async function deleteDiscount(id) {
   try {
     const api = `discounts/${id}`;
     const response = await axios.delete(api);
-    console.log(response);
+
     return response;
   } catch (error) {
     throw error;
@@ -53,9 +52,28 @@ export async function deleteDiscount(id) {
 }
 export async function updateOtherInfo(id, payload) {
   try {
+    const {
+      facebookUrl,
+      instagramUrl,
+      pinterestUrl,
+      linkedinUrl,
+      oldImagesLinks,
+      oldLogoLinks,
+      newImages,
+      newLogos,
+    } = payload;
+    const data = new FormData();
+    data.append(" facebookUrl", facebookUrl);
+    data.append("instagramUrl", instagramUrl);
+    data.append("pinterestUrl", pinterestUrl);
+    data.append("linkedinUrl", linkedinUrl);
+    data.append("oldImagesLinks", oldImagesLinks);
+    data.append("oldLogoLinks", oldLogoLinks);
+    data.append("newImages", newImages);
+    data.append("newLogos", newLogos);
     const api = `businesses/${id}/update-other-info`;
-    const response = await axios.post(api, payload);
-    console.log(response);
+    const response = await axios.post(api, data);
+
     return response;
   } catch (error) {
     throw error;
@@ -66,7 +84,7 @@ export async function updateEvaluation(id, payload) {
   try {
     const api = `/evaluations/${id}`;
     const response = await axios.put(api, payload);
-    console.log(response);
+
     return response;
   } catch (error) {
     throw error;
@@ -77,7 +95,7 @@ export async function createEvaluation(payload) {
   try {
     const api = `/evaluations`;
     const response = await axios.post(api, payload);
-    console.log(response);
+
     return response;
   } catch (error) {
     throw error;

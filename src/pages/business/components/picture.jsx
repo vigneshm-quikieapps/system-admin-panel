@@ -20,8 +20,13 @@ import {
 export default function Picture(props) {
   const { id } = useParams();
 
-  const [pic, setPic] = useState(props.picData);
+  const [pic, setPic] = useState();
+  const [prevPic, setPrevPic] = useState();
   const [newPic, setNewPic] = useState([]);
+  useEffect(() => {
+    setPic(props.picData);
+    setPrevPic(props.picData);
+  }, []);
   const onDrop = useCallback(
     (acceptedFiles) => {
       const newState = [...pic];
@@ -106,6 +111,11 @@ export default function Picture(props) {
                   temp.splice(index - pic.length, 1);
                   setNewPic(temp);
                   props.setNewPicData1(temp);
+                } else if (index <= props.picData.length) {
+                  const temp = [...prevPic];
+                  temp.splice(index, 1);
+                  setPrevPic(temp);
+                  props.getUpdatedPic1(temp);
                 }
               }}
             >

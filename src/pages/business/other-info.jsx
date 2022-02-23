@@ -41,30 +41,41 @@ const Page = ({ setPageTitle }) => {
 
   const navigate = useNavigate();
   const { id } = useParams();
+  const [message, setMessage] = useState();
   const [updateStatus, setUpdateStatus] = useState(false);
   const [logo, setLogo] = useState([]);
   const [pic, setPic] = useState([]);
-  const [links, setLinks] = useState([]);
+  const [updatedLogo, setUpdatedLogo] = useState([]);
+  const [updatedPic, setUpdatedPic] = useState([]);
+  const [facebookUrl, setFacebookUrl] = useState("");
+  const [instagramUrl, setInstagramUrl] = useState("");
+  const [pinterestUrl, setPinterestUrl] = useState("");
+  const [linkedinUrl, setLinkedinUrl] = useState("");
   const [newLogo, setNewLogo] = useState([]);
   const [newPic, setNewPic] = useState([]);
   const [isSocialDataUpdated, setIsSocialDataUpdated] = useState(false);
   const [errors, setErrors] = useState({});
   const [showWarning, setShowWarning] = useState(false);
   const temps = useGetBusiness(id);
+  console.log(temps);
   if (temps?.data?.business && !isSocialDataUpdated) {
     var temp = {
       name: temps?.data?.business?.name,
-      socialMediaUrl: temps?.data?.business?.socialMediaUrl,
+      facebook: temps?.data?.business?.facebookUrl,
+      instagram: temps?.data?.business?.instagramUrl,
+      pinterest: temps?.data?.business?.pinterestUrl,
+      linkedin: temps?.data?.business?.linkedinUrl,
       imageUrl: temps?.data?.business?.imageUrl,
       logoUrl: temps?.data?.business?.logoUrl,
       isLoading: temps?.isLoading,
     };
+    setFacebookUrl(temp.facebook);
+    setInstagramUrl(temp.instagram);
+    setPinterestUrl(temp.pinterest);
+    setLinkedinUrl(temp.linkedin);
     setLogo(temp.logoUrl);
     setPic(temp.imageUrl);
-    for (let i = temp.socialMediaUrl.length; i < 4; i++) {
-      temp.socialMediaUrl.push({ link: "" });
-    }
-    setLinks(temp.socialMediaUrl);
+
     setIsSocialDataUpdated(true);
   }
 
@@ -74,26 +85,36 @@ const Page = ({ setPageTitle }) => {
   const setNewPictureData = (init) => {
     setNewPic(init);
   };
-  const setlinksData = (link) => {
-    setLinks(link);
-  };
 
+  const getUpdatedLogo = (init) => {
+    setUpdatedLogo(init);
+  };
+  const getUpdatedPic = (init) => {
+    setUpdatedPic(init);
+  };
   const updateOtherData = async () => {
     await updateOtherInfo(id, {
-      socialMediaUrl: links.map((data) => data.link).join(","),
-      oldImagesLinks: pic.map((data) => data.link).join(","),
-      oldLogoLinks: logo.map((data) => data.link).join(","),
+      facebookUrl: facebookUrl,
+      instagramUrl: instagramUrl,
+      pinterestUrl: pinterestUrl,
+      linkedinUrl: linkedinUrl,
+      oldImagesLinks: updatedPic.map((data) => data.link).join(","),
+      oldLogoLinks: updatedLogo.map((data) => data.link).join(","),
       newImages: newPic,
       newLogos: newLogo,
+    }).then((res) => {
+      console.log(res);
+      setMessage(res.message);
+      setUpdateStatus(true);
     });
   };
-  const handleClose = () => navigate("/evaluation");
+  const handleClose = () => navigate(`/business/details/${id}`);
   const handleDiscard = () => {
     setShowWarning(true);
   };
   const handleOnClickSubmit = () => {
     setUpdateStatus(false);
-    navigate("/evaluation");
+    navigate(`/business/details/${id}`);
   };
   // if (temps?.isLoading) {
   //   return (
@@ -197,22 +218,18 @@ const Page = ({ setPageTitle }) => {
                     "& .MuiFilledInput-input": { py: 0 },
                     width: "65%",
                   }}
-                  value={links[0]?.link || ""}
+                  value={facebookUrl || ""}
                   variant="filled"
                   placeholder="Enter Link"
                   onChange={(e) => {
-                    const temp = [...links];
-                    temp[0].link = e.target.value;
-                    setlinksData(temp);
+                    setFacebookUrl(e.target.value);
                   }}
                 ></TextField>
               </Box>
               <Box sx={{ width: "10%" }}>
                 <IconButton
                   onClick={() => {
-                    const temp = [...links];
-                    temp[0].link = "";
-                    setlinksData(temp);
+                    setFacebookUrl("");
                   }}
                 >
                   <ImgIcon>{deleteIcon}</ImgIcon>
@@ -237,22 +254,18 @@ const Page = ({ setPageTitle }) => {
                     "& .MuiFilledInput-input": { py: 0 },
                     width: "65%",
                   }}
-                  value={links[1]?.link || ""}
+                  value={instagramUrl || ""}
                   variant="filled"
                   placeholder="Enter Link"
                   onChange={(e) => {
-                    const temp = [...links];
-                    temp[1].link = e.target.value;
-                    setlinksData(temp);
+                    setInstagramUrl(e.target.value);
                   }}
                 ></TextField>
               </Box>
               <Box sx={{ width: "10%" }}>
                 <IconButton
                   onClick={() => {
-                    const temp = [...links];
-                    temp[1].link = "";
-                    setlinksData(temp);
+                    setInstagramUrl("");
                   }}
                 >
                   <ImgIcon>{deleteIcon}</ImgIcon>
@@ -272,13 +285,11 @@ const Page = ({ setPageTitle }) => {
                     "& .MuiFilledInput-input": { py: 0 },
                     width: "65%",
                   }}
-                  value={links[2]?.link || ""}
+                  value={pinterestUrl || ""}
                   variant="filled"
                   placeholder="Enter Link"
                   onChange={(e) => {
-                    const temp = [...links];
-                    temp[2].link = e.target.value;
-                    setlinksData(temp);
+                    setPinterestUrl(e.target.value);
                   }}
                 ></TextField>
               </Box>
@@ -286,9 +297,7 @@ const Page = ({ setPageTitle }) => {
                 <IconButton
                   // sx={{ marginLeft: "20%" }}
                   onClick={() => {
-                    const temp = [...links];
-                    temp[2].link = "";
-                    setlinksData(temp);
+                    setPinterestUrl("");
                   }}
                 >
                   <ImgIcon>{deleteIcon}</ImgIcon>
@@ -308,22 +317,18 @@ const Page = ({ setPageTitle }) => {
                     "& .MuiFilledInput-input": { py: 0 },
                     width: "65%",
                   }}
-                  value={links[3]?.link || ""}
+                  value={linkedinUrl || ""}
                   variant="filled"
                   placeholder="Enter Link"
                   onChange={(e) => {
-                    const temp = [...links];
-                    temp[3].link = e.target.value;
-                    setlinksData(temp);
+                    setLinkedinUrl(e.target.value);
                   }}
                 ></TextField>
               </Box>
               <Box sx={{ width: "10%" }}>
                 <IconButton
                   onClick={() => {
-                    const temp = [...links];
-                    temp[3].link = "";
-                    setlinksData(temp);
+                    setLinkedinUrl("");
                   }}
                 >
                   <ImgIcon>{deleteIcon}</ImgIcon>
@@ -343,18 +348,25 @@ const Page = ({ setPageTitle }) => {
             </Box>
           </AccordionSummary>
           <AccordionDetails>
-            <Logo setNewLogoData1={setNewLogoData} logoData={logo} />
+            <Logo
+              setNewLogoData1={setNewLogoData}
+              getUpdatedLogo1={getUpdatedLogo}
+              logoData={logo}
+            />
           </AccordionDetails>
           <AccordionDetails>
-            <Picture setNewPicData1={setNewPictureData} picData={pic} />
+            <Picture
+              setNewPicData1={setNewPictureData}
+              getUpdatedPic1={getUpdatedPic}
+              picData={pic}
+            />
           </AccordionDetails>
         </Accordion>
       </AccordionContainer>
       <GradientButton
         sx={{ maxWidth: "fit-content" }}
         onClick={() => {
-          // setUpdateStatus(true);
-          // updateOtherData();
+          updateOtherData();
         }}
       >
         Save

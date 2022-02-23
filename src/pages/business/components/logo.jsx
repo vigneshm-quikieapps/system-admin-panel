@@ -16,10 +16,12 @@ import deleteIcon from "../../../assets/icons/icon-delete.png";
 export default function Logo(props) {
   const { id } = useParams();
 
-  const [logo, setLogo] = useState();
+  const [logo, setLogo] = useState(props.logoData);
+  const [prevLogo, setPrevLogo] = useState(props.logoData);
   const [newLogo, setNewLogo] = useState([]);
   useEffect(() => {
     setLogo(props.logoData);
+    setPrevLogo(props.logoData);
   }, []);
   const onDrop = useCallback(
     (acceptedFiles) => {
@@ -101,9 +103,14 @@ export default function Logo(props) {
                 setLogo(newState);
                 if (index > props.logoData.length) {
                   const temp = [...newLogo];
-                  temp.splice(index - logo.length, 1);
+                  temp.splice(index - props.logoData.length, 1);
                   setNewLogo(temp);
                   props.setNewLogoData1(temp);
+                } else if (index <= props.logoData.length) {
+                  const temp = [...prevLogo];
+                  temp.splice(index, 1);
+                  setPrevLogo(temp);
+                  props.getUpdatedLogo1(temp);
                 }
               }}
             >
