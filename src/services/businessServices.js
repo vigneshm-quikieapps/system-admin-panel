@@ -50,30 +50,58 @@ export async function deleteDiscount(id) {
     throw error;
   }
 }
-export async function updateOtherInfo(id, payload) {
-  try {
-    const {
-      facebookUrl,
-      instagramUrl,
-      pinterestUrl,
-      linkedinUrl,
-      oldImagesLinks,
-      oldLogoLinks,
-      newImages,
-      newLogos,
-    } = payload;
-    const data = new FormData();
-    data.append(" facebookUrl", facebookUrl);
-    data.append("instagramUrl", instagramUrl);
-    data.append("pinterestUrl", pinterestUrl);
-    data.append("linkedinUrl", linkedinUrl);
-    data.append("oldImagesLinks", oldImagesLinks);
-    data.append("oldLogoLinks", oldLogoLinks);
-    data.append("newImages", newImages);
-    data.append("newLogos", newLogos);
-    const api = `businesses/${id}/update-other-info`;
-    const response = await axios.post(api, data);
+export async function updateOtherInfo(
+  id,
+  facebookUrl,
+  instagramUrl,
+  pinterestUrl,
+  linkedinUrl,
+  oldImagesLinks,
+  oldLogoLinks,
+  newImages,
+  newLogos,
+) {
+  // const {
+  //   facebookUrl,
+  //   instagramUrl,
+  //   pinterestUrl,
+  //   linkedinUrl,
+  //   oldImagesLinks,
+  //   oldLogoLinks,
+  //   newImages,
+  //   newLogos,
+  // } = payload;
+  const data = new FormData();
+  data.append("facebookUrl", facebookUrl);
+  data.append("instagramUrl", instagramUrl);
+  data.append("pinterestUrl", pinterestUrl);
+  data.append("linkedinUrl", linkedinUrl);
+  data.append("oldImagesLinks", oldImagesLinks);
+  data.append("oldLogoLinks", oldLogoLinks);
+  // data.append("newImages", newImages);
+  // data.append("newLogos", newLogos);
+  // data.append("newImages", []);
+  // data.append("newLogos", []);
+  newImages.forEach((item) => data.append(`newImages`, item));
+  newLogos.forEach((item) => data.append(`newLogos`, item));
 
+  console.log("other", data.getAll("newLogos"), data.getAll("newImages"));
+  try {
+    const api = `businesses/${id}/update-other-info`;
+    const response = await axios.post(
+      api,
+      data,
+      //   {
+      //   facebookUrl,
+      //   instagramUrl,
+      //   pinterestUrl,
+      //   linkedinUrl,
+      //   oldImagesLinks,
+      //   oldLogoLinks,
+      //   newImages,
+      //   newLogos,
+      // }
+    );
     return response;
   } catch (error) {
     throw error;

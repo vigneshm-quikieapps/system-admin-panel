@@ -93,16 +93,27 @@ const Page = ({ setPageTitle }) => {
     setUpdatedPic(init);
   };
   const updateOtherData = async () => {
-    await updateOtherInfo(id, {
-      facebookUrl: facebookUrl,
-      instagramUrl: instagramUrl,
-      pinterestUrl: pinterestUrl,
-      linkedinUrl: linkedinUrl,
-      oldImagesLinks: updatedPic.map((data) => data.link).join(","),
-      oldLogoLinks: updatedLogo.map((data) => data.link).join(","),
-      newImages: newPic,
-      newLogos: newLogo,
-    }).then((res) => {
+    await updateOtherInfo(
+      id,
+      //   {
+      //   facebookUrl: facebookUrl,
+      //   instagramUrl: instagramUrl,
+      //   pinterestUrl: pinterestUrl,
+      //   linkedinUrl: linkedinUrl,
+      //   oldImagesLinks: updatedPic.map((data) => data.link).join(","),
+      //   oldLogoLinks: updatedLogo.map((data) => data.link).join(","),
+      //   newImages: newPic,
+      //   newLogos: newLogo,
+      // }
+      facebookUrl,
+      instagramUrl,
+      pinterestUrl,
+      linkedinUrl,
+      updatedPic.map((data) => data.link).join(","),
+      updatedLogo.map((data) => data.link).join(","),
+      newPic,
+      newLogo,
+    ).then((res) => {
       console.log(res);
       setMessage(res.message);
       setUpdateStatus(true);
