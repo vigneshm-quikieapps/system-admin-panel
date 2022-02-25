@@ -76,8 +76,12 @@ export async function updateOtherInfo(
   data.append("instagramUrl", instagramUrl);
   data.append("pinterestUrl", pinterestUrl);
   data.append("linkedinUrl", linkedinUrl);
-  data.append("oldImagesLinks", oldImagesLinks);
-  data.append("oldLogoLinks", oldLogoLinks);
+  if (oldImagesLinks !== "") {
+    data.append("oldImagesLinks", oldImagesLinks);
+  }
+  if (oldLogoLinks !== "") {
+    data.append("oldLogoLinks", oldLogoLinks);
+  }
   // data.append("newImages", newImages);
   // data.append("newLogos", newLogos);
   // data.append("newImages", []);

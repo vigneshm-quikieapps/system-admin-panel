@@ -16,12 +16,13 @@ import deleteIcon from "../../../assets/icons/icon-delete.png";
 export default function Logo(props) {
   const { id } = useParams();
 
-  const [logo, setLogo] = useState(props.logoData);
-  const [prevLogo, setPrevLogo] = useState(props.logoData);
+  const [logo, setLogo] = useState();
+  const [prevLogo, setPrevLogo] = useState();
   const [newLogo, setNewLogo] = useState([]);
   useEffect(() => {
     setLogo(props.logoData);
     setPrevLogo(props.logoData);
+    props.getUpdatedLogo(prevLogo);
   }, []);
   const onDrop = useCallback(
     (acceptedFiles) => {
@@ -33,7 +34,7 @@ export default function Logo(props) {
       }
       setLogo(newState);
       setNewLogo(temp);
-      props.setNewLogoData1(temp);
+      props.setNewLogoData(temp);
     },
     [logo],
   );
@@ -82,7 +83,7 @@ export default function Logo(props) {
             }}
           >
             <img
-              src={data.link}
+              src={data.link !== "" && data.link}
               id={index}
               alt="preview"
               width="80"
@@ -101,16 +102,16 @@ export default function Logo(props) {
                 const newState = [...logo];
                 newState.splice(index, 1);
                 setLogo(newState);
+                const temp1 = [...newLogo];
+                const temp2 = [...prevLogo];
                 if (index > props.logoData.length) {
-                  const temp = [...newLogo];
-                  temp.splice(index - props.logoData.length, 1);
-                  setNewLogo(temp);
-                  props.setNewLogoData1(temp);
+                  temp1.splice(index - props.logoData.length, 1);
+                  setNewLogo(temp1);
+                  props.setNewLogoData(temp1);
                 } else if (index <= props.logoData.length) {
-                  const temp = [...prevLogo];
-                  temp.splice(index, 1);
-                  setPrevLogo(temp);
-                  props.getUpdatedLogo1(temp);
+                  temp2.splice(index, 1);
+                  setPrevLogo(temp2);
+                  props.getUpdatedLogo(temp2);
                 }
               }}
             >

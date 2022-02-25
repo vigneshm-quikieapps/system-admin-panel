@@ -26,6 +26,7 @@ export default function Picture(props) {
   useEffect(() => {
     setPic(props.picData);
     setPrevPic(props.picData);
+    props.getUpdatedPic(prevPic);
   }, []);
   const onDrop = useCallback(
     (acceptedFiles) => {
@@ -37,7 +38,7 @@ export default function Picture(props) {
       }
       setPic(newState);
       setNewPic(temp);
-      props.setNewPicData1(temp);
+      props.setNewPicData(temp);
     },
     [pic],
   );
@@ -87,7 +88,7 @@ export default function Picture(props) {
             }}
           >
             <img
-              src={data.link}
+              src={data.link !== "" && data.link}
               id={index}
               alt="preview"
               width="80"
@@ -106,16 +107,16 @@ export default function Picture(props) {
                 const newState = [...pic];
                 newState.splice(index, 1);
                 setPic(newState);
+                const temp1 = [...newPic];
+                const temp2 = [...prevPic];
                 if (index > props.picData.length) {
-                  const temp = [...newPic];
-                  temp.splice(index - pic.length, 1);
-                  setNewPic(temp);
-                  props.setNewPicData1(temp);
+                  temp1.splice(index - pic.length, 1);
+                  setNewPic(temp1);
+                  props.setNewPicData(temp1);
                 } else if (index <= props.picData.length) {
-                  const temp = [...prevPic];
-                  temp.splice(index, 1);
-                  setPrevPic(temp);
-                  props.getUpdatedPic1(temp);
+                  temp2.splice(index, 1);
+                  setPrevPic(temp2);
+                  props.getUpdatedPic(temp2);
                 }
               }}
             >

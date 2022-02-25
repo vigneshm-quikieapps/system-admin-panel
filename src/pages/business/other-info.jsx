@@ -57,7 +57,7 @@ const Page = ({ setPageTitle }) => {
   const [errors, setErrors] = useState({});
   const [showWarning, setShowWarning] = useState(false);
   const temps = useGetBusiness(id);
-  console.log(temps);
+
   if (temps?.data?.business && !isSocialDataUpdated) {
     var temp = {
       name: temps?.data?.business?.name,
@@ -93,6 +93,18 @@ const Page = ({ setPageTitle }) => {
     setUpdatedPic(init);
   };
   const updateOtherData = async () => {
+    const temp1 = updatedPic
+      ? updatedPic?.map((data) => data.link).join(",")
+      : pic?.map((data) => data.link).join(",");
+    // updatedPic?.map((data) => data.link).join(",") !== ""
+    //   ? updatedPic?.map((data) => data.link).join(",")
+    //   : pic?.map((data) => data.link).join(",");
+    const temp2 = updatedLogo
+      ? updatedLogo.map((data) => data.link).join(",")
+      : logo?.map((data) => data.link).join(",");
+    // updatedLogo.map((data) => data.link).join(",") !== ""
+    //   ? updatedLogo.map((data) => data.link).join(",")
+    //   : logo?.map((data) => data.link).join(",");
     await updateOtherInfo(
       id,
       //   {
@@ -109,8 +121,8 @@ const Page = ({ setPageTitle }) => {
       instagramUrl,
       pinterestUrl,
       linkedinUrl,
-      updatedPic.map((data) => data.link).join(","),
-      updatedLogo.map((data) => data.link).join(","),
+      temp1,
+      temp2,
       newPic,
       newLogo,
     ).then((res) => {
@@ -360,15 +372,15 @@ const Page = ({ setPageTitle }) => {
           </AccordionSummary>
           <AccordionDetails>
             <Logo
-              setNewLogoData1={setNewLogoData}
-              getUpdatedLogo1={getUpdatedLogo}
+              setNewLogoData={setNewLogoData}
+              getUpdatedLogo={getUpdatedLogo}
               logoData={logo}
             />
           </AccordionDetails>
           <AccordionDetails>
             <Picture
-              setNewPicData1={setNewPictureData}
-              getUpdatedPic1={getUpdatedPic}
+              setNewPicData={setNewPictureData}
+              getUpdatedPic={getUpdatedPic}
               picData={pic}
             />
           </AccordionDetails>
