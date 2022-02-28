@@ -61,10 +61,10 @@ const Privileges = () => {
     Object.entries(privilegeTypes).map(([_, label], index) => ({
       items: [
         <Typography sx={{ minWidth: "450px" }}>{label}</Typography>,
-        <StyledCheckbox checked={`check[index].permission.create`} />,
-        <StyledCheckbox checked={`check[index].permission.rows`} />,
-        <StyledCheckbox checked={`check[index].permission.update`} />,
-        <StyledCheckbox checked={`check[index].permission.delete`} />,
+        <StyledCheckbox checked={check[index].permission.create} />,
+        <StyledCheckbox checked={check[index].permission.read} />,
+        <StyledCheckbox checked={check[index].permission.update} />,
+        <StyledCheckbox checked={check[index].permission.delete} />,
       ],
     })),
   );
