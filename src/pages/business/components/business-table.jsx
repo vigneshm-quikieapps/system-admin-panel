@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Table, TableHeading, AddButton } from "../../../components";
 
 const Heading = ({ onAdd }) => (
-  <TableHeading title="BusinessList">
+  <TableHeading title="Business List">
     <AddButton onClick={onAdd} />
   </TableHeading>
 );

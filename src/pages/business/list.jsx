@@ -303,12 +303,15 @@ const BusinessList = () => {
 
   return (
     <>
-      <PageHeader title="Business" description="Manage your Business here" />
+      <PageHeader
+        title="Business"
+        description="Manage business information here"
+      />
       <Box sx={{ display: showAdvancedSearch ? "none" : "flex", mb: 1 }}>
         <TextField
           onChange={searchValueChangeHandler}
           value={searchValue}
-          placeholder="Search member by name"
+          placeholder="Search by business name"
           sx={{ flex: 1, mr: "20px" }}
           InputProps={{
             startAdornment: (

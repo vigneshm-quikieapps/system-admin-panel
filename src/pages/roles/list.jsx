@@ -204,13 +204,13 @@ const RoleList = () => {
 
   return (
     <>
-      <PageHeader title="Role" description="Manage roles from here" />
+      <PageHeader title="Role" description="Manage roles here" />
       {!showAdvancedSearch && (
         <Box sx={{ display: "flex", mb: 1 }}>
           <TextField
             value={searchValue}
             onChange={searchChangeHandler}
-            placeholder="Search for a role"
+            placeholder="Search by role name"
             sx={{ flex: 1, mr: "20px" }}
             InputProps={{
               startAdornment: (
