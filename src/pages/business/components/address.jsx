@@ -106,7 +106,7 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
       {showError && (
         <Typography
           color="error"
-          sx={{ position: "absolute", top: "33px", left: "160px" }}
+          sx={{ position: "absolute", top: "20px", right: "20px" }}
         >
           Something went wrong while getting the address list!
         </Typography>
@@ -120,14 +120,11 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
         component="h3"
         sx={{
           fontWeight: "bold",
-          fontSize: "18px",
+          fontSize: "14px",
           gridColumnEnd: "span 2",
         }}
       >
         Address
-        <GradientButton sx={{ ml: "508px" }} onClick={manualClickHandler}>
-          {manual ? "Enter Address Automatically" : "Enter Address Manually"}
-        </GradientButton>
       </Typography>
       <Box
         sx={{
@@ -136,8 +133,13 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
           justifyContent: "center",
           gridRow: "2 / span 7",
           gridColumnStart: "2",
+          mb: "280px",
         }}
-      ></Box>
+      >
+        <GradientButton onClick={manualClickHandler}>
+          {manual ? "Enter Address Automatically" : "Enter Address Manually"}
+        </GradientButton>
+      </Box>
       <Input
         name="postcode"
         control={control}

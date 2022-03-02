@@ -107,14 +107,14 @@ const EvaluationList = () => {
     <>
       <PageHeader
         title="Evaluation Schemes"
-        description="Manage your evaluation here"
+        description="Manage evaluation schemes"
       />
       <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
         <TextField
           value={searchValue}
           onChange={searchChangeHandler}
           sx={{ flex: "1" }}
-          placeholder="Search"
+          placeholder="Search by evaluation name"
           InputProps={{
             startAdornment: (
               <InputAdornment position="start" sx={{ mr: "-10px" }}>

@@ -2,7 +2,7 @@ import { Table, TableHeading, AddButton } from "../../../components";
 import { useNavigate } from "react-router-dom";
 
 const Heading = ({ onAdd }) => (
-  <TableHeading title="EvaluationList">
+  <TableHeading title="Evaluation List">
     <AddButton onClick={onAdd} />
   </TableHeading>
 );

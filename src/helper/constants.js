@@ -1,5 +1,11 @@
 import { ImgIcon } from "../components";
-import { dashboardIcon, memberIcon } from "../assets/icons";
+import {
+  dashboardIcon,
+  memberIcon,
+  businessIcon,
+  evaluationIcon,
+  roleIcon,
+} from "../assets/icons";
 
 export const navItems = [
   {
@@ -14,21 +20,21 @@ export const navItems = [
     title: "Business",
     urlPath: "business",
     exact: false,
-    icon: <ImgIcon>{dashboardIcon}</ImgIcon>,
+    icon: <ImgIcon>{businessIcon}</ImgIcon>,
   },
   {
     id: "3",
     title: "Evaluation",
     urlPath: "evaluation",
     exact: false,
-    icon: <ImgIcon>{dashboardIcon}</ImgIcon>,
+    icon: <ImgIcon>{evaluationIcon}</ImgIcon>,
   },
   {
     id: "4",
     title: "Role",
     urlPath: "roles",
     exact: false,
-    icon: <ImgIcon>{dashboardIcon}</ImgIcon>,
+    icon: <ImgIcon>{roleIcon}</ImgIcon>,
   },
   {
     id: "5",
@@ -46,12 +52,12 @@ export const privilegeTypes = {
   CLASS_CATEGORY: "Class Categories",
   CLASS_DEFINITION: "Class Definition",
   CLASS_ENROLMENT: "Class Enrolments",
-  DISCOUNT: "Discount",
   EVALUATION_SCHEME: "Evaluation Schemes",
   MEMBERS: "Members",
   //   MEMBER_EVALUATION: "Member Evaluation",
   MEMBER_ENROLMENTS: "Member Enrolments",
-  PROGRESS_RECORD: "Member's Progress",
+  DISCOUNT: "Member Finance",
+  PROGRESS_RECORD: "Member Progress",
   SESSION_DEFINITION: "Class Sessions",
   TERM: "Term Definition",
   USERS: "User Definition",

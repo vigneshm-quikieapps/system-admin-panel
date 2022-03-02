@@ -239,7 +239,7 @@ const UserList = () => {
             color: (theme) => theme.palette.text.secondary,
           }}
         >
-          Manage users from here
+          Manage users here
         </Typography>
       </Box>
 
@@ -248,7 +248,7 @@ const UserList = () => {
           <TextField
             value={searchValue}
             onChange={searchChangeHandler}
-            placeholder="Search for a user"
+            placeholder="Search by user name"
             sx={{ flex: 1, mr: "20px" }}
             InputProps={{
               startAdornment: (
