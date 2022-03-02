@@ -116,7 +116,6 @@ export async function updateEvaluation(id, payload) {
   try {
     const api = `/evaluations/${id}`;
     const response = await axios.put(api, payload);
-
     return response;
   } catch (error) {
     throw error;
@@ -127,7 +126,6 @@ export async function createEvaluation(payload) {
   try {
     const api = `/evaluations`;
     const response = await axios.post(api, payload);
-
     return response;
   } catch (error) {
     throw error;

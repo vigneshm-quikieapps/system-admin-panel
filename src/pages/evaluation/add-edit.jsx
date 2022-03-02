@@ -25,6 +25,7 @@ import {
 import informationIcon from "../../assets/icons/icon-information.png";
 import warningIcon from "../../assets/icons/icon-warning.png";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import errorIcon from "../../assets/icons/icon-error.png";
 import {
   GradientButton,
   Grid,
@@ -77,6 +78,8 @@ const Page = () => {
   const [message, setMessage] = useState();
   const [isSkillSaved, setIsSkillSaved] = useState(false);
   const [onSaveUpdateStatus, setOnSaveUpdateStatus] = useState(false);
+  const [icon, setIcon] = useState();
+  const [title, setTitle] = useState();
   const { isLoading, data, isFetching, isPreviousData } =
     useEvaluationSchemesQuery(page, filters, {
       onError: (error) => {
@@ -126,25 +129,63 @@ const Page = () => {
   }, [data]);
 
   const onSubmit = async () => {
+    let message1;
     if (businessId) {
       await updateEvaluation(businessId, {
         name: control._formValues.evaluationName,
         status: control._formValues.status,
         levelCount: control._formValues.levelCount,
         levels: level,
-      }).then((res) => setMessage(res.data.message));
+      })
+        .then((res) => {
+          message1 = res;
+          setMessage(message1?.data?.message);
+        })
+        .catch((error) => {
+          setMessage("Name should be at least 3 char unique");
+        });
+      // .catch((error) => {
+      //   throw error;
+      // });
       setOnSaveUpdateStatus(true);
+
+      if (message1?.data?.message === "update successful") {
+        setIcon(informationIcon);
+        setTitle("Information");
+      } else {
+        setIcon(errorIcon);
+        setTitle("Error");
+        // setMessage("Name should be at least 3 char unique");
+      }
     } else {
       await createEvaluation({
         name: control._formValues.evaluationName,
         status: control._formValues.status,
         levelCount: control._formValues.levelCount,
         levels: level,
-      }).then((res) => setMessage(res.data.message));
+      })
+        .then((res) => {
+          message1 = res;
+          setMessage(message1?.data?.message);
+        })
+        .catch((error) => {
+          setMessage("Name should be at least 3 char unique");
+        });
+
+      setOnSaveUpdateStatus(true);
+      if (message1?.data?.message === "created successfully") {
+        setMessage(message?.data?.message);
+        setIcon(informationIcon);
+        setTitle("Information");
+      } else {
+        setIcon(errorIcon);
+        setTitle("Error");
+        // setMessage("Name should be at least 3 char unique");
+      }
       setOnSaveUpdateStatus(true);
     }
   };
-
+  console.log(message);
   const addNewSkill = (index) => {
     const newState = [...level];
     newState[index].isAddNewSkill = true;
@@ -156,9 +197,13 @@ const Page = () => {
   const handleDiscard = () => {
     setShowWarning(true);
   };
-  const handleOnClickSubmitEvaluation = () => {
-    setOnSaveUpdateStatus(false);
-    navigate("/evaluation");
+  const handleOnClickSubmitEvaluation = (title) => {
+    if (title === "Error") {
+      setOnSaveUpdateStatus(false);
+    } else {
+      setOnSaveUpdateStatus(false);
+      navigate("/evaluation");
+    }
   };
   const handleOnClickSubmitWithoutSaving = () => {
     setIsSkillSaved(false);
@@ -273,18 +318,20 @@ const Page = () => {
                       "& .MuiFilledInput-input": { py: 0 },
                       width: "80%",
                     }}
+                    required
                     id="newSkill"
                     placeholder="Enter Skill"
                     label="Add New Skill"
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         const temp = [...level];
-                        temp[index1].skills.unshift(e.target.value);
-                        setLevel(temp);
-
-                        const newState = [...level];
-                        newState[index1].isAddNewSkill = false;
-                        setLevel(newState);
+                        if (e.target.value !== "") {
+                          temp[index1].skills.unshift(e.target.value);
+                          setLevel(temp);
+                          const newState = [...level];
+                          newState[index1].isAddNewSkill = false;
+                          setLevel(newState);
+                        }
                       }
                     }}
                   ></TextField>
@@ -306,8 +353,11 @@ const Page = () => {
                       <IconButton
                         onClick={() => {
                           const newState = [...level];
-                          newState[index1].isAddNewSkill = false;
-                          setLevel(newState);
+                          if (newState[index1].skills[0].skill !== "") {
+                            newState[index1].isAddNewSkill = false;
+                            setLevel(newState);
+                          }
+                          newState[index1].isAddNewSkill = true;
                         }}
                       >
                         <CancelIcon color="secondary" />
@@ -331,39 +381,6 @@ const Page = () => {
             )}
 
             {data.skills.map((skill, index2) => (
-              // <AccordionDetails>
-              //   <Box>
-              //     <TextField
-              //       sx={{
-              //         height: "44px",
-              //         "& .MuiFilledInput-input": { py: 0 },
-              //         width: "80%",
-              //       }}
-              //       key={index2}
-              //       value={skill}
-              //       placeholder="Enter Skill"
-              //       onChange={(e) => {
-              //         const temp = [...level];
-              //         temp[index1].skills[index2] = e.target.value;
-              //         setLevel(temp);
-              //       }}
-              //     ></TextField>
-              //     <IconButton
-              //       style={{
-              //         marginRight: "7%",
-              //         float: "right",
-              //       }}
-              //       onClick={() => {
-              //         const temp = [...level];
-              //         temp[index1].skills.splice(index2, 1);
-              //         setLevel(temp);
-              //       }}
-              //     >
-              //       <ImgIcon>{deleteIcon}</ImgIcon>
-              //     </IconButton>
-              //   </Box>
-              // </AccordionDetails>
-
               <AccordionDetails>
                 <Box>
                   <TextField
@@ -372,6 +389,7 @@ const Page = () => {
                       "& .MuiFilledInput-input": { py: 0 },
                       width: "80%",
                     }}
+                    required
                     key={index2}
                     value={skill}
                     placeholder="Enter Skill"
@@ -453,9 +471,9 @@ const Page = () => {
         }}
       >
         <ImgIcon>{warningIcon}</ImgIcon>
-        <DialogTitle>Information</DialogTitle>
+        <DialogTitle>Warning</DialogTitle>
         <DialogContent>
-          "Please save the new changes done before SAVING"
+          Please save the new changes done before SAVING
         </DialogContent>
         <DialogActions>
           <Button
@@ -478,13 +496,15 @@ const Page = () => {
           },
         }}
       >
-        <ImgIcon>{informationIcon}</ImgIcon>
-        <DialogTitle>Information</DialogTitle>
+        <ImgIcon>{icon}</ImgIcon>
+        <DialogTitle>{title}</DialogTitle>
         <DialogContent>{message}</DialogContent>
         <DialogActions>
           <Button
             sx={{ color: "#ff2c60" }}
-            onClick={handleOnClickSubmitEvaluation}
+            onClick={() => {
+              handleOnClickSubmitEvaluation(title);
+            }}
             autoFocus
           >
             Ok

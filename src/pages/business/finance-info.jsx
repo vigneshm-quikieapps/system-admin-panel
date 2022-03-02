@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import informationIcon from "../../assets/icons/icon-information.png";
 import warningIcon from "../../assets/icons/icon-warning.png";
+import errorIcon from "../../assets/icons/icon-error.png";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Done as DoneIcon,
@@ -60,7 +61,9 @@ const Page = ({ setPageTitle }) => {
   const [discountSchemes, setDiscountSchemes] = useState([]);
   const [errors, setErrors] = useState({});
   const [showWarning, setShowWarning] = useState(false);
-  const [financeMessage, setFinanceMessage] = useState("");
+  const [financeMessage, setFinanceMessage] = useState();
+  const [icon, setIcon] = useState();
+  const [title, setTitle] = useState();
   useEffect(() => setPageTitle("Finance Info"));
 
   const { id } = useParams();
@@ -135,7 +138,9 @@ const Page = ({ setPageTitle }) => {
       bankDetails,
       paymentChannels,
       paymentMethods: paymentMethods?.map((data) => data.pay),
-    }).then((response) => setFinanceMessage(response));
+    })
+      .then((response) => setFinanceMessage(response))
+      .catch((error) => setFinanceMessage(error));
     setUpdateStatus(true);
   };
   const addNewDiscount = async (name, value) => {
@@ -232,7 +237,7 @@ const Page = ({ setPageTitle }) => {
         <Accordion defaultExpanded={true}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
-              <Typography>Payment Channels (PBD)</Typography>
+              <Typography>Payment Channels</Typography>
             </Box>
           </AccordionSummary>
           <AccordionDetails
@@ -255,7 +260,7 @@ const Page = ({ setPageTitle }) => {
                 }}
               />
               <Typography sx={{ display: "inline-block" }}>
-                Online Payment (Strip)
+                Online Payment (Stripe)
               </Typography>
             </Box>
             <Box>
@@ -426,7 +431,7 @@ const Page = ({ setPageTitle }) => {
                   display: "inline",
                 }}
               >
-                Discount Schemes
+                Discount Scheme's Name
               </Typography>
               <Typography
                 style={{
@@ -649,9 +654,17 @@ const Page = ({ setPageTitle }) => {
           },
         }}
       >
-        <ImgIcon>{informationIcon}</ImgIcon>
-        <DialogTitle>Information</DialogTitle>
-        <DialogContent>{financeMessage}</DialogContent>
+        <ImgIcon>
+          {financeMessage === "update successful" ? informationIcon : errorIcon}
+        </ImgIcon>
+        <DialogTitle>
+          {financeMessage === "update successful" ? "Information" : "Error"}
+        </DialogTitle>
+        <DialogContent>
+          {financeMessage === "update successful"
+            ? financeMessage
+            : "Should be either: CASH / REC_BANK / TOTZ_BANK / REC_CREDIT_CARD / TOTZ_CREDIT_CARD"}
+        </DialogContent>
         <DialogActions>
           <Button
             sx={{ color: "#ff2c60" }}
