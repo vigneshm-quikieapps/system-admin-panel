@@ -27,7 +27,7 @@ const UserDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data = { user: {} }, isLoading, isError, error } = useGetUser(id);
-  console.log("userListdata", data);
+  // console.log("userListdata", data);
   const {
     user: {
       name,
@@ -45,7 +45,7 @@ const UserDetailPage = () => {
       dataPrivileges,
     },
   } = data;
-  console.log("datalist", data);
+  // console.log("datalist", data);
   const countryName = countries.find(({ code }) => code === country)?.label;
 
   const items = {
@@ -123,7 +123,7 @@ const UserDetailPage = () => {
       </Box>
       {roles &&
         roles.map((roleData, index) => {
-          console.log("roleDtaa", roleData);
+          // console.log("roleDtaa", roleData);
           return (
             <Accordion defaultExpanded>
               <AccordionSummary expandIcon={<ImgIcon>{arrowDownIcon}</ImgIcon>}>
@@ -186,7 +186,7 @@ const UserDetailPage = () => {
           </Box>
           {dataPrivileges?.list &&
             dataPrivileges?.list?.map((listData) => {
-              console.log("listData", listData);
+              // console.log("listData", listData);
               return (
                 <Box
                   sx={{

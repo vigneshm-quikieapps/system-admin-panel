@@ -81,13 +81,13 @@ const AdvancedSearch = ({
 
   const valuesChangeHandler = (e) => {
     if (e.target.name === "name") setName(e.target.value);
-    console.log("e.target.name", e.target.name);
+    // console.log("e.target.name", e.target.name);
     setValuesState((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
   };
-  console.log("valuesChangeHandler", valuesChangeHandler);
+  // console.log("valuesChangeHandler", valuesChangeHandler);
   const operatorsChangeHandler = (e, name) => {
     setOperatorsState((prevState) => ({
       ...prevState,
@@ -101,7 +101,7 @@ const AdvancedSearch = ({
   //     value: valuesState[field],
   //   }));
   // }, [valuesState, operatorsState]);
-  console.log("valuesState", valuesState);
+  // console.log("valuesState", valuesState);
   const filters = useMemo(() => {
     let theFilters = Object.keys(valuesState).map((field) =>
       field !== "operator" && valuesState[field]

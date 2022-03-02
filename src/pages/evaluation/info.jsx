@@ -41,7 +41,7 @@ const EvaluationDetailPage = () => {
     isError,
     error,
   } = useGetEvaluation(id);
-  console.log("evalddddData", data);
+  // console.log("evalddddData", data);
 
   const {
     evaluationScheme: { name, status, levelCount, _id, levels },
@@ -110,7 +110,7 @@ const EvaluationDetailPage = () => {
       </Box>
       {levels &&
         levels.map((dataa, index) => {
-          console.log("dataa", dataa);
+          // console.log("dataa", dataa);
           return (
             <Accordion defaultExpanded>
               <AccordionSummary expandIcon={<ImgIcon>{arrowDownIcon}</ImgIcon>}>
@@ -159,4 +159,3 @@ const EvaluationDetailPage = () => {
 };
 
 export default EvaluationDetailPage;
-

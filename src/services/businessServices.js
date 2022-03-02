@@ -89,7 +89,7 @@ export async function updateOtherInfo(
   newImages.forEach((item) => data.append(`newImages`, item));
   newLogos.forEach((item) => data.append(`newLogos`, item));
 
-  console.log("other", data.getAll("newLogos"), data.getAll("newImages"));
+  // console.log("other", data.getAll("newLogos"), data.getAll("newImages"));
   try {
     const api = `businesses/${id}/update-other-info`;
     const response = await axios.post(

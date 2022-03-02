@@ -31,7 +31,7 @@ const EvaluationList = () => {
         setError(error);
       },
     });
-  console.log("evaldata", data);
+  // console.log("evaldata", data);
 
   const { isLoading: isDeleteLoading, mutate: deleteScheme } =
     useDeleteEvaluationScheme({

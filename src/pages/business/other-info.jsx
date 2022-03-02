@@ -126,7 +126,7 @@ const Page = ({ setPageTitle }) => {
       newPic,
       newLogo,
     ).then((res) => {
-      console.log(res);
+      // console.log(res);
       setMessage(res.message);
       setUpdateStatus(true);
     });

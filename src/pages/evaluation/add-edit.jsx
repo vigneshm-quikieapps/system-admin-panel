@@ -77,6 +77,7 @@ const Page = () => {
   const [level, setLevel] = useState([]);
   const [message, setMessage] = useState();
   const [isSkillSaved, setIsSkillSaved] = useState(false);
+  const [saveStatus, setSaveStatus] = useState(false);
   const [onSaveUpdateStatus, setOnSaveUpdateStatus] = useState(false);
   const [icon, setIcon] = useState();
   const [title, setTitle] = useState();
@@ -144,9 +145,7 @@ const Page = () => {
         .catch((error) => {
           setMessage("Name should be at least 3 char unique");
         });
-      // .catch((error) => {
-      //   throw error;
-      // });
+
       setOnSaveUpdateStatus(true);
 
       if (message1?.data?.message === "update successful") {
@@ -155,7 +154,6 @@ const Page = () => {
       } else {
         setIcon(errorIcon);
         setTitle("Error");
-        // setMessage("Name should be at least 3 char unique");
       }
     } else {
       await createEvaluation({
@@ -174,7 +172,6 @@ const Page = () => {
 
       setOnSaveUpdateStatus(true);
       if (message1?.data?.message === "created successfully") {
-        setMessage(message?.data?.message);
         setIcon(informationIcon);
         setTitle("Information");
       } else {
@@ -185,7 +182,7 @@ const Page = () => {
       setOnSaveUpdateStatus(true);
     }
   };
-  console.log(message);
+  // console.log(message);
   const addNewSkill = (index) => {
     const newState = [...level];
     newState[index].isAddNewSkill = true;
@@ -281,6 +278,7 @@ const Page = () => {
                   onClick={(e) => {
                     e.stopPropagation();
                     addNewSkill(index1);
+                    setSaveStatus(true);
                   }}
                 />
               </Box>
@@ -331,6 +329,7 @@ const Page = () => {
                           const newState = [...level];
                           newState[index1].isAddNewSkill = false;
                           setLevel(newState);
+                          setSaveStatus(false);
                         }
                       }
                     }}
@@ -353,11 +352,12 @@ const Page = () => {
                       <IconButton
                         onClick={() => {
                           const newState = [...level];
-                          if (newState[index1].skills[0].skill !== "") {
-                            newState[index1].isAddNewSkill = false;
-                            setLevel(newState);
-                          }
-                          newState[index1].isAddNewSkill = true;
+                          // if (newState[index1].skills[0].skill !== "") {
+                          newState[index1].isAddNewSkill = false;
+                          setLevel(newState);
+                          // }
+                          // newState[index1].isAddNewSkill = true;
+                          setSaveStatus(false);
                         }}
                       >
                         <CancelIcon color="secondary" />
@@ -371,6 +371,7 @@ const Page = () => {
                         );
                         newState[index1].isAddNewSkill = false;
                         setLevel(newState);
+                        setSaveStatus(false);
                       }}
                     >
                       <AddIcon />
@@ -420,6 +421,7 @@ const Page = () => {
       ))}
 
       <GradientButton
+        disabled={saveStatus}
         sx={{ maxWidth: "fit-content", marginRight: "10px", marginTop: "20px" }}
         onClick={() => {
           if (!level.some((data) => data.isAddNewSkill)) {
