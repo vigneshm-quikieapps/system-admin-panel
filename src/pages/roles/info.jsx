@@ -23,8 +23,8 @@ const RoleDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { data = { role: {} }, isLoading, isError, error } = useGetRole(id);
-  console.log("roleData", data);
-  console.log("roleid", id);
+  // console.log("roleData", data);
+  // console.log("roleid", id);
   const {
     role: { name, code, description, _id },
   } = data;

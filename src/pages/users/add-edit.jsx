@@ -111,7 +111,7 @@ const AddUserPage = () => {
       setError(error);
     },
   });
-  console.log("dataus", data);
+  // console.log("dataus", data);
   const { isLoading, mutate: postUser } = usePostUser({
     onError: (error) => {
       setShowError(true);

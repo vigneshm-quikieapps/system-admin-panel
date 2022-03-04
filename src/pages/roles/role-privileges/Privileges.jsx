@@ -28,7 +28,7 @@ const tableHeading = (
 const Privileges = () => {
   const { id } = useParams();
   const { data = { role: {} } } = useGetRole(id);
-  console.log("roleData12233", data);
+  // console.log("roleData12233", data);
   const check = data.role.functionalPrivileges;
   const StyledCheckIcon = styled(CheckIcon)({
     width: "18px",
@@ -69,7 +69,7 @@ const Privileges = () => {
     })),
   );
 
-  console.log("TBRo", check);
+  // console.log("TBRo", check);
   return (
     <Box sx={{ gridColumnEnd: "span 2" }}>
       <Table

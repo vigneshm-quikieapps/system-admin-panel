@@ -16,8 +16,8 @@ import { useGetUser } from "../../../../services/queries";
 const Roles = () => {
   const { id } = useParams();
   const { data, isLoading, isError, error } = useGetUser(id);
-  console.log("userLiistindex", data);
-  console.log("roleuserid", id);
+  // console.log("userLiistindex", data);
+  // console.log("roleuserid", id);
   const tableRows = useMemo(
     () =>
       data?.user?.roles?.map(({ _id, name }) => ({

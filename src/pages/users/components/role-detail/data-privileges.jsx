@@ -22,8 +22,8 @@ import { useGetUser } from "../../../../services/queries";
 const DataPrivilege = () => {
   const { id } = useParams();
   const { data = { user: {} }, isLoading, isError, error } = useGetUser(id);
-  console.log("userLiistindex12", data);
-  console.log("roleuserid12", id);
+  // console.log("userLiistindex12", data);
+  // console.log("roleuserid12", id);
   const tableRows = useMemo(
     () =>
       data?.user?.dataPrivileges?.list?.map(({ _id, name }) => ({
