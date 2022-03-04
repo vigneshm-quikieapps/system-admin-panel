@@ -136,7 +136,9 @@ const Page = () => {
         status: control._formValues.status,
         levelCount: control._formValues.levelCount,
         levels: level,
-      })
+      });
+      console
+        .log("level", level)
         .then((res) => {
           message1 = res;
           setMessage(message1?.data?.message);
@@ -470,8 +472,8 @@ const Page = () => {
           },
         }}
       >
-        <ImgIcon>{warningIcon}</ImgIcon>
-        <DialogTitle>Warning</DialogTitle>
+        <ImgIcon>{errorIcon}</ImgIcon>
+        <DialogTitle>Error</DialogTitle>
         <DialogContent>
           Please save the new changes done before SAVING
         </DialogContent>
