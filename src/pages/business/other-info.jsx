@@ -80,6 +80,8 @@ const Page = ({ setPageTitle }) => {
   }
 
   const setNewLogoData = (init) => {
+    // const newState = [...newLogo];
+    // newState.concat(init);
     setNewLogo(init);
   };
   const setNewPictureData = (init) => {
@@ -439,7 +441,7 @@ const Page = ({ setPageTitle }) => {
       >
         <ImgIcon>{informationIcon}</ImgIcon>
         <DialogTitle>Information</DialogTitle>
-        <DialogContent>"Update Successful"</DialogContent>
+        <DialogContent>Update Successful</DialogContent>
         <DialogActions>
           <Button
             sx={{ color: "#ff2c60" }}
