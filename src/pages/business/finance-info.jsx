@@ -628,8 +628,8 @@ const Page = ({ setPageTitle }) => {
           },
         }}
       >
-        <ImgIcon>{warningIcon}</ImgIcon>
-        <DialogTitle>Information</DialogTitle>
+        <ImgIcon>{errorIcon}</ImgIcon>
+        <DialogTitle>Error</DialogTitle>
         <DialogContent>
           "Please save the new changes done before SAVING"
         </DialogContent>
@@ -660,7 +660,7 @@ const Page = ({ setPageTitle }) => {
         <DialogTitle>
           {financeMessage === "update successful" ? "Information" : "Error"}
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ textAlign: "center" }}>
           {financeMessage === "update successful"
             ? financeMessage
             : "Should be either: CASH / REC_BANK / TOTZ_BANK / REC_CREDIT_CARD / TOTZ_CREDIT_CARD"}
