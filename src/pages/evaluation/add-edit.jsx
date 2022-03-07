@@ -54,6 +54,7 @@ import {
   updateEvaluation,
   createEvaluation,
 } from "../../services/businessServices";
+import { fontSize } from "@mui/system";
 const validationSchema = yup
   .object()
   .shape({
@@ -73,6 +74,7 @@ const Page = () => {
   const [filters, setFilters] = useState();
   const [showError, setShowError] = useState(false);
   const [error, setError] = useState("");
+  const [evaluationId, setEvaluationId] = useState();
   const [showWarning, setShowWarning] = useState(false);
   const [level, setLevel] = useState([]);
   const [message, setMessage] = useState();
@@ -117,6 +119,7 @@ const Page = () => {
               { skills: [], isAddNewSkill: true, add: false, touched: false },
             ],
           );
+          setEvaluationId(temp?._id);
         }
       }
     } else {
@@ -126,13 +129,14 @@ const Page = () => {
       setLevel([
         { skills: [], isAddNewSkill: true, add: false, touched: false },
       ]);
+      setEvaluationId("");
     }
   }, [data]);
 
   const onSubmit = async () => {
     let message1;
-    if (businessId) {
-      await updateEvaluation(businessId, {
+    if (evaluationId !== "") {
+      await updateEvaluation(evaluationId, {
         name: control._formValues.evaluationName,
         status: control._formValues.status,
         levelCount: control._formValues.levelCount,
@@ -311,7 +315,13 @@ const Page = () => {
             </AccordionDetails>
             {data?.isAddNewSkill && (
               <AccordionDetails>
-                <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-around",
+                    flexDirection: "row",
+                  }}
+                >
                   <TextField
                     sx={{
                       height: "44px",
@@ -336,19 +346,6 @@ const Page = () => {
                       }
                     }}
                   ></TextField>
-                  {/* <IconButton
-                    style={{
-                      marginRight: "7%",
-                      float: "right",
-                    }}
-                    onClick={() => {
-                      const newState = [...level];
-                      newState[index1].isAddNewSkill = false;
-                      setLevel(newState);
-                    }}
-                  >
-                    <ImgIcon>{deleteIcon}</ImgIcon>
-                  </IconButton> */}
                   <Box sx={{ width: "10%", marginLeft: "9%" }}>
                     {data?.isAddNewSkill && (
                       <IconButton
@@ -368,17 +365,38 @@ const Page = () => {
                     <IconButton
                       onClick={() => {
                         const newState = [...level];
-                        newState[index1].skills.unshift(
-                          document.getElementById("newSkill").value,
-                        );
-                        newState[index1].isAddNewSkill = false;
-                        setLevel(newState);
-                        setSaveStatus(false);
+                        if (
+                          document.getElementById("newSkill").value.length > 0
+                        ) {
+                          newState[index1].skills.unshift(
+                            document.getElementById("newSkill").value,
+                          );
+                          newState[index1].isAddNewSkill = false;
+                          setLevel(newState);
+                          setSaveStatus(false);
+                        } else {
+                          document.getElementById("errorText").style.display =
+                            "block";
+                          newState[index1].isAddNewSkill = true;
+                          setSaveStatus(true);
+                        }
                       }}
                     >
                       <AddIcon />
                     </IconButton>
                   </Box>
+                </Box>
+                <Box
+                  id="errorText"
+                  style={{
+                    display: "none",
+                    color: "red",
+                    fontSize: "10px",
+                    marginTop: "10px",
+                    marginLeft: "10px",
+                  }}
+                >
+                  Please enter some text (atleast 3 letter) before SAVING
                 </Box>
               </AccordionDetails>
             )}
