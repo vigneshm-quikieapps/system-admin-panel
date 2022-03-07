@@ -121,33 +121,32 @@ const UserDetailPage = () => {
           )}
         </Card>
       </Box>
-      {roles &&
-        roles.map((roleData, index) => {
-          // console.log("roleDtaa", roleData);
-          return (
-            <Accordion defaultExpanded>
-              <AccordionSummary expandIcon={<ImgIcon>{arrowDownIcon}</ImgIcon>}>
-                <Box
-                  sx={{ flex: 1, mr: 1, display: "flex", alignItems: "center" }}
-                >
-                  <Typography>Roles</Typography>
-                </Box>
-              </AccordionSummary>
-              <AccordionDetails sx={{ padding: 0, paddingBottom: "10px" }}>
-                <Box
-                  sx={{
-                    padding: " 10px 17px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    borderTop: `1px solid #e9e7f1`,
-                    borderBottom: `1px solid #e9e7f1`,
-                  }}
-                >
-                  <Typography variant="subtitle2" component="div">
-                    Role Name
-                  </Typography>
-                </Box>
+
+      <Accordion defaultExpanded>
+        <AccordionSummary expandIcon={<ImgIcon>{arrowDownIcon}</ImgIcon>}>
+          <Box sx={{ flex: 1, mr: 1, display: "flex", alignItems: "center" }}>
+            <Typography>Roles</Typography>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails sx={{ padding: 0, paddingBottom: "10px" }}>
+          <Box
+            sx={{
+              padding: " 10px 17px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              borderTop: `1px solid #e9e7f1`,
+              borderBottom: `1px solid #e9e7f1`,
+            }}
+          >
+            <Typography variant="subtitle2" component="div">
+              Role Name
+            </Typography>
+          </Box>
+          {roles &&
+            roles.map((roleData, index) => {
+              // console.log("roleDtaa", roleData);
+              return (
                 <Box
                   sx={{
                     border: "1px solid #e9e7f1",
@@ -159,10 +158,11 @@ const UserDetailPage = () => {
                 >
                   <Typography>{roleData.name}</Typography>
                 </Box>
-              </AccordionDetails>
-            </Accordion>
-          );
-        })}
+              );
+            })}
+        </AccordionDetails>
+      </Accordion>
+
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ImgIcon>{arrowDownIcon}</ImgIcon>}>
           <Box sx={{ flex: 1, mr: 1, display: "flex", alignItems: "center" }}>
