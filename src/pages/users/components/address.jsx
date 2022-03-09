@@ -74,15 +74,17 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
     // for keeping default form values on mount
     if (!mounted) return;
     if (!manual) {
+      console.log(" currentAddress?.addressline1", currentAddress);
       // checks are for keeping default or old values when no address is selected
       currentAddress?.postcode && setValue("postcode", currentAddress.postcode);
       currentAddress?.posttown && setValue("city", currentAddress.posttown);
-      currentAddress?.addressLine1 &&
-        setValue("addressLine1", currentAddress.addressLine1);
-      currentAddress?.addressLine2 &&
-        setValue("addressLine2", currentAddress.addressLine2);
+      currentAddress?.addressline1 &&
+        setValue("addressLine1", currentAddress.addressline1);
+      currentAddress?.addressline2 &&
+        setValue("addressLine2", currentAddress.addressline2);
       geo && setValue("geo", geo);
     }
+
     // // Will clear address fields when switching from automatic to manual
     // else {
     //   setValue("postcode", currentAddress?.postcode || "");
@@ -91,7 +93,6 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
     //   setValue("line2", currentAddress?.addressLine2 || "");
     // }
   }, [mounted, manual, setValue, currentAddress, geo]);
-
   return (
     <Grid
       columnCount={2}

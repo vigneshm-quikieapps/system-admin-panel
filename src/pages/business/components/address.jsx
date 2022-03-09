@@ -77,8 +77,10 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
       // checks are for keeping default or old values when no address is selected
       currentAddress?.postcode && setValue("postcode", currentAddress.postcode);
       currentAddress?.posttown && setValue("city", currentAddress.posttown);
-      currentAddress?.line1 && setValue("line1", currentAddress.line1);
-      currentAddress?.line2 && setValue("line2", currentAddress.line2);
+      currentAddress?.addressline1 &&
+        setValue("line1", currentAddress.addressline1);
+      currentAddress?.addressline2 &&
+        setValue("line2", currentAddress.addressline2);
       geo && setValue("geo", geo);
     }
     // // Will clear address fields when switching from automatic to manual
