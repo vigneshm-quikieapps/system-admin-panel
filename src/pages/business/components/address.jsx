@@ -50,8 +50,8 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
     setFocus("postcode");
     setValue("postcode", currentAddress?.postcode || postcode);
     setValue("city", currentAddress?.posttown || "");
-    setValue("line1", currentAddress?.addressline1 || "");
-    setValue("line2", currentAddress?.addressline2 || "");
+    setValue("line1", currentAddress?.line1 || "");
+    setValue("line2", currentAddress?.line2 || "");
     setValue("geo", geo);
   };
 
@@ -87,8 +87,8 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
     // else {
     //   setValue("postcode", currentAddress?.postcode || "");
     //   setValue("city", currentAddress?.posttown || "");
-    //   setValue("line1", currentAddress?.addressline1 || "");
-    //   setValue("line2", currentAddress?.addressline2 || "");
+    //   setValue("line1", currentAddress?.line1 || "");
+    //   setValue("line2", currentAddress?.line2 || "");
     // }
   }, [mounted, manual, setValue, currentAddress, geo]);
 

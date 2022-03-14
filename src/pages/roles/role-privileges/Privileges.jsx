@@ -27,9 +27,12 @@ const tableHeading = (
 );
 const Privileges = () => {
   const { id } = useParams();
-  const { data = { role: {} } } = useGetRole(id);
-  // console.log("roleData12233", data);
-  const check = data.role.functionalPrivileges;
+  const { data, isLoading: getIsLoading } = useGetRole(id, {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+  console.log("roleData12233", data);
+  const check = data?.role?.functionalPrivileges;
   const StyledCheckIcon = styled(CheckIcon)({
     width: "18px",
     height: "18px",
@@ -57,8 +60,9 @@ const Privileges = () => {
     checkedIcon: <StyledCheckIcon />,
   };
 
-  const tableRows = useMemo(() =>
-    Object.entries(privilegeTypes).map(([_, label], index) => ({
+  const tableRows = useMemo(() => {
+    if (!data?.role) return [];
+    return Object.entries(privilegeTypes).map(([_, label], index) => ({
       items: [
         <Typography sx={{ minWidth: "450px" }}>{label}</Typography>,
         <StyledCheckbox checked={check[index].permission.create} />,
@@ -66,8 +70,8 @@ const Privileges = () => {
         <StyledCheckbox checked={check[index].permission.update} />,
         <StyledCheckbox checked={check[index].permission.delete} />,
       ],
-    })),
-  );
+    }));
+  }, [data, check]);
 
   // console.log("TBRo", check);
   return (

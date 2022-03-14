@@ -50,8 +50,8 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
     setFocus("postcode");
     setValue("postcode", currentAddress?.postcode || postcode);
     setValue("city", currentAddress?.posttown || "");
-    setValue("line1", currentAddress?.addressline1 || "");
-    setValue("line2", currentAddress?.addressline2 || "");
+    setValue("addressLine1", currentAddress?.addressLine1 || "");
+    setValue("addressLine2", currentAddress?.addressLine2 || "");
     setValue("geo", geo);
   };
 
@@ -74,24 +74,25 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
     // for keeping default form values on mount
     if (!mounted) return;
     if (!manual) {
+      console.log(" currentAddress?.addressline1", currentAddress);
       // checks are for keeping default or old values when no address is selected
       currentAddress?.postcode && setValue("postcode", currentAddress.postcode);
       currentAddress?.posttown && setValue("city", currentAddress.posttown);
       currentAddress?.addressline1 &&
-        setValue("line1", currentAddress.addressline1);
+        setValue("addressLine1", currentAddress.addressline1);
       currentAddress?.addressline2 &&
-        setValue("line2", currentAddress.addressline2);
+        setValue("addressLine2", currentAddress.addressline2);
       geo && setValue("geo", geo);
     }
+
     // // Will clear address fields when switching from automatic to manual
     // else {
     //   setValue("postcode", currentAddress?.postcode || "");
     //   setValue("city", currentAddress?.posttown || "");
-    //   setValue("line1", currentAddress?.addressline1 || "");
-    //   setValue("line2", currentAddress?.addressline2 || "");
+    //   setValue("line1", currentAddress?.addressLine1 || "");
+    //   setValue("line2", currentAddress?.addressLine2 || "");
     // }
   }, [mounted, manual, setValue, currentAddress, geo]);
-
   return (
     <Grid
       columnCount={2}
@@ -163,15 +164,15 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
         )}
       />
       <Input
-        name="line1"
+        name="addressLine1"
         control={control}
-        error={!!errors?.line1?.message}
+        error={!!errors?.addressLine1?.message}
         variant="filled"
         label="Address Line 1*"
         inputProps={{ readOnly: !manual }}
       />
       <Input
-        name="line2"
+        name="addressLine2"
         control={control}
         variant="filled"
         label="Address Line 2"
