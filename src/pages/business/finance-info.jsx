@@ -639,7 +639,7 @@ const Page = ({ setPageTitle }) => {
             onClick={handleOnClickSubmitDiscount}
             autoFocus
           >
-            Ok
+            Discard
           </Button>
         </DialogActions>
       </Dialog>
@@ -655,13 +655,15 @@ const Page = ({ setPageTitle }) => {
         }}
       >
         <ImgIcon>
-          {financeMessage === "update successful" ? informationIcon : errorIcon}
+          {financeMessage === "Update successful."
+            ? informationIcon
+            : errorIcon}
         </ImgIcon>
         <DialogTitle>
-          {financeMessage === "update successful" ? "Information" : "Error"}
+          {financeMessage === "Update successful." ? "Information" : "Error"}
         </DialogTitle>
         <DialogContent sx={{ textAlign: "center" }}>
-          {financeMessage === "update successful"
+          {financeMessage === "Update successful."
             ? financeMessage
             : "Should be either: CASH / REC_BANK / TOTZ_BANK / REC_CREDIT_CARD / TOTZ_CREDIT_CARD"}
         </DialogContent>
@@ -671,7 +673,7 @@ const Page = ({ setPageTitle }) => {
             onClick={handleOnClickSubmitFinance}
             autoFocus
           >
-            Ok
+            {financeMessage === "Update successful." ? "Ok" : "Discard"}
           </Button>
         </DialogActions>
       </Dialog>

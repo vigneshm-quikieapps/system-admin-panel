@@ -396,7 +396,7 @@ const Page = () => {
                     marginLeft: "10px",
                   }}
                 >
-                  Please enter some text (atleast 3 letter) before SAVING
+                  Please enter the skill before SAVING
                 </Box>
               </AccordionDetails>
             )}

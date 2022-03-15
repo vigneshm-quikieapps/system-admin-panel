@@ -62,7 +62,7 @@ const AdvancedSearch = ({ setOpen, name, setName, setFilters, setPage }) => {
       }}
     >
       <TextField
-        placeholder="Search for a user"
+        placeholder="Search by user name"
         sx={{ bgcolor: "highlight.main", gridArea: "basic-input" }}
         InputProps={{
           startAdornment: (

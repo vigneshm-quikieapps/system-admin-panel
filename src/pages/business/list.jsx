@@ -134,7 +134,7 @@ const AdvancedSearch = ({
         }}
       >
         <TextField
-          placeholder="Search member by Business"
+          placeholder="Search by Business name"
           sx={{
             gridArea: "basicInput",
             bgcolor: (theme) => theme.palette.highlight.main,

@@ -24,7 +24,7 @@ export const navItems = [
   },
   {
     id: "3",
-    title: "Evaluation",
+    title: "Evaluation Schemes",
     urlPath: "evaluation",
     exact: false,
     icon: <ImgIcon>{evaluationIcon}</ImgIcon>,
@@ -38,7 +38,7 @@ export const navItems = [
   },
   {
     id: "5",
-    title: "User Search",
+    title: "User",
     urlPath: "users",
     exact: false,
     icon: <ImgIcon>{memberIcon}</ImgIcon>,

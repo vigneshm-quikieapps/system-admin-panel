@@ -296,7 +296,7 @@ const AddUserPage = () => {
               control={control}
               error={!!errors?.password?.message}
               variant="filled"
-              label="password*"
+              label="Password*"
               type="password"
               inputProps={{ autoComplete: "new-password" }}
               onFocus={() => setValue("password", "")}
