@@ -49,7 +49,12 @@ const EvaluationList = () => {
   const editHandler = useCallback(
     (e, id, name, status, levelCount, levels) => {
       e.stopPropagation();
-      navigate(`add/${id}`, { id, name, status, levelCount, levels });
+      console.log("MESSAGE");
+      navigate(
+        `add/${id}`,
+
+        // , { id, name, status, levelCount, levels }
+      );
     },
     [navigate],
   );
