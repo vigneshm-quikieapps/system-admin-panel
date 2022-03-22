@@ -183,14 +183,14 @@ const AddBusinessPage = () => {
               name="name"
               control={control}
               error={!!errors?.name?.message}
-              variant="filled"
+              variant="outlined"
               label="Business Registered Name*"
             />
             <Input
               name="code"
               control={control}
               error={!!errors?.code?.message}
-              variant="filled"
+              variant="outlined"
               label="Business Code*"
               inputProps={{ readOnly: !!id }}
             />
@@ -198,7 +198,7 @@ const AddBusinessPage = () => {
               name="tradename"
               control={control}
               error={!!errors?.tradename?.message}
-              variant="filled"
+              variant="outlined"
               label="Business Trade Name*"
             />
             <Input
@@ -231,38 +231,38 @@ const AddBusinessPage = () => {
             <Input
               name="contactName"
               control={control}
-              variant="filled"
+              variant="outlined"
               label="Primary Contact Name"
             />
             <Input
               name="contactEmail"
               control={control}
-              variant="filled"
+              variant="outlined"
               label="Primary Contact Email"
               type="email"
             />
             <Input
               name="primaryPhone"
               control={control}
-              variant="filled"
+              variant="outlined"
               label="Primary Contact Telephone"
             />
             <Input
               name="primaryMobileNo"
               control={control}
-              variant="filled"
+              variant="outlined"
               label="Primary Contact Mobile"
             />
             <Input
               name="about"
               control={control}
-              variant="filled"
+              variant="outlined"
               label="About this Business"
               multiline
               rows={4}
               sx={{
                 gridColumnEnd: "span 3",
-                "& .MuiFilledInput-root": { height: "initial !important" },
+                "& .MuiOutlinedInput-root": { height: "initial !important" },
               }}
             />
             <Address
@@ -278,7 +278,18 @@ const AddBusinessPage = () => {
             <GradientButton onClick={handleSubmit(onSubmit)} size="large">
               Save
             </GradientButton>
-            <GradientButton onClick={handleDiscard} size="large" invert>
+            <GradientButton
+              onClick={handleDiscard}
+              size="large"
+              sx={{
+                "&:hover": {
+                  backgroundImage:
+                    "linear-gradient(106deg, #ff1a6d, #ff6e2d 100%)",
+                  color: "white",
+                },
+              }}
+              invert
+            >
               Discard
             </GradientButton>
           </Box>

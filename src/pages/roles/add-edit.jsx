@@ -210,7 +210,7 @@ const AddRolePage = () => {
             rowGap="20px"
             sx={{
               minWidth: "940px",
-              "& .MuiFilledInput-root": {
+              "& .MuiOutlinedInput-root": {
                 height: "58px !important",
               },
             }}
@@ -219,14 +219,14 @@ const AddRolePage = () => {
               name="name"
               control={control}
               error={!!errors?.name?.message}
-              variant="filled"
+              variant="outlined"
               label="Role Name*"
             />
             <Input
               name="code"
               control={control}
               error={!!errors?.code?.message}
-              variant="filled"
+              variant="outlined"
               label="Role Code*"
               inputProps={{ readOnly: !!id }}
             />
@@ -234,13 +234,13 @@ const AddRolePage = () => {
             <Input
               name="description"
               control={control}
-              variant="filled"
+              variant="outlined"
               label="Description"
               multiline
               rows={4}
               sx={{
                 gridColumnEnd: "span 2",
-                "& .MuiFilledInput-root": { height: "initial !important" },
+                "& .MuiOutlinedInput-root": { height: "initial !important" },
               }}
             />
             <Privileges control={control} />
@@ -249,7 +249,18 @@ const AddRolePage = () => {
             <GradientButton onClick={handleSubmit(onSubmit)} size="large">
               Save
             </GradientButton>
-            <GradientButton onClick={handleDiscard} size="large" invert>
+            <GradientButton
+              onClick={handleDiscard}
+              size="large"
+              sx={{
+                "&:hover": {
+                  backgroundImage:
+                    "linear-gradient(106deg, #ff1a6d, #ff6e2d 100%)",
+                  color: "white",
+                },
+              }}
+              invert
+            >
               Discard
             </GradientButton>
           </Box>

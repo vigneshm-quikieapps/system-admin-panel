@@ -17,7 +17,10 @@ const Status = ({ status, title }) => {
   return (
     <Box>
       <StatusBadge status={colors[status]} component="span" />
-      <Typography component="span" sx={{ ml: "5px" }}>
+      <Typography
+        component="span"
+        sx={{ ml: "5px", fontSize: "14px !important" }}
+      >
         {title}
       </Typography>
     </Box>

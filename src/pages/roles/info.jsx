@@ -90,22 +90,6 @@ const RoleDetail = () => {
           ) : (
             <>
               <CardTitle>{toPascal(name)}</CardTitle>{" "}
-              <Typography
-                sx={{
-                  color: (theme) => theme.palette.text.secondary,
-                }}
-              >
-                Role ID
-              </Typography>
-              <Typography
-                sx={{
-                  color: (theme) => theme.palette.text.secondary,
-                  fontWeight: "bold",
-                  mb: "10px",
-                }}
-              >
-                {toPascal(_id)}
-              </Typography>
               <Outputs items={data.role?.name ? items : []} columnCount={3} />
             </>
           )}

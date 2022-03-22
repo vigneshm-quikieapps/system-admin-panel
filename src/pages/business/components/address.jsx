@@ -150,7 +150,7 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
       />
       <Autocomplete
         disablePortal
-        disabled={manual}
+        disabled={manual || postcode == ""}
         options={addressOptions}
         value={address}
         onChange={addressChangeHandler}
@@ -161,6 +161,7 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
       <Input
         name="line1"
         control={control}
+        disabled={!manual}
         error={!!errors?.line1?.message}
         variant="filled"
         label="Address Line 1*"
@@ -168,6 +169,7 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
       />
       <Input
         name="line2"
+        disabled={!manual}
         control={control}
         variant="filled"
         label="Address Line 2"
@@ -175,6 +177,7 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
       />
       <Input
         name="city"
+        disabled={!manual}
         control={control}
         error={!!errors?.city?.message}
         variant="filled"
@@ -198,6 +201,7 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
       </Input>
       <Input
         name="geo"
+        disabled={!manual}
         control={control}
         variant="filled"
         label="Geo Location"

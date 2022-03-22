@@ -99,23 +99,7 @@ const UserDetailPage = () => {
             </Box>
           ) : (
             <>
-              <CardTitle>{toPascal(name)}</CardTitle>{" "}
-              <Typography
-                sx={{
-                  color: (theme) => theme.palette.text.secondary,
-                }}
-              >
-                User ID
-              </Typography>
-              <Typography
-                sx={{
-                  color: (theme) => theme.palette.text.secondary,
-                  fontWeight: "bold",
-                  mb: "10px",
-                }}
-              >
-                {toPascal(_id)}
-              </Typography>
+              <CardTitle>{name}</CardTitle>{" "}
               <Outputs items={data.user?.name ? items : []} columnCount={3} />
             </>
           )}

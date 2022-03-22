@@ -176,10 +176,6 @@ const Page = ({ setPageTitle }) => {
           <AccordionSummary style={{ height: "123px", cursor: "default" }}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Typography style={{ fontSize: "28px" }}>{name}</Typography>
-              <Typography sx={{ opacity: 0.5, fontSize: "14px !important" }}>
-                BusinessID
-              </Typography>
-              <Typography sx={{ fontSize: "13px important" }}>{id}</Typography>
             </Box>
           </AccordionSummary>
         </Accordion>

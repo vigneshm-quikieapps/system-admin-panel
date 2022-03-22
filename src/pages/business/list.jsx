@@ -259,10 +259,10 @@ const BusinessList = () => {
       data?.docs?.map(({ _id, name, city, postcode, contactName }) => ({
         onClick: () => rowClickHandler(_id),
         items: [
-          toPascal(name),
-          toPascal(city),
+          name,
+          city,
           postcode,
-          toPascal(contactName),
+          contactName,
           <Actions
             onDelete={(e) => deleteHandler(e, _id)}
             onEdit={(e) => editHandler(e, _id)}
