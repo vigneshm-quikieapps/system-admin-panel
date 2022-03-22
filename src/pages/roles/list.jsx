@@ -57,7 +57,7 @@ const AdvancedSearch = ({ setOpen, name, setName, setFilters, setPage }) => {
       }}
     >
       <TextField
-        placeholder="Search for a role"
+        placeholder="Search by role name"
         sx={{
           width: "calc(100% - 220px)",
           mr: "20px",

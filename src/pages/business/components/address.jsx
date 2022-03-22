@@ -146,7 +146,7 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
         onBlur={postcodeBlurHandler}
         error={!!errors?.postcode?.message}
         variant="filled"
-        label="Enter a postcode*"
+        label="Enter a Postcode*"
       />
       <Autocomplete
         disablePortal
@@ -155,11 +155,7 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
         value={address}
         onChange={addressChangeHandler}
         renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="filled"
-            label="Start typing an address"
-          />
+          <TextField {...params} variant="filled" label="Select an address" />
         )}
       />
       <Input

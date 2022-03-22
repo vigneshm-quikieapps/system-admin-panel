@@ -74,7 +74,6 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
     // for keeping default form values on mount
     if (!mounted) return;
     if (!manual) {
-      console.log(" currentAddress?.addressline1", currentAddress);
       // checks are for keeping default or old values when no address is selected
       currentAddress?.postcode && setValue("postcode", currentAddress.postcode);
       currentAddress?.posttown && setValue("city", currentAddress.posttown);
@@ -147,7 +146,7 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
         onBlur={postcodeBlurHandler}
         error={!!errors?.postcode?.message}
         variant="filled"
-        label="Enter a postcode*"
+        label="Enter a Postcode*"
       />
       <Autocomplete
         disablePortal
@@ -156,11 +155,7 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
         value={address}
         onChange={addressChangeHandler}
         renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="filled"
-            label="Start typing an address"
-          />
+          <TextField {...params} variant="filled" label="Select an address" />
         )}
       />
       <Input
