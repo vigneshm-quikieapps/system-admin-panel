@@ -29,9 +29,9 @@ const RoleDetail = () => {
     role: { name, code, description, _id },
   } = data;
   const items = {
-    "Role Name": toPascal(name),
+    "Role Name": name,
     "Role Code": code,
-    Description: toPascal(description),
+    Description: description,
   };
   // const functionalPrivileges = data.role.functionalPrivileges;
   // console.log("functionalPrivileges", functionalPrivileges);
@@ -74,7 +74,7 @@ const RoleDetail = () => {
         <Card>
           {isError ? (
             <Typography color="error" component="pre">
-              {"Something went wrong: " + transformError(error)}
+              {"Error: " + transformError(error)}
             </Typography>
           ) : isLoading ? (
             <Box
@@ -89,7 +89,7 @@ const RoleDetail = () => {
             </Box>
           ) : (
             <>
-              <CardTitle>{toPascal(name)}</CardTitle>{" "}
+              <CardTitle>{name}</CardTitle>{" "}
               <Outputs items={data.role?.name ? items : []} columnCount={3} />
             </>
           )}

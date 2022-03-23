@@ -175,8 +175,8 @@ const RoleList = () => {
       data?.docs?.map(({ _id, name, code, roleID }) => ({
         onClick: () => rowClickHandler(_id),
         items: [
-          toPascal(name),
-          toPascal(code),
+          name,
+          code,
           <Actions
             onDelete={(e) => deleteHandler(e, _id)}
             onEdit={(e) => editHandler(e, _id)}
@@ -240,7 +240,7 @@ const RoleList = () => {
           open={showError}
           title="Error"
           description={transformError(error)}
-          acceptButtonTitle="Discard"
+          acceptButtonTitle="OK"
           onAccept={() => setShowError(false)}
         />
       ) : (

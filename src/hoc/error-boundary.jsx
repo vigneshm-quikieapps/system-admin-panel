@@ -50,7 +50,7 @@ class ErrorBoundary extends ReactComponent {
 
         <DialogTitle>Error</DialogTitle>
         <DialogContent>
-          <DialogContentText>Something went wrong!</DialogContentText>
+          <DialogContentText>Something went wrong</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button

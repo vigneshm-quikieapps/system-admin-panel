@@ -182,7 +182,7 @@ const Page = () => {
         open={showError}
         onAccept={() => setShowError(false)}
         description={transformError(error)}
-        acceptButtonTitle="Discard"
+        acceptButtonTitle="OK"
       />
     </Box>
   );

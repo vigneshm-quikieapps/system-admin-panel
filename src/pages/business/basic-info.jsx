@@ -67,7 +67,7 @@ const BusinessBasicInfo = ({ setPageTitle }) => {
     <Card>
       {isError ? (
         <Typography color="error" component="pre">
-          {"Something went wrong: " + transformError(error)}
+          {"Error: " + transformError(error)}
         </Typography>
       ) : isLoading ? (
         <Box

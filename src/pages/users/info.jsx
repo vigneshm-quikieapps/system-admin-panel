@@ -49,23 +49,22 @@ const UserDetailPage = () => {
   const countryName = countries.find(({ code }) => code === country)?.label;
 
   const items = {
-    Email: toPascal(email),
+    Email: email,
     Password: password,
     "Contact Number": mobileNo,
-    "Full Name": toPascal(name),
+    "Full Name": name,
     Status: status,
     "": " ",
-    Address: toPascal(
+    Address:
       postcode +
-        "  / " +
-        addressLine1 +
-        " " +
-        addressLine2 +
-        " / " +
-        city +
-        " / " +
-        country,
-    ),
+      "  / " +
+      addressLine1 +
+      " " +
+      addressLine2 +
+      " / " +
+      city +
+      " / " +
+      country,
   };
   return (
     <>
@@ -84,7 +83,7 @@ const UserDetailPage = () => {
         <Card>
           {isError ? (
             <Typography color="error" component="pre">
-              {"Something went wrong: " + transformError(error)}
+              {"Error: " + transformError(error)}
             </Typography>
           ) : isLoading ? (
             <Box

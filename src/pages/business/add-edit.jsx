@@ -318,8 +318,8 @@ const AddBusinessPage = () => {
           setError("");
           setShowError(false);
         }}
-        title="Something went Wrong!"
-        acceptButtonTitle="Discard"
+        title="Error"
+        acceptButtonTitle="OK"
         description={transformError(error)}
       />
       <WarningDialog
@@ -327,7 +327,7 @@ const AddBusinessPage = () => {
         open={showWarning}
         onAccept={handleClose}
         onReject={() => setShowWarning(false)}
-        title="Warning!"
+        title="Warning"
         description="Are you sure you want to discard without saving?"
       />
     </>

@@ -35,9 +35,9 @@ export default function DialogBox({
       }}
     >
       {title === "Warning" ? (
-        <ImgIcon>{errorIcon}</ImgIcon>
-      ) : (
         <ImgIcon>{warningIcon}</ImgIcon>
+      ) : (
+        <ImgIcon>{errorIcon}</ImgIcon>
       )}
 
       <DialogTitle>{title}</DialogTitle>
