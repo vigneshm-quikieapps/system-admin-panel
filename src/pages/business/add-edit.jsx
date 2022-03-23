@@ -14,9 +14,11 @@ import {
   MenuItem,
   IconButton,
   CircularProgress,
+  Paper,
+  Button,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
-
+import errorIcon from "../../assets/icons/icon-error.png";
 import { usePostBusiness, usePutBusiness } from "../../services/mutations";
 import { useGetBusiness } from "../../services/queries";
 import { transformError } from "../../utils";
@@ -26,38 +28,55 @@ import {
   GradientButton,
   Grid,
   WarningDialog,
+  ImgIcon,
 } from "../../components";
 import Address from "./components/address";
+import { min } from "date-fns/esm";
 
 const FormModal = styled(Dialog)(({ theme }) => ({
   "& .MuiPaper-root": { borderRadius: theme.shape.borderRadiuses.ternary },
   "& label": { lineHeight: "initial !important" },
 }));
 
-const validationSchema = Yup.object()
-  .shape({
-    name: Yup.string().required().label("Business Name"),
-    code: Yup.string()
-      .required("Business Code is required and must be at most 5 Characters")
-      .max(5, "Business Code is required and must be at most 5 Characters"),
-    tradename: Yup.string().required().label("Trade Name"),
-    type: Yup.string().required().label("Business Type"),
-    status: Yup.string().required().label("Status"),
-    postcode: Yup.string().min(6).label("Postcode"),
-    line1: Yup.string().required().label("Address Line 1"),
-    line2: Yup.string().label("Address Line 2"),
-    city: Yup.string().required().label("City / Town"),
-    country: Yup.string().required().label("Country"),
-    contactName: Yup.string(),
-    contactEmail: Yup.string()
-      .email()
-      .optional()
-      .label("Primary Contact Email"),
-    primaryMobileNo: Yup.string().min(9).optional(),
-    primaryPhone: Yup.string().min(6).optional(),
-    about: Yup.string(),
-  })
-  .required();
+const validationSchema = Yup.object().shape({
+  name: Yup.string()
+    .required("Business Name is mandatory")
+    .label("Business Name"),
+  code: Yup.string()
+    .required("Business Code is mandatory")
+    .max(5, "Business Code is mandatory")
+    .label("Business code"),
+  tradename: Yup.string()
+    .required("Business Trade Name is mandatory")
+    .label("Trade Name"),
+  type: Yup.string().required().label("Business Type"),
+  status: Yup.string().required().label("Status"),
+  contactName: Yup.string(),
+  contactEmail: Yup.string().email().optional().label("Primary Contact Email"),
+  primaryMobileNo: Yup.string().test({
+    name: "mobile",
+    test: (value) =>
+      value?.length === 10 || value?.length === 0 ? true : false,
+    message: "Primary Contact Mobile must be 10 digits",
+  }),
+  primaryPhone: Yup.string().test({
+    name: "telephone",
+    test: (value) =>
+      value?.length === 10 || value?.length === 0 ? true : false,
+    message: "Primary Contact Telephone must be 10 digits",
+  }),
+  about: Yup.string(),
+  postcode: Yup.string()
+    .min(6, "Post Code is mandatory")
+    .required("Post Code is mandatory")
+    .label("Post Code"),
+  line1: Yup.string()
+    .required("Address Line 1 is mandatory")
+    .label("Address Line 1"),
+  line2: Yup.string().label("Address Line 2"),
+  city: Yup.string().required("City/Town is mandatory").label("City / Town"),
+  country: Yup.string().required().label("Country"),
+});
 
 const AddBusinessPage = () => {
   const navigate = useNavigate();
@@ -66,6 +85,8 @@ const AddBusinessPage = () => {
   const [showError, setShowError] = useState(false);
   const [error, setError] = useState("");
   const [contentRef, setContentRef] = useState();
+  const [checkError, setCheckError] = useState(false);
+  const [displayError, setDisplayError] = useState({});
   const { data, isLoading: getIsLoading } = useGetBusiness(id, {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
@@ -74,6 +95,7 @@ const AddBusinessPage = () => {
       setError(error);
     },
   });
+
   const { isLoading, mutate: postBusiness } = usePostBusiness({
     onError: (error) => {
       setShowError(true);
@@ -101,7 +123,9 @@ const AddBusinessPage = () => {
     reValidateMode: "onChange",
     // defaultValues: { line1: "test", about: "about" },
   });
-
+  useEffect(() => {
+    setDisplayError(errors);
+  }, [errors]);
   const onSubmit = (data) => {
     id
       ? putBusiness(data, { onSuccess: () => navigate("/business") })
@@ -116,7 +140,7 @@ const AddBusinessPage = () => {
   useEffect(() => {
     data?.business && resetFormData(data.business);
   }, [resetFormData, data]);
-
+  console.log("before delete", errors);
   return (
     <>
       <FormModal open={true} maxWidth="xl">
@@ -185,6 +209,15 @@ const AddBusinessPage = () => {
               error={!!errors?.name?.message}
               variant="filled"
               label="Business Registered Name*"
+              // rules={{
+              //   required: true,
+              //   validate: {
+              //     checkEmail: {
+              //       value: (v) => validateName(v),
+              //       message: "Invalid name",
+              //     },
+              //   },
+              // }}
             />
             <Input
               name="code"
@@ -283,24 +316,57 @@ const AddBusinessPage = () => {
             </GradientButton>
           </Box>
         </DialogContent>
+      </FormModal>
+      <Dialog
+        open={!!Object.keys(displayError).length}
+        sx={{
+          "& .MuiDialog-paper": {
+            minWidth: "380px",
+            padding: "40px 30px",
+            margin: "27px 300px 31px 200px",
+            alignItems: "center",
+          },
+        }}
+      >
+        <ImgIcon>{errorIcon}</ImgIcon>
+        <DialogTitle>Error</DialogTitle>
+        <DialogContent sx={{ textAlign: "center" }}></DialogContent>
         {!!Object.keys(errors).length && (
           <DialogActions
-            sx={{ flexDirection: "column", alignItems: "flex-start", p: 2 }}
+            sx={{
+              flexDirection: "column",
+              alignItems: "flex-start",
+              p: 2,
+              position: "relative",
+            }}
           >
             {Object.values(errors)
-              .reverse()
+              // .reverse()
               .map(({ message }, index) => (
                 <Typography
                   key={index}
-                  sx={{ color: "error.main", ml: "0 !important" }}
+                  sx={{
+                    color: "error.main",
+                    sm: "0 !important",
+                    margin: "0 9px 5px 9px",
+                  }}
                   component="span"
                 >
                   {message}
                 </Typography>
               ))}
+            <Button
+              sx={{ color: "#ff2c60" }}
+              onClick={() => {
+                setDisplayError({});
+              }}
+              autoFocus
+            >
+              OK
+            </Button>
           </DialogActions>
         )}
-      </FormModal>
+      </Dialog>
       <WarningDialog
         open={showError}
         onAccept={() => {

@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
+import "./style.css";
 import {
   AccordionSummary,
   AccordionDetails,
@@ -18,6 +19,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
 import {
   Done as DoneIcon,
   Save as AddIcon,
@@ -89,6 +91,7 @@ const Page = () => {
   const [title, setTitle] = useState();
   const [showError, setShowError] = useState(false);
   const [error, setError] = useState("");
+  const [minLevelCount, setMinLevelCount] = useState(0);
 
   const { data, isLoading, isFetching, isPreviousData } = useGetEvaluation(id, {
     // onSuccess: console.log("LOL"),
@@ -111,7 +114,7 @@ const Page = () => {
     defaultValues: {
       evaluationName: "",
       status: "ACTIVE",
-      levelCount: 1,
+      levelCount: 0,
     },
   });
 
@@ -123,6 +126,7 @@ const Page = () => {
         setValue("evaluationName", temp?.name || "");
         setValue("status", temp?.status || "ACTIVE");
         setValue("levelCount", temp?.levelCount || 0);
+        setMinLevelCount(temp?.levelCount || 0);
         setLevel(
           temp?.levels || [
             { skills: [], isAddNewSkill: true, add: false, touched: false },
@@ -159,7 +163,7 @@ const Page = () => {
 
       setOnSaveUpdateStatus(true);
 
-      if (message1?.data?.message === "update successful") {
+      if (message1?.data?.message === "Update successful.") {
         setIcon(informationIcon);
         setTitle("Information");
       } else {
@@ -222,18 +226,13 @@ const Page = () => {
     let temp = label + 1;
     setlabel(temp);
   };
+  console.log(level);
   return (
     <>
       <FormModal open={true} maxWidth="xl">
         <ElevationScroll>
-          <DialogTitle
-            sx={{
-              fontSize: "28px",
-              fontWeight: "bold",
-              zIndex: 1,
-            }}
-          >
-            Evaluation
+          <DialogTitle className="dialog-title" sx={{}}>
+            Evaluation Scheme
           </DialogTitle>
         </ElevationScroll>
         <IconButton
@@ -271,7 +270,7 @@ const Page = () => {
         <Box sx={{ margin: "5%" }}>
           <Grid columnspace={5}>
             <Input
-              label="Evaluation Name"
+              label="Evaluation Scheme Name"
               type="text"
               control={control}
               name="evaluationName"
@@ -292,19 +291,21 @@ const Page = () => {
             </Input>
 
             <Input
-              sx={{ width: "100%" }}
-              label="Level Count"
+              sx={{ width: "100%", webkitAppearance: "none" }}
+              label="Number of Levels"
               control={control}
               name="levelCount"
               type="number"
-              InputProps={{ inputProps: { min: "0", max: "10", step: "1" } }}
+              InputProps={{
+                inputProps: { min: `${minLevelCount}`, max: "10", step: "1" },
+              }}
               variant="filled"
               onChange={(data) => {
                 let temp = [...level];
                 if (temp.length > data.target.value) {
-                  temp.pop();
+                  // temp.pop();
                   setValue("levelCount", data.target.value);
-                  setLevel(temp);
+                  // setLevel(temp);
                 } else if (
                   data.target.value &&
                   temp.length < data.target.value
@@ -335,7 +336,7 @@ const Page = () => {
                     <Typography style={{ flex: 1 }}>
                       Level {index1 + 1}
                     </Typography>
-                    <AddButton
+                    <GradientButton
                       key={index1}
                       style={{ marginRight: "1%" }}
                       onClick={(e) => {
@@ -343,7 +344,9 @@ const Page = () => {
                         addNewSkill(index1);
                         setSaveStatus(true);
                       }}
-                    />
+                    >
+                      Add skill
+                    </GradientButton>
                   </Box>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -383,12 +386,11 @@ const Page = () => {
                         sx={{
                           height: "44px",
                           "& .MuiFilledInput-input": { py: 0 },
-                          width: "80%",
+                          width: "75%",
                         }}
                         required
                         id="newSkill"
-                        placeholder="Enter Skill"
-                        label="Add New Skill"
+                        placeholder="Enter skill name"
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
                             const temp = [...level];
@@ -403,7 +405,14 @@ const Page = () => {
                           }
                         }}
                       ></TextField>
-                      <Box sx={{ width: "10%", marginLeft: "9%" }}>
+                      <Box
+                        sx={
+                          {
+                            // width: "10%",
+                            // marginLeft: "9%"
+                          }
+                        }
+                      >
                         {data?.isAddNewSkill && (
                           <IconButton
                             onClick={() => {
@@ -462,12 +471,18 @@ const Page = () => {
 
                 {data.skills.map((skill, index2) => (
                   <AccordionDetails>
-                    <Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-around",
+                        flexDirection: "row",
+                      }}
+                    >
                       <TextField
                         sx={{
                           height: "44px",
                           "& .MuiFilledInput-input": { py: 0 },
-                          width: "80%",
+                          width: "75%",
                         }}
                         required
                         key={index2}
@@ -482,7 +497,7 @@ const Page = () => {
                       <IconButton
                         style={{
                           marginRight: "7%",
-                          float: "right",
+                          // float: "right",
                         }}
                         onClick={() => {
                           const temp = [...level];
@@ -501,9 +516,12 @@ const Page = () => {
         </Box>
         <Box sx={{ display: "flex", gap: 2, py: 2, margin: "5%" }}>
           <GradientButton
-            disabled={saveStatus}
+            // disabled={saveStatus}
             onClick={() => {
               if (!level.some((data) => data.isAddNewSkill)) {
+                level.every((temp, index) => {
+                  temp.skills.length === 0 && level.splice(index, 1);
+                });
                 onSubmit();
               } else {
                 setIsSkillSaved(true);
