@@ -69,8 +69,9 @@ const Page = ({ setPageTitle }) => {
   const { id } = useParams();
   const { data = { business: {} } } = useGetBusiness(id);
   const {
-    business: { name, finance, type },
+    business: { name, finance, type, city },
   } = data;
+  console.log("data", data);
   useEffect(() => {
     setBankDetails(finance?.bankDetails);
     setPaymentChannels(finance?.paymentChannels);
@@ -176,10 +177,10 @@ const Page = ({ setPageTitle }) => {
           <AccordionSummary style={{ height: "123px", cursor: "default" }}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Typography style={{ fontSize: "28px" }}>{name}</Typography>
-              <Typography sx={{ opacity: 0.5, fontSize: "14px !important" }}>
-                BusinessID
+
+              <Typography sx={{ fontSize: "13px important" }}>
+                {city}
               </Typography>
-              <Typography sx={{ fontSize: "13px important" }}>{id}</Typography>
             </Box>
           </AccordionSummary>
         </Accordion>
@@ -569,6 +570,7 @@ const Page = ({ setPageTitle }) => {
       </AccordionContainer>
       <GradientButton
         sx={{ maxWidth: "fit-content" }}
+        size="large"
         onClick={() => {
           if (
             !(
@@ -587,8 +589,15 @@ const Page = ({ setPageTitle }) => {
       </GradientButton>
       <GradientButton
         onClick={handleDiscard}
+        size="large"
         invert
-        sx={{ marginLeft: "20px" }}
+        sx={{
+          marginLeft: "20px",
+          "&:hover": {
+            backgroundImage: "linear-gradient(106deg, #ff1a6d, #ff6e2d 100%)",
+            color: "white",
+          },
+        }}
       >
         Discard
       </GradientButton>
@@ -614,7 +623,7 @@ const Page = ({ setPageTitle }) => {
         open={showWarning}
         onAccept={handleClose}
         onReject={() => setShowWarning(false)}
-        title="Warning!"
+        title="Warning"
         description="Are you sure you want to discard without saving?"
       />
       <Dialog
@@ -625,6 +634,7 @@ const Page = ({ setPageTitle }) => {
             padding: "40px 30px",
             margin: "27px 300px 31px 200px",
             alignItems: "center",
+            borderRadius: "20px",
           },
         }}
       >
@@ -635,11 +645,19 @@ const Page = ({ setPageTitle }) => {
         </DialogContent>
         <DialogActions>
           <Button
-            sx={{ color: "#ff2c60" }}
+            sx={{
+              color: "#ff2c60",
+              border: "solid 1px #f2f1f6",
+              textTransform: "none",
+              fontSize: "20px",
+              fontWeight: "600px",
+              borderRadius: "12px",
+              width: "100px",
+            }}
             onClick={handleOnClickSubmitDiscount}
             autoFocus
           >
-            Discard
+            OK
           </Button>
         </DialogActions>
       </Dialog>
@@ -651,6 +669,7 @@ const Page = ({ setPageTitle }) => {
             padding: "40px 30px",
             margin: "27px 300px 31px 200px",
             alignItems: "center",
+            borderRadius: "20px",
           },
         }}
       >
@@ -669,11 +688,19 @@ const Page = ({ setPageTitle }) => {
         </DialogContent>
         <DialogActions>
           <Button
-            sx={{ color: "#ff2c60" }}
+            sx={{
+              color: "#ff2c60",
+              border: "solid 1px #f2f1f6",
+              textTransform: "none",
+              fontSize: "20px",
+              fontWeight: "600px",
+              borderRadius: "12px",
+              width: "100px",
+            }}
             onClick={handleOnClickSubmitFinance}
             autoFocus
           >
-            {financeMessage === "Update successful." ? "Ok" : "Discard"}
+            {financeMessage === "Update successful." ? "OK" : "OK"}
           </Button>
         </DialogActions>
       </Dialog>

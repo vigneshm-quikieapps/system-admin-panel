@@ -531,7 +531,18 @@ const Page = () => {
           >
             Save
           </GradientButton>
-          <GradientButton onClick={handleDiscard} size="large" invert>
+          <GradientButton
+            onClick={handleDiscard}
+            sx={{
+              "&:hover": {
+                backgroundImage:
+                  "linear-gradient(106deg, #ff1a6d, #ff6e2d 100%)",
+                color: "white",
+              },
+            }}
+            size="large"
+            invert
+          >
             Discard
           </GradientButton>
         </Box>
@@ -589,7 +600,7 @@ const Page = () => {
           open={showWarning}
           onAccept={handleClose}
           onReject={() => setShowWarning(false)}
-          title="Warning!"
+          title="Warning"
           description="Are you sure you want to discard without saving?"
         />
         <Dialog
@@ -600,6 +611,7 @@ const Page = () => {
               padding: "40px 30px",
               margin: "27px 300px 31px 200px",
               alignItems: "center",
+              borderRadius: "20px",
             },
           }}
         >
@@ -610,11 +622,19 @@ const Page = () => {
           </DialogContent>
           <DialogActions>
             <Button
-              sx={{ color: "#ff2c60" }}
+              sx={{
+                color: "#ff2c60",
+                border: "solid 1px #f2f1f6",
+                textTransform: "none",
+                fontSize: "20px",
+                fontWeight: "600px",
+                borderRadius: "12px",
+                width: "100px",
+              }}
               onClick={handleOnClickSubmitWithoutSaving}
               autoFocus
             >
-              Ok
+              OK
             </Button>
           </DialogActions>
         </Dialog>
@@ -626,6 +646,7 @@ const Page = () => {
               padding: "40px 30px",
               margin: "27px 300px 31px 200px",
               alignItems: "center",
+              borderRadius: "20px",
             },
           }}
         >
@@ -634,13 +655,21 @@ const Page = () => {
           <DialogContent>{message}</DialogContent>
           <DialogActions>
             <Button
-              sx={{ color: "#ff2c60" }}
+              sx={{
+                color: "#ff2c60",
+                border: "solid 1px #f2f1f6",
+                textTransform: "none",
+                fontSize: "20px",
+                fontWeight: "600px",
+                borderRadius: "12px",
+                width: "100px",
+              }}
               onClick={() => {
                 handleOnClickSubmitEvaluation(title);
               }}
               autoFocus
             >
-              Ok
+              OK
             </Button>
           </DialogActions>
         </Dialog>

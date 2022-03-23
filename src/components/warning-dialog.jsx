@@ -30,13 +30,14 @@ export default function DialogBox({
           padding: "40px 30px",
           margin: "27px 300px 31px 200px",
           alignItems: "center",
+          borderRadius: "20px",
         },
       }}
     >
       {title === "Warning" ? (
-        <ImgIcon>{errorIcon}</ImgIcon>
-      ) : (
         <ImgIcon>{warningIcon}</ImgIcon>
+      ) : (
+        <ImgIcon>{errorIcon}</ImgIcon>
       )}
 
       <DialogTitle>{title}</DialogTitle>
@@ -51,6 +52,9 @@ export default function DialogBox({
               border: "solid 1px #f2f1f6",
               textTransform: "none",
               fontSize: "20px",
+              fontWeight: "600px",
+              borderRadius: "12px",
+              width: "100px",
             }}
             onClick={onReject}
             autoFocus
@@ -64,6 +68,9 @@ export default function DialogBox({
             border: "solid 1px #f2f1f6",
             textTransform: "none",
             fontSize: "20px",
+            fontWeight: "600px",
+            borderRadius: "12px",
+            width: "100px",
           }}
           onClick={onAccept}
         >

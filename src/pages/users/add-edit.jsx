@@ -365,7 +365,18 @@ const AddUserPage = () => {
             <GradientButton onClick={handleSubmit(onSubmit)} size="large">
               Save
             </GradientButton>
-            <GradientButton onClick={handleDiscard} size="large" invert>
+            <GradientButton
+              onClick={handleDiscard}
+              size="large"
+              sx={{
+                "&:hover": {
+                  backgroundImage:
+                    "linear-gradient(106deg, #ff1a6d, #ff6e2d 100%)",
+                  color: "white",
+                },
+              }}
+              invert
+            >
               Discard
             </GradientButton>
           </Box>
@@ -394,8 +405,8 @@ const AddUserPage = () => {
           setError("");
           setShowError(false);
         }}
-        title="Something went Wrong!"
-        acceptButtonTitle="Discard"
+        title="Error"
+        acceptButtonTitle="OK"
         description={transformError(error)}
       />
       <WarningDialog
@@ -403,7 +414,7 @@ const AddUserPage = () => {
         open={showWarning}
         onAccept={handleClose}
         onReject={() => setShowWarning(false)}
-        title="Warning!"
+        title="Warning"
         description="Are you sure you want to discard without saving?"
       />
     </>

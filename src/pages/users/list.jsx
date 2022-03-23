@@ -193,8 +193,8 @@ const UserList = () => {
       data?.docs?.map(({ _id, name, email, mobileNo }) => ({
         onClick: () => rowClickHandler(_id),
         items: [
-          toPascal(name),
-          toPascal(email),
+          name,
+          email,
           mobileNo,
           <Actions
             onDelete={(e) => deleteHandler(e, _id)}
@@ -278,7 +278,7 @@ const UserList = () => {
           open={showError}
           title="Error"
           description={transformError(error)}
-          acceptButtonTitle="Discard"
+          acceptButtonTitle="OK"
           onAccept={() => setShowError(false)}
         />
       ) : (

@@ -53,7 +53,7 @@ const DataPrivileges = ({ businesses = [], onAdd, onDelete, control }) => {
       )}
       <Accordion
         sx={{ bgcolor: "#ECEBF0", gridColumnEnd: "span 3" }}
-        defaultExpanded
+        defaultCollapsed
       >
         <AccordionSummary expandIcon={<ImgIcon>{arrowDownIcon}</ImgIcon>}>
           <Box sx={{ flex: 1, mr: 1, display: "flex", alignItems: "center" }}>
@@ -62,7 +62,6 @@ const DataPrivileges = ({ businesses = [], onAdd, onDelete, control }) => {
           </Box>
         </AccordionSummary>
         <AccordionDetails sx={{ p: 0 }}>
-          <Divider />
           <FormControlLabel
             label="All Businesses"
             sx={{ ml: 2 }}
@@ -74,8 +73,12 @@ const DataPrivileges = ({ businesses = [], onAdd, onDelete, control }) => {
               />
             }
           />
-          <Divider />
-          <Table headers={["Business Name", "Action"]} rows={tableRows} />
+          <Divider sx={{ mt: "5px" }} />
+          <Table
+            headers={["Business Name", "Action"]}
+            headerCellWidth={"85%"}
+            rows={tableRows}
+          />
         </AccordionDetails>
       </Accordion>
     </>

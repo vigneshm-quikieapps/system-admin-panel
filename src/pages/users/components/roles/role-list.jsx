@@ -47,7 +47,7 @@ const RoleList = ({ onSelect, onClose }) => {
           onSelect(_id, name);
           onClose();
         },
-        items: [toPascal(name), toPascal(code)],
+        items: [name, code],
       })),
     [data, onSelect, onClose],
   );
@@ -113,7 +113,7 @@ const RoleList = ({ onSelect, onClose }) => {
             open={showError}
             title="Error"
             description={transformError(error)}
-            acceptButtonTitle="Discard"
+            acceptButtonTitle="OK"
             onAccept={() => setShowError(false)}
           />
         ) : (

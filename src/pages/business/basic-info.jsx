@@ -38,34 +38,36 @@ const BusinessBasicInfo = ({ setPageTitle }) => {
   } = data;
   const countryName = countries.find(({ code }) => code === country)?.label;
   const items = {
-    "Business Registered Name": toPascal(name),
+    "Business Registered Name": name,
     "Business Code": code,
-    "Business Trade Name": toPascal(tradename),
-    "Business Type": toPascal(type),
+    "Business Trade Name": tradename,
+    "Business Type": type,
     Status: status,
-    "Primary Contact Name": toPascal(contactName),
-    "Primary Contact Email": toPascal(contactEmail),
+    Address:
+      line1 +
+      " ," +
+      line2 +
+      " , " +
+      city +
+      " , " +
+      postcode +
+      "  , " +
+      countryName,
+
+    "": "",
+    " ": "",
+    "Primary Contact Name": contactName,
+    "Primary Contact Email": contactEmail,
     "Primary Contact Telephone": primaryPhone,
     "Primary Contact Mobile": primaryMobileNo,
-    About: toPascal(about),
-    Address: toPascal(
-      postcode +
-        "  / " +
-        line1 +
-        " " +
-        line2 +
-        " / " +
-        city +
-        " / " +
-        countryName,
-    ),
+    About: about,
   };
 
   return (
     <Card>
       {isError ? (
         <Typography color="error" component="pre">
-          {"Something went wrong: " + transformError(error)}
+          {"Error: " + transformError(error)}
         </Typography>
       ) : isLoading ? (
         <Box
@@ -80,7 +82,7 @@ const BusinessBasicInfo = ({ setPageTitle }) => {
         </Box>
       ) : (
         <>
-          <CardTitle>{toPascal(name)}</CardTitle>
+          <CardTitle>{name}</CardTitle>
           <Outputs items={data.business?.name ? items : []} columnCount={4} />
         </>
       )}

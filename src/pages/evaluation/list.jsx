@@ -82,7 +82,7 @@ const EvaluationList = () => {
     return data?.docs?.map(({ _id, name, status, levelCount, levels }) => ({
       onClick: () => rowClickHandler(_id),
       items: [
-        toPascal(name),
+        name,
         <Status status={statusColors[status]} title={statusText[status]} />,
         <Actions
           onDelete={(e) => deleteHandler(e, _id)}
@@ -119,7 +119,7 @@ const EvaluationList = () => {
           value={searchValue}
           onChange={searchChangeHandler}
           sx={{ flex: "1" }}
-          placeholder="Search by evaluation name"
+          placeholder="Search by evaluation scheme name"
           InputProps={{
             startAdornment: (
               <InputAdornment position="start" sx={{ mr: "-10px" }}>
@@ -135,7 +135,7 @@ const EvaluationList = () => {
           open={showError}
           title="Error"
           description={transformError(error)}
-          acceptButtonTitle="Discard"
+          acceptButtonTitle="OK"
           onAccept={() => setShowError(false)}
         />
       ) : (

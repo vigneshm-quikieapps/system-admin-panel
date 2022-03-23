@@ -42,6 +42,7 @@ class ErrorBoundary extends ReactComponent {
             padding: "40px 30px",
             margin: "27px 300px 31px 200px",
             alignItems: "center",
+            borderRadius: "20px",
           },
         }}
       >
@@ -49,10 +50,23 @@ class ErrorBoundary extends ReactComponent {
 
         <DialogTitle>Error</DialogTitle>
         <DialogContent>
-          <DialogContentText>Something went wrong!</DialogContentText>
+          <DialogContentText>Something went wrong</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.errorHandler}>Go to home Page</Button>
+          <Button
+            onClick={this.errorHandler}
+            sx={{
+              color: "#ff2c60",
+              border: "solid 1px #f2f1f6",
+              textTransform: "none",
+              fontSize: "20px",
+              fontWeight: "600px",
+              borderRadius: "12px",
+              width: "170px",
+            }}
+          >
+            Go to home Page
+          </Button>
         </DialogActions>
       </Dialog>
     ) : (

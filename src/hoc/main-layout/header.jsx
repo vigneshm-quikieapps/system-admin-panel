@@ -213,7 +213,7 @@ const Header = ({
           open={showError}
           title="Logout Error"
           description={transformError(error)}
-          acceptButtonTitle="Discard"
+          acceptButtonTitle="OK"
           onAccept={() => setShowError(false)}
         />
       }

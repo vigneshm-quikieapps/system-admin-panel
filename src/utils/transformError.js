@@ -1,4 +1,4 @@
-const transformError = (error, customMessage = "Something went wrong!") => {
+const transformError = (error, customMessage = "Error") => {
   error = error?.response?.data;
   let message = error?.message || customMessage;
   let errors = error?.errors;
@@ -13,10 +13,7 @@ const transformError = (error, customMessage = "Something went wrong!") => {
   return message;
 };
 
-export const transformErrorsToArray = (
-  error,
-  customMessage = "Something went wrong!",
-) => {
+export const transformErrorsToArray = (error, customMessage = "Error") => {
   if (!error) return [];
   if (typeof error === "string") return [error];
   let errorArray = [];

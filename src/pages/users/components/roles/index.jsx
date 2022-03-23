@@ -48,7 +48,7 @@ const Roles = ({ roles = [], onAdd, onDelete }) => {
       )}
       <Accordion
         sx={{ bgcolor: "#ECEBF0", gridColumnEnd: "span 3" }}
-        defaultExpanded
+        defaultCollapsed
       >
         <AccordionSummary expandIcon={<ImgIcon>{arrowDownIcon}</ImgIcon>}>
           <Box sx={{ flex: 1, mr: 1, display: "flex", alignItems: "center" }}>
@@ -58,7 +58,11 @@ const Roles = ({ roles = [], onAdd, onDelete }) => {
         </AccordionSummary>
         <AccordionDetails sx={{ p: 0 }}>
           <Divider />
-          <Table headers={["Role Name", "", "Action"]} rows={tableRows} />
+          <Table
+            headers={["Role Name", "Action"]}
+            headerCellWidth={"85%"}
+            rows={tableRows}
+          />
         </AccordionDetails>
       </Accordion>
     </>
