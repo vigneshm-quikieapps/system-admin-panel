@@ -68,7 +68,10 @@ import { fontSize } from "@mui/system";
 import { findAllByDisplayValue } from "@testing-library/react";
 
 const FormModal = styled(Dialog)(({ theme }) => ({
-  "& .MuiPaper-root": { borderRadius: theme.shape.borderRadiuses.ternary },
+  "& .MuiPaper-root": {
+    borderRadius: theme.shape.borderRadiuses.ternary,
+    width: "61%",
+  },
   "& label": { lineHeight: "initial !important" },
 }));
 
@@ -119,6 +122,7 @@ const Page = () => {
       setError(error);
     },
   });
+  console.log(data, "data");
   const { isLoading: isDataUpdated, mutate: updateEvaluation } =
     useUpdateEvaluation({
       onError: (error) => {
@@ -150,7 +154,6 @@ const Page = () => {
   });
 
   useEffect(() => {
-    console.log("useEffect called");
     if (id) {
       const temp = data?.evaluationScheme;
       if (temp) {
@@ -330,91 +333,182 @@ const Page = () => {
             <CircularProgress />
           </Box>
         )}
-        <Box sx={{ margin: "5%" }}>
-          <Grid columnspace={5}>
-            <Input
-              label="Evaluation Scheme Name"
-              type="text"
-              control={control}
-              name="evaluationName"
-              variant="filled"
-              sx={{ width: "100%" }}
-            />
+        <Box
+          sx={{
+            margin: "5% 5% 0% 5%",
+            display: "flex",
+            justifyContent: "space-around",
+            width: "89%",
+          }}
+        >
+          {data?.evaluationScheme &&
+          data?.evaluationScheme?.name.length > "0" ? (
+            <div style={{ flexGrow: "8", padding: "10px" }}>
+              <Input
+                label="Evaluation Scheme Name*"
+                type="text"
+                control={control}
+                name="evaluationName"
+                variant="outlined"
+                sx={{ mr: "20px", width: "100% !important" }}
+                InputLabelProps={{ style: { background: "#fff" } }}
+              />
+            </div>
+          ) : (
+            <div style={{ flexGrow: "8", padding: "10px" }}>
+              <Input
+                label="Evaluation Scheme Name*"
+                type="text"
+                control={control}
+                name="evaluationName"
+                variant="outlined"
+                sx={{ mr: "20px", width: "100% !important" }}
+              />
+            </div>
+          )}
 
+          <div style={{ flexGrow: "2", padding: "10px" }}>
             <Input
-              label="Status"
+              label="Status*"
               control={control}
               name="status"
               select
-              sx={{ width: "100%" }}
-              variant="filled"
+              variant="outlined"
+              InputLabelProps={{ style: { background: "#fff" } }}
+              sx={{ mr: "20px !important", width: "100% !important" }}
             >
               <MenuItem value="ACTIVE">Active</MenuItem>
               <MenuItem value="NOT_ACTIVE">Not Active</MenuItem>
             </Input>
-
-            <Input
-              sx={{ width: "100%", webkitAppearance: "none" }}
-              label="Number of Levels"
-              control={control}
-              name="levelCount"
-              type="number"
-              InputProps={{
-                inputProps: { min: `${minLevelCount}`, max: "10", step: "1" },
-              }}
-              variant="filled"
-              onChange={(data) => {
-                let temp = [...level];
-                // if (minLevelCount >= data.target.value) {
-                //   setLevel(temp);
-                // } else {
-                //   if (temp.length > data.target.value) {
-                //     temp.pop();
-                //     setValue("levelCount", data.target.value);
-                //     setLevel(temp);
-                //   } else if (
-                //     data.target.value &&
-                //     temp.length < data.target.value
-                //   ) {
-                //     setValue("levelCount", data.target.value);
-                //     for (var i = temp.length; i < data.target.value; i++) {
-                //       temp.push({ skills: [], isAddNewSkill: true });
-                //     }
-                //   }
-                // }
-                if (data.target.value == "") {
-                  // setLevel(temp);
-                  setValue("levelCount", data.target.value);
-                } else {
-                  if (data.target.value <= minLevelCount) {
+          </div>
+          {data?.evaluationScheme && data?.evaluationScheme?.levelCount >= 0 ? (
+            <div style={{ flexGrow: "4", padding: "10px" }}>
+              <Input
+                sx={{ width: "100%" }}
+                label="Number of Levels"
+                control={control}
+                name="levelCount"
+                type="number"
+                InputLabelProps={{ style: { background: "#fff" } }}
+                InputProps={{
+                  inputProps: { min: `${minLevelCount}`, max: "10", step: "1" },
+                }}
+                variant="outlined"
+                onChange={(data) => {
+                  let temp = [...level];
+                  // if (minLevelCount >= data.target.value) {
+                  //   setLevel(temp);
+                  // } else {
+                  //   if (temp.length > data.target.value) {
+                  //     temp.pop();
+                  //     setValue("levelCount", data.target.value);
+                  //     setLevel(temp);
+                  //   } else if (
+                  //     data.target.value &&
+                  //     temp.length < data.target.value
+                  //   ) {
+                  //     setValue("levelCount", data.target.value);
+                  //     for (var i = temp.length; i < data.target.value; i++) {
+                  //       temp.push({ skills: [], isAddNewSkill: true });
+                  //     }
+                  //   }
+                  // }
+                  if (data.target.value == "") {
+                    // setLevel(temp);
                     setValue("levelCount", data.target.value);
-                  } else if (data.target.value > minLevelCount) {
-                    setValue("levelCount", data.target.value);
-                    for (var i = temp.length; i < data.target.value; i++) {
-                      temp.push({ skills: [], isAddNewSkill: true });
+                  } else {
+                    if (data.target.value <= minLevelCount) {
+                      setValue("levelCount", data.target.value);
+                    } else if (data.target.value > minLevelCount) {
+                      setValue("levelCount", data.target.value);
+                      for (var i = temp.length; i < data.target.value; i++) {
+                        temp.push({ skills: [], isAddNewSkill: true });
+                      }
+                      setLevel(temp);
                     }
-                    setLevel(temp);
                   }
-                }
-                //  else if (
-                //   data.target.value &&
-                //   temp.length < data.target.value
-                // ) {
-                //   setValue("levelCount", data.target.value);
-                //   for (var i = temp.length; i < data.target.value; i++) {
-                //     temp.push({ skills: [], isAddNewSkill: true });
-                //   }
-                //   setLevel(temp);
-                // } else {
-                // }
-              }}
-            ></Input>
-          </Grid>
+                  //  else if (
+                  //   data.target.value &&
+                  //   temp.length < data.target.value
+                  // ) {
+                  //   setValue("levelCount", data.target.value);
+                  //   for (var i = temp.length; i < data.target.value; i++) {
+                  //     temp.push({ skills: [], isAddNewSkill: true });
+                  //   }
+                  //   setLevel(temp);
+                  // } else {
+                  // }
+                }}
+              ></Input>
+            </div>
+          ) : (
+            <div style={{ flexGrow: "4", padding: "10px" }}>
+              <Input
+                sx={{ width: "100%" }}
+                label="Number of Levels"
+                control={control}
+                name="levelCount"
+                type="number"
+                InputProps={{
+                  inputProps: { min: `${minLevelCount}`, max: "10", step: "1" },
+                }}
+                variant="outlined"
+                onChange={(data) => {
+                  let temp = [...level];
+                  // if (minLevelCount >= data.target.value) {
+                  //   setLevel(temp);
+                  // } else {
+                  //   if (temp.length > data.target.value) {
+                  //     temp.pop();
+                  //     setValue("levelCount", data.target.value);
+                  //     setLevel(temp);
+                  //   } else if (
+                  //     data.target.value &&
+                  //     temp.length < data.target.value
+                  //   ) {
+                  //     setValue("levelCount", data.target.value);
+                  //     for (var i = temp.length; i < data.target.value; i++) {
+                  //       temp.push({ skills: [], isAddNewSkill: true });
+                  //     }
+                  //   }
+                  // }
+                  if (data.target.value == "") {
+                    // setLevel(temp);
+                    setValue("levelCount", data.target.value);
+                  } else {
+                    if (data.target.value <= minLevelCount) {
+                      setValue("levelCount", data.target.value);
+                    } else if (data.target.value > minLevelCount) {
+                      setValue("levelCount", data.target.value);
+                      for (var i = temp.length; i < data.target.value; i++) {
+                        temp.push({ skills: [], isAddNewSkill: true });
+                      }
+                      setLevel(temp);
+                    }
+                  }
+                  //  else if (
+                  //   data.target.value &&
+                  //   temp.length < data.target.value
+                  // ) {
+                  //   setValue("levelCount", data.target.value);
+                  //   for (var i = temp.length; i < data.target.value; i++) {
+                  //     temp.push({ skills: [], isAddNewSkill: true });
+                  //   }
+                  //   setLevel(temp);
+                  // } else {
+                  // }
+                }}
+              ></Input>
+            </div>
+          )}
         </Box>
         <Box sx={{ margin: "5%" }}>
           {level?.map((data, index1) => (
             <AccordionContainer key={index1}>
-              <Accordion defaultExpanded={false}>
+              <Accordion
+                defaultExpanded={false}
+                sx={{ width: "99% !important" }}
+              >
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Box
                     sx={{
@@ -428,7 +522,11 @@ const Page = () => {
                     </Typography>
                     <GradientButton
                       key={index1}
-                      style={{ marginRight: "1%" }}
+                      style={{
+                        marginRight: "1%",
+                        fontSize: "16px",
+                        fontWeight: "bold",
+                      }}
                       onClick={(e) => {
                         e.stopPropagation();
                         addNewSkill(index1);
@@ -619,7 +717,7 @@ const Page = () => {
             </AccordionContainer>
           ))}
         </Box>
-        <Box sx={{ display: "flex", gap: 2, py: 2, margin: "5%" }}>
+        <Box sx={{ display: "flex", gap: 2, margin: "0% 5% 5% 5%" }}>
           <GradientButton
             // disabled={saveStatus}
             onClick={() => {

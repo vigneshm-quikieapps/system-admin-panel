@@ -31,7 +31,7 @@ const passwordValidationRules =
 
 const validationSchema = Yup.object()
   .shape({
-    mobileNo: Yup.string().required().label("Mobile Number"),
+    email: Yup.string().required().label("Email"),
     password: passwordValidationRules,
   })
   .required();
@@ -73,6 +73,7 @@ const Page = () => {
 
   const onSubmit = (data) => {
     login(data);
+    console.log("data", data);
   };
 
   return (
@@ -105,8 +106,8 @@ const Page = () => {
           </Box>
           <Input
             control={control}
-            name="mobileNo"
-            label="Mobile Number"
+            name="email"
+            label="Email"
             variant="filled"
             sx={{
               "& .MuiInputBase-root": { height: "72px" },
@@ -180,6 +181,7 @@ const Page = () => {
       </Box>
       <WarningDialog
         open={showError}
+        title="Error"
         onAccept={() => setShowError(false)}
         description={transformError(error)}
         acceptButtonTitle="OK"

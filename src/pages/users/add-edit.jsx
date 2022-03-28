@@ -60,7 +60,7 @@ const validationSchema = Yup.object()
       )
       .matches(/(?=.*[0-9])/, "Password should contain at least one digit")
       .label("Password"),
-    name: Yup.string().min(5).label("Full Name"),
+    name: Yup.string().min(2).label("Full Name"),
     mobileNo: Yup.string().required().label("Contact Number"),
     status: Yup.string()
       .oneOf(["ACTIVE", "INACTIVE"])
@@ -111,8 +111,8 @@ const AddUserPage = () => {
   const [error, setError] = useState("");
   const [contentRef, setContentRef] = useState();
   const [displayError, setDisplayError] = useState({});
-
-  const [userType, setUserType] = useState(false);
+  const [normValue, setNormValue] = useState("");
+  const [userTypeValue, setUserTypeValue] = useState("");
   const { data, isLoading: getIsLoading } = useGetUser(id, {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
@@ -133,6 +133,13 @@ const AddUserPage = () => {
       setError(error);
     },
   });
+  useEffect(() => {
+    if (data?.user && data?.user?.isCoach === false) {
+      setNormValue("Other Staff");
+    } else setNormValue("Coach");
+  }, [data]);
+  console.log("ddddd", normValue);
+  console.log("ddd222d", data?.user?.isCoach);
 
   const {
     control,
@@ -156,7 +163,12 @@ const AddUserPage = () => {
       roles: [],
       // isCoach: false,
       // isParent: false,
-      userType: "",
+      userType: "Other Staff",
+      // data?.user.isCoach == true
+      //   ? "Coach"
+      //   : data?.user.isParent == true
+      //   ? "Parent"
+      //   : "Other Staff",
       dataPrivileges: {
         all: false,
         list: [],
@@ -234,6 +246,22 @@ const AddUserPage = () => {
   useEffect(() => {
     setDisplayError(errors);
   }, [errors]);
+
+  useEffect(() => {
+    // let temp = userTypeValue;
+    // temp.isCoach = data?.user?.isCoach;
+    // temp.isParent = data?.user?.isParent;
+    // setUserTypeValue(temp);
+    if (data?.user?.isCoach) {
+      setUserTypeValue("Coach");
+    } else if (data?.user?.isParent) {
+      setUserTypeValue("Parent");
+    } else setUserTypeValue("Other Staff");
+  }, [data]);
+  const handleChange = (event) => {
+    console.log("cccc", event.target.value);
+    setUserTypeValue(event.target.value);
+  };
   return (
     <>
       <FormModal open={true} maxWidth="xl">
@@ -400,20 +428,47 @@ const AddUserPage = () => {
             <Input
               name="userType"
               control={control}
-              error={!!errors?.isCoach?.message && !!errors?.isParent?.message}
+              error={!!errors?.name?.message}
               variant="outlined"
               label="User Type"
               select
-              value={
-                data?.user && data?.user?.isCoach == true
-                  ? "Coach"
-                  : "Other Staff"
-              }
+              value={userTypeValue}
+              onChange={handleChange}
               InputLabelProps={{ style: { background: "#fff" } }}
             >
-              <MenuItem value="Coach">Coach</MenuItem>
-              <MenuItem value="Other Staff">Other Staff</MenuItem>
-              <MenuItem value="Parent">Parent</MenuItem>
+              <MenuItem
+                // onSelect={() => {
+                //   let temp = userTypeValue;
+                //   temp.isCoach = true;
+                //   temp.isParent = false;
+                //   setUserTypeValue(temp);
+                // }}
+                value="Coach"
+              >
+                Coach
+              </MenuItem>
+              <MenuItem
+                // onSelect={() => {
+                //   let temp = userTypeValue;
+                //   temp.isCoach = false;
+                //   temp.isParent = false;
+                //   setUserTypeValue(temp);
+                // }}
+                value="Other Staff"
+              >
+                Other Staff
+              </MenuItem>
+              <MenuItem
+                // onSelect={() => {
+                //   let temp = userTypeValue;
+                //   temp.isCoach = false;
+                //   temp.isParent = true;
+                //   setUserTypeValue(temp);
+                // }}
+                value="Parent"
+              >
+                Parent
+              </MenuItem>
             </Input>
             <Box />
             <Address
