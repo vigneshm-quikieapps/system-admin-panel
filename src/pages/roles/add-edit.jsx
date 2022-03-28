@@ -215,34 +215,74 @@ const AddRolePage = () => {
               },
             }}
           >
-            <Input
-              name="name"
-              control={control}
-              error={!!errors?.name?.message}
-              variant="outlined"
-              label="Role Name*"
-            />
-            <Input
-              name="code"
-              control={control}
-              error={!!errors?.code?.message}
-              variant="outlined"
-              label="Role Code*"
-              inputProps={{ readOnly: !!id }}
-            />
+            {data?.role && data?.role?.name.length > "0" ? (
+              <Input
+                name="name"
+                control={control}
+                error={!!errors?.name?.message}
+                variant="outlined"
+                label="Role Name*"
+                InputLabelProps={{ style: { background: "#fff" } }}
+              />
+            ) : (
+              <Input
+                name="name"
+                control={control}
+                error={!!errors?.name?.message}
+                variant="outlined"
+                label="Role Name*"
+              />
+            )}
+            {data?.role && data?.role?.code.length > "0" ? (
+              <Input
+                name="code"
+                disabled
+                control={control}
+                error={!!errors?.code?.message}
+                variant="outlined"
+                label="Role Code*"
+                inputProps={{ readOnly: !!id }}
+                InputLabelProps={{ style: { background: "#fff" } }}
+              />
+            ) : (
+              <Input
+                name="code"
+                control={control}
+                error={!!errors?.code?.message}
+                variant="outlined"
+                label="Role Code*"
+                inputProps={{ readOnly: !!id }}
+              />
+            )}
+            {data?.role && data?.role?.description.length > "0" ? (
+              <Input
+                name="description"
+                control={control}
+                variant="outlined"
+                label="Description"
+                multiline
+                rows={4}
+                InputLabelProps={{ style: { background: "#fff" } }}
+                sx={{
+                  gridColumnEnd: "span 2",
+                  "& .MuiOutlinedInput-root": { height: "initial !important" },
+                }}
+              />
+            ) : (
+              <Input
+                name="description"
+                control={control}
+                variant="outlined"
+                label="Description"
+                multiline
+                rows={4}
+                sx={{
+                  gridColumnEnd: "span 2",
+                  "& .MuiOutlinedInput-root": { height: "initial !important" },
+                }}
+              />
+            )}
 
-            <Input
-              name="description"
-              control={control}
-              variant="outlined"
-              label="Description"
-              multiline
-              rows={4}
-              sx={{
-                gridColumnEnd: "span 2",
-                "& .MuiOutlinedInput-root": { height: "initial !important" },
-              }}
-            />
             <Privileges control={control} />
           </Grid>
           <Box sx={{ display: "flex", gap: 2, py: 2 }}>

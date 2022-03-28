@@ -16,6 +16,7 @@ import {
   CircularProgress,
   Paper,
   Button,
+  DialogContentText,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import errorIcon from "../../assets/icons/icon-error.png";
@@ -141,6 +142,7 @@ const AddBusinessPage = () => {
     data?.business && resetFormData(data.business);
   }, [resetFormData, data]);
   console.log("before delete", errors);
+  console.log("data", data);
   return (
     <>
       <FormModal open={true} maxWidth="xl">
@@ -203,101 +205,221 @@ const AddBusinessPage = () => {
               },
             }}
           >
-            <Input
-              name="name"
-              control={control}
-              error={!!errors?.name?.message}
-              variant="outlined"
-              label="Business Registered Name*"
-              // rules={{
-              //   required: true,
-              //   validate: {
-              //     checkEmail: {
-              //       value: (v) => validateName(v),
-              //       message: "Invalid name",
-              //     },
-              //   },
-              // }}
-            />
-            <Input
-              name="code"
-              control={control}
-              error={!!errors?.code?.message}
-              variant="outlined"
-              label="Business Code*"
-              inputProps={{ readOnly: !!id }}
-            />
-            <Input
-              name="tradename"
-              control={control}
-              error={!!errors?.tradename?.message}
-              variant="outlined"
-              label="Business Trade Name*"
-            />
-            <Input
-              name="type"
-              control={control}
-              error={!!errors?.type?.message}
-              variant="filled"
-              label="Business Type*"
-              defaultValue="LIMITED_COMPANY"
-              select
-            >
-              <MenuItem value="LIMITED_COMPANY">Limited Company</MenuItem>
-              <MenuItem value="LIMITED_LIABILITY_PARTNERSHIP">
-                Limited Liability Partnership
-              </MenuItem>
-              <MenuItem value="SOLE_TRADER">Sole Trader</MenuItem>
-            </Input>
-            <Input
-              name="status"
-              control={control}
-              error={!!errors?.status?.message}
-              variant="filled"
-              label="Status*"
-              select
-              defaultValue="ACTIVE"
-            >
-              <MenuItem value="ACTIVE">Active</MenuItem>
-              <MenuItem value="INACTIVE">Inactive</MenuItem>
-            </Input>
-            <Input
-              name="contactName"
-              control={control}
-              variant="outlined"
-              label="Primary Contact Name"
-            />
-            <Input
-              name="contactEmail"
-              control={control}
-              variant="outlined"
-              label="Primary Contact Email"
-              type="email"
-            />
-            <Input
-              name="primaryPhone"
-              control={control}
-              variant="outlined"
-              label="Primary Contact Telephone"
-            />
-            <Input
-              name="primaryMobileNo"
-              control={control}
-              variant="outlined"
-              label="Primary Contact Mobile"
-            />
-            <Input
-              name="about"
-              control={control}
-              variant="outlined"
-              label="About this Business"
-              multiline
-              rows={4}
-              sx={{
-                gridColumnEnd: "span 3",
-                "& .MuiOutlinedInput-root": { height: "initial !important" },
-              }}
-            />
+            {data?.business && data?.business?.name.length > "0" ? (
+              <Input
+                name="name"
+                control={control}
+                error={!!errors?.name?.message}
+                label="Business Registered Name*"
+                InputLabelProps={{ style: { background: "#fff" } }}
+              />
+            ) : (
+              <Input
+                name="name"
+                control={control}
+                error={!!errors?.name?.message}
+                label="Business Registered Name*"
+                variant="outlined"
+              />
+            )}
+            {data?.business && data?.business?.code.length > "0" ? (
+              <Input
+                name="code"
+                disabled
+                control={control}
+                error={!!errors?.code?.message}
+                variant="outlined"
+                label="Business Code*"
+                inputProps={{ readOnly: !!id }}
+                InputLabelProps={{ style: { background: "#fff" } }}
+              />
+            ) : (
+              <Input
+                name="code"
+                control={control}
+                error={!!errors?.code?.message}
+                variant="outlined"
+                label="Business Code*"
+                inputProps={{ readOnly: !!id }}
+              />
+            )}
+            {data?.business && data?.business?.tradename.length > "0" ? (
+              <Input
+                name="tradename"
+                control={control}
+                error={!!errors?.tradename?.message}
+                variant="outlined"
+                label="Business Trade Name*"
+                InputLabelProps={{ style: { background: "#fff" } }}
+              />
+            ) : (
+              <Input
+                name="tradename"
+                control={control}
+                error={!!errors?.tradename?.message}
+                variant="outlined"
+                label="Business Trade Name*"
+              />
+            )}
+            {data?.business && data?.business?.type.length > "0" ? (
+              <Input
+                name="type"
+                control={control}
+                error={!!errors?.type?.message}
+                variant="outlined"
+                label="Business Type*"
+                defaultValue="LIMITED_COMPANY"
+                InputLabelProps={{ style: { background: "#fff" } }}
+                select
+              >
+                <MenuItem value="LIMITED_COMPANY">Limited Company</MenuItem>
+                <MenuItem value="LIMITED_LIABILITY_PARTNERSHIP">
+                  Limited Liability Partnership
+                </MenuItem>
+                <MenuItem value="SOLE_TRADER">Sole Trader</MenuItem>
+              </Input>
+            ) : (
+              <Input
+                name="type"
+                control={control}
+                error={!!errors?.type?.message}
+                variant="outlined"
+                label="Business Type*"
+                defaultValue="LIMITED_COMPANY"
+                InputLabelProps={{ style: { background: "#fff" } }}
+                select
+              >
+                <MenuItem value="LIMITED_COMPANY">Limited Company</MenuItem>
+                <MenuItem value="LIMITED_LIABILITY_PARTNERSHIP">
+                  Limited Liability Partnership
+                </MenuItem>
+                <MenuItem value="SOLE_TRADER">Sole Trader</MenuItem>
+              </Input>
+            )}
+            {data?.business && data?.business?.status.length > "0" ? (
+              <Input
+                name="status"
+                control={control}
+                error={!!errors?.status?.message}
+                variant="outlined"
+                label="Status*"
+                select
+                InputLabelProps={{ style: { background: "#fff" } }}
+                defaultValue="ACTIVE"
+              >
+                <MenuItem value="ACTIVE">Active</MenuItem>
+                <MenuItem value="INACTIVE">Inactive</MenuItem>
+              </Input>
+            ) : (
+              <Input
+                name="status"
+                control={control}
+                error={!!errors?.status?.message}
+                variant="outlined"
+                label="Status*"
+                select
+                InputLabelProps={{ style: { background: "#fff" } }}
+                defaultValue="ACTIVE"
+              >
+                <MenuItem value="ACTIVE">Active</MenuItem>
+                <MenuItem value="INACTIVE">Inactive</MenuItem>
+              </Input>
+            )}
+            {data?.business && data?.business?.contactName.length > "0" ? (
+              <Input
+                name="contactName"
+                control={control}
+                variant="outlined"
+                label="Primary Contact Name"
+                InputLabelProps={{ style: { background: "#fff" } }}
+              />
+            ) : (
+              <Input
+                name="contactName"
+                control={control}
+                variant="outlined"
+                label="Primary Contact Name"
+              />
+            )}
+            {data?.business && data?.business?.contactEmail.length > "0" ? (
+              <Input
+                name="contactEmail"
+                control={control}
+                variant="outlined"
+                label="Primary Contact Email"
+                type="email"
+                InputLabelProps={{ style: { background: "#fff" } }}
+              />
+            ) : (
+              <Input
+                name="contactEmail"
+                control={control}
+                variant="outlined"
+                label="Primary Contact Email"
+                type="email"
+              />
+            )}
+            {data?.business && data?.business?.primaryPhone.length > "0" ? (
+              <Input
+                name="primaryPhone"
+                control={control}
+                variant="outlined"
+                label="Primary Contact Telephone"
+                InputLabelProps={{ style: { background: "#fff" } }}
+              />
+            ) : (
+              <Input
+                name="primaryPhone"
+                control={control}
+                variant="outlined"
+                label="Primary Contact Telephone"
+              />
+            )}
+            {data?.business && data?.business?.primaryMobileNo.length > "0" ? (
+              <Input
+                name="primaryMobileNo"
+                control={control}
+                variant="outlined"
+                label="Primary Contact Mobile"
+                InputLabelProps={{ style: { background: "#fff" } }}
+              />
+            ) : (
+              <Input
+                name="primaryMobileNo"
+                control={control}
+                variant="outlined"
+                label="Primary Contact Mobile"
+              />
+            )}
+            {data?.business && data?.business?.about.length > "0" ? (
+              <Input
+                name="about"
+                control={control}
+                variant="outlined"
+                label="About this Business"
+                multiline
+                rows={4}
+                InputLabelProps={{ style: { background: "#fff" } }}
+                sx={{
+                  gridColumnEnd: "span 3",
+                  "& .MuiOutlinedInput-root": { height: "initial !important" },
+                }}
+              />
+            ) : (
+              <Input
+                name="about"
+                control={control}
+                variant="outlined"
+                label="About this Business"
+                multiline
+                rows={4}
+                sx={{
+                  gridColumnEnd: "span 3",
+                  "& .MuiOutlinedInput-root": { height: "initial !important" },
+                }}
+              />
+            )}
+
             <Address
               isEdit={!!id}
               control={control}
@@ -336,47 +458,40 @@ const AddBusinessPage = () => {
             padding: "40px 30px",
             margin: "27px 300px 31px 200px",
             alignItems: "center",
+            borderRadius: "20px",
           },
         }}
       >
         <ImgIcon>{errorIcon}</ImgIcon>
         <DialogTitle>Error</DialogTitle>
-        <DialogContent sx={{ textAlign: "center" }}></DialogContent>
+
         {!!Object.keys(errors).length && (
-          <DialogActions
-            sx={{
-              flexDirection: "column",
-              alignItems: "flex-start",
-              p: 2,
-              position: "relative",
-            }}
-          >
+          <DialogContent sx={{ textAlign: "center" }}>
             {Object.values(errors)
               // .reverse()
               .map(({ message }, index) => (
-                <Typography
-                  key={index}
-                  sx={{
-                    color: "error.main",
-                    sm: "0 !important",
-                    margin: "0 9px 5px 9px",
-                  }}
-                  component="span"
-                >
-                  {message}
-                </Typography>
+                <DialogContentText key={index}>{message}</DialogContentText>
               ))}
-            <Button
-              sx={{ color: "#ff2c60" }}
-              onClick={() => {
-                setDisplayError({});
-              }}
-              autoFocus
-            >
-              OK
-            </Button>
-          </DialogActions>
+          </DialogContent>
         )}
+        <DialogActions>
+          <Button
+            sx={{
+              color: "#ff2c60",
+              border: "solid 1px #f2f1f6",
+              textTransform: "none",
+              fontSize: "20px",
+              fontWeight: "600px",
+              borderRadius: "12px",
+              width: "100px",
+            }}
+            onClick={() => {
+              setDisplayError({});
+            }}
+          >
+            OK
+          </Button>
+        </DialogActions>
       </Dialog>
       <WarningDialog
         open={showError}

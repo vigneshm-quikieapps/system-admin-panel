@@ -50,16 +50,16 @@ const BusinessBasicInfo = ({ setPageTitle }) => {
       " , " +
       city +
       " , " +
-      postcode +
-      "  , " +
-      countryName,
+      countryName +
+      " - " +
+      postcode,
 
     "": "",
     " ": "",
-    "Primary Contact Name": contactName,
-    "Primary Contact Email": contactEmail,
-    "Primary Contact Telephone": primaryPhone,
-    "Primary Contact Mobile": primaryMobileNo,
+    "Primary Contact Name": contactName || "----",
+    "Primary Contact Email": contactEmail || "----",
+    "Primary Contact Telephone": primaryPhone || "----",
+    "Primary Contact Mobile": primaryMobileNo || "----",
     About: about,
   };
 

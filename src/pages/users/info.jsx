@@ -56,15 +56,15 @@ const UserDetailPage = () => {
     Status: status,
     "": " ",
     Address:
-      postcode +
-      "  / " +
       addressLine1 +
-      " " +
+      " ," +
       addressLine2 +
-      " / " +
+      " , " +
       city +
-      " / " +
-      country,
+      " , " +
+      countryName +
+      " - " +
+      postcode,
   };
   return (
     <>

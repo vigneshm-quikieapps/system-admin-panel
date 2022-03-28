@@ -74,8 +74,12 @@ const validationSchema = Yup.object()
           })
           .required(),
       ),
-    isCoach: Yup.boolean(),
-    isParent: Yup.boolean(),
+    // isCoach: Yup.boolean(),
+    // isParent: Yup.boolean(),
+    userType: Yup.string()
+      .oneOf(["Coach", "Other Staff", "Parent"])
+      .required()
+      .label("User Type"),
     dataPrivileges: Yup.object().shape({
       all: Yup.boolean().required(),
       list: Yup.array().of(
@@ -103,6 +107,7 @@ const AddUserPage = () => {
   const [showError, setShowError] = useState(false);
   const [error, setError] = useState("");
   const [contentRef, setContentRef] = useState();
+  const [userType, setUserType] = useState(false);
   const { data, isLoading: getIsLoading } = useGetUser(id, {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
@@ -111,7 +116,6 @@ const AddUserPage = () => {
       setError(error);
     },
   });
-  // console.log("dataus", data);
   const { isLoading, mutate: postUser } = usePostUser({
     onError: (error) => {
       setShowError(true);
@@ -145,8 +149,9 @@ const AddUserPage = () => {
       mobileNo: "",
       status: "ACTIVE",
       roles: [],
-      isCoach: false,
-      isParent: false,
+      // isCoach: false,
+      // isParent: false,
+      userType: "",
       dataPrivileges: {
         all: false,
         list: [],
@@ -160,13 +165,17 @@ const AddUserPage = () => {
   const onSubmit = (data) => {
     const updatedRoles = data.roles.map(({ _id }) => _id);
     const updatedList = data.dataPrivileges.list.map(({ _id }) => _id);
-    const { email, mobileNo, ...otherData } = data;
+    const { email, mobileNo, userType, ...otherData } = data;
     if (!id) {
       otherData.email = email;
       otherData.mobileNo = mobileNo;
     }
     let updatedData = {
       ...otherData,
+      isCoach:
+        userType === "Coach" && userType !== "Other Staff" ? true : false,
+      isParent:
+        userType === "Parent" && userType !== "Other Staff" ? true : false,
       roles: updatedRoles,
       dataPrivileges: { ...data.dataPrivileges, list: updatedList },
     };
@@ -281,63 +290,158 @@ const AddUserPage = () => {
               },
             }}
           >
-            <Input
-              name="email"
-              control={control}
-              error={!!errors?.email?.message}
-              variant="filled"
-              label="Email Address*"
-              type="email"
-              autoComplete="off"
-              inputProps={{ readOnly: !!id }}
-            />
-            <Input
-              name="password"
-              control={control}
-              error={!!errors?.password?.message}
-              variant="filled"
-              label="Password*"
-              type="password"
-              inputProps={{ autoComplete: "new-password" }}
-              onFocus={() => setValue("password", "")}
-            />
-            <Input
-              name="mobileNo"
-              control={control}
-              error={!!errors?.mobileNo?.message}
-              variant="filled"
-              label="Contact Number*"
-              inputProps={{ readOnly: !!id }}
-            />
-            <Input
-              name="name"
-              control={control}
-              error={!!errors?.name?.message}
-              variant="filled"
-              label="Full Name*"
-            />
-            <Input
-              name="status"
-              control={control}
-              error={!!errors?.name?.message}
-              variant="filled"
-              label="Status"
-              select
-            >
-              <MenuItem value="ACTIVE">Active</MenuItem>
-              <MenuItem value="INACTIVE">Inactive</MenuItem>
-            </Input>
-            <Input
-              name="isCoach"
-              control={control}
-              error={!!errors?.isCoach?.message}
-              variant="filled"
-              label="User Type"
-              select
-            >
-              <MenuItem value="true">Coach</MenuItem>
-              <MenuItem value="false">Other Staff</MenuItem>
-            </Input>
+            {data?.user && data?.user?.email.length > "0" ? (
+              <Input
+                name="email"
+                control={control}
+                error={!!errors?.email?.message}
+                variant="outlined"
+                label="Email Address*"
+                type="email"
+                autoComplete="off"
+                inputProps={{ readOnly: !!id }}
+                InputLabelProps={{ style: { background: "#fff" } }}
+                disabled
+              />
+            ) : (
+              <Input
+                name="email"
+                control={control}
+                error={!!errors?.email?.message}
+                variant="outlined"
+                label="Email Address*"
+                type="email"
+                autoComplete="off"
+                inputProps={{ readOnly: !!id }}
+              />
+            )}
+            {data?.user && data?.user?.password.length > "0" ? (
+              <Input
+                name="password"
+                control={control}
+                error={!!errors?.password?.message}
+                variant="outlined"
+                label="Password*"
+                type="password"
+                inputProps={{ autoComplete: "new-password" }}
+                onFocus={() => setValue("password", "")}
+                InputLabelProps={{ style: { background: "#fff" } }}
+              />
+            ) : (
+              <Input
+                name="password"
+                control={control}
+                error={!!errors?.password?.message}
+                variant="outlined"
+                label="Password*"
+                type="password"
+                inputProps={{ autoComplete: "new-password" }}
+                onFocus={() => setValue("password", "")}
+              />
+            )}
+            {data?.user && data?.user?.mobileNo.length > "0" ? (
+              <Input
+                name="mobileNo"
+                control={control}
+                error={!!errors?.mobileNo?.message}
+                variant="outlined"
+                label="Contact Number*"
+                inputProps={{ readOnly: !!id }}
+                InputLabelProps={{ style: { background: "#fff" } }}
+                disabled
+              />
+            ) : (
+              <Input
+                name="mobileNo"
+                control={control}
+                error={!!errors?.mobileNo?.message}
+                variant="outlined"
+                label="Contact Number*"
+                inputProps={{ readOnly: !!id }}
+              />
+            )}
+            {data?.user && data?.user?.name.length > "0" ? (
+              <Input
+                name="name"
+                control={control}
+                error={!!errors?.name?.message}
+                variant="outlined"
+                label="Full Name*"
+                InputLabelProps={{ style: { background: "#fff" } }}
+              />
+            ) : (
+              <Input
+                name="name"
+                control={control}
+                error={!!errors?.name?.message}
+                variant="outlined"
+                label="Full Name*"
+              />
+            )}
+            {data?.user && data?.user?.status.length > "0" ? (
+              <Input
+                name="status"
+                control={control}
+                error={!!errors?.name?.message}
+                variant="outlined"
+                label="Status"
+                InputLabelProps={{ style: { background: "#fff" } }}
+                select
+              >
+                <MenuItem value="ACTIVE">Active</MenuItem>
+                <MenuItem value="INACTIVE">Inactive</MenuItem>
+              </Input>
+            ) : (
+              <Input
+                name="status"
+                control={control}
+                error={!!errors?.name?.message}
+                variant="outlined"
+                label="Status"
+                select
+              >
+                <MenuItem value="ACTIVE">Active</MenuItem>
+                <MenuItem value="INACTIVE">Inactive</MenuItem>
+              </Input>
+            )}
+            {(data?.user && data?.user?.isCoach) ||
+            (data?.user && data?.user?.isParent).length > "0" ? (
+              <Input
+                name="userType"
+                control={control}
+                error={
+                  !!errors?.isCoach?.message && !!errors?.isParent?.message
+                }
+                variant="outlined"
+                label="User Type"
+                select
+                value={
+                  data?.user && data?.user?.isCoach == true
+                    ? "Coach"
+                    : "Other Staff"
+                }
+                InputLabelProps={{ style: { background: "#fff" } }}
+              >
+                <MenuItem value="Coach">Coach</MenuItem>
+                <MenuItem value="Other Staff">Other Staff</MenuItem>
+                <MenuItem value="Parent">Parent</MenuItem>
+              </Input>
+            ) : (
+              <Input
+                name="userType"
+                control={control}
+                error={
+                  !!errors?.isCoach?.message && !!errors?.isParent?.message
+                }
+                variant="outlined"
+                label="User Type"
+                select
+              >
+                <MenuItem value="Coach">Coach</MenuItem>
+                <MenuItem value="Other Staff">Other Staff</MenuItem>
+                <MenuItem value="Parent">Parent</MenuItem>
+              </Input>
+            )}
 
             <Box />
             <Address
