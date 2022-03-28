@@ -47,7 +47,10 @@ const FormModal = styled(Dialog)(({ theme }) => ({
 
 const validationSchema = Yup.object()
   .shape({
-    email: Yup.string().email().required().label("Email address"),
+    email: Yup.string()
+      .email()
+      .required("Email is mandatory")
+      .label("Email address"),
     password: Yup.string()
       .min(6)
       .matches(
@@ -60,15 +63,18 @@ const validationSchema = Yup.object()
       )
       .matches(/(?=.*[0-9])/, "Password should contain at least one digit")
       .label("Password"),
-    name: Yup.string().min(2).label("Full Name"),
-    mobileNo: Yup.string().required().label("Contact Number"),
+    name: Yup.string().required("Name is mandatory").label("Full Name"),
+    mobileNo: Yup.string()
+      // .length(10, "Contact Number must be 10 digits")
+      .required("Contact Number is mandatory")
+      .label("Contact Number"),
     status: Yup.string()
       .oneOf(["ACTIVE", "INACTIVE"])
       .required()
       .label("Status"),
     roles: Yup.array()
-      .min(1)
-      .required()
+      .min(1, "Roles field must have at least 1 items")
+      .required("Roles field must have at least 1 items")
       .of(
         Yup.object()
           .shape({
@@ -94,10 +100,15 @@ const validationSchema = Yup.object()
           .required(),
       ),
     }),
-    postcode: Yup.string().min(6).label("Postcode"),
-    addressLine1: Yup.string().required().label("Address Line 1"),
+    postcode: Yup.string()
+      .min(6, "Post Code is mandatory")
+      .required("Post Code is mandatory")
+      .label("Postcode"),
+    addressLine1: Yup.string()
+      .required("Address Line 1 is mandatory")
+      .label("Address Line 1"),
     addressLine2: Yup.string().label("Address Line 2"),
-    city: Yup.string().required().label("City / Town"),
+    city: Yup.string().required("City/Town is mandatory").label("City / Town"),
     country: Yup.string().required().label("Country"),
   })
   .required();
@@ -138,8 +149,8 @@ const AddUserPage = () => {
       setNormValue("Other Staff");
     } else setNormValue("Coach");
   }, [data]);
-  console.log("ddddd", normValue);
-  console.log("ddd222d", data?.user?.isCoach);
+  // console.log("ddddd", normValue);
+  // console.log("ddd222d", data?.user?.isCoach);
 
   const {
     control,
@@ -418,7 +429,7 @@ const AddUserPage = () => {
               control={control}
               error={!!errors?.name?.message}
               variant="outlined"
-              label="Status"
+              label="Status*"
               InputLabelProps={{ style: { background: "#fff" } }}
               select
             >
@@ -430,7 +441,7 @@ const AddUserPage = () => {
               control={control}
               error={!!errors?.name?.message}
               variant="outlined"
-              label="User Type"
+              label="User Type*"
               select
               value={userTypeValue}
               onChange={handleChange}

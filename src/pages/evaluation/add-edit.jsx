@@ -92,7 +92,7 @@ const customTransformError = (error, customMessage = "Error") => {
     message = errors.reduce((prev, errorItem) => {
       if (typeof errorItem === "string") return (prev += errorItem + "\n");
       const errorEntries = Object.values(errorItem);
-      console.log(errorEntries);
+      // console.log(errorEntries);
       return (prev += errorEntries.join("\n") + "\n");
     }, "");
   }
@@ -122,7 +122,7 @@ const Page = () => {
       setError(error);
     },
   });
-  console.log(data, "data");
+  // console.log(data, "data");
   const { isLoading: isDataUpdated, mutate: updateEvaluation } =
     useUpdateEvaluation({
       onError: (error) => {
@@ -221,7 +221,7 @@ const Page = () => {
         {
           name: control._formValues.evaluationName,
           status: control._formValues.status,
-          levelCount: control._formValues.levelCount,
+          levelCount: control._formValues.levelCount || 0,
           levels: level,
         },
         {
@@ -820,9 +820,7 @@ const Page = () => {
         >
           <ImgIcon>{errorIcon}</ImgIcon>
           <DialogTitle>Error</DialogTitle>
-          <DialogContent>
-            Please save the new changes done before SAVING
-          </DialogContent>
+          <DialogContent>Please save the changes.</DialogContent>
           <DialogActions>
             <Button
               sx={{

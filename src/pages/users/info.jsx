@@ -105,7 +105,7 @@ const UserDetailPage = () => {
         </Card>
       </Box>
 
-      <Accordion defaultExpanded>
+      <Accordion defaultExpanded={false}>
         <AccordionSummary expandIcon={<ImgIcon>{arrowDownIcon}</ImgIcon>}>
           <Box sx={{ flex: 1, mr: 1, display: "flex", alignItems: "center" }}>
             <Typography>Roles</Typography>
@@ -146,7 +146,7 @@ const UserDetailPage = () => {
         </AccordionDetails>
       </Accordion>
 
-      <Accordion defaultExpanded>
+      <Accordion defaultExpanded={false}>
         <AccordionSummary expandIcon={<ImgIcon>{arrowDownIcon}</ImgIcon>}>
           <Box sx={{ flex: 1, mr: 1, display: "flex", alignItems: "center" }}>
             <Typography> Data Privileges</Typography>

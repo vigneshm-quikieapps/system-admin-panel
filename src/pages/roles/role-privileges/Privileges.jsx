@@ -31,7 +31,7 @@ const Privileges = () => {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });
-  console.log("roleData12233", data);
+  // console.log("roleData12233", data);
   const check = data?.role?.functionalPrivileges;
   const StyledCheckIcon = styled(CheckIcon)({
     width: "18px",

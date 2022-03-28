@@ -73,7 +73,7 @@ const Page = () => {
 
   const onSubmit = (data) => {
     login(data);
-    console.log("data", data);
+    // console.log("data", data);
   };
 
   return (
@@ -87,7 +87,7 @@ const Page = () => {
             gap: 2,
             width: "500px",
             margin: "auto",
-            mt: -14,
+            mt: -2,
           }}
         >
           <Img

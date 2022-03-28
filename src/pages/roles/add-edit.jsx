@@ -39,10 +39,10 @@ const FormModal = styled(Dialog)(({ theme }) => ({
 
 const validationSchema = Yup.object()
   .shape({
-    name: Yup.string().required().label("Role Name"),
+    name: Yup.string().required("Role Name is mandatory").label("Role Name"),
     code: Yup.string()
-      .required("Role Code is required and must be at most 5 Characters")
-      .max(6, "Role Code is required and must be at most 5 Characters"),
+      .required("Role Code is mandatory and must be at most 5 Characters")
+      .max(6, "Role Code must be at most 5 Characters"),
     description: Yup.string(),
     functionalPrivileges: Yup.array()
       .min(1)

@@ -60,7 +60,7 @@ const customTransformError = (error, customMessage = "Error") => {
     message = errors.reduce((prev, errorItem) => {
       if (typeof errorItem === "string") return (prev += errorItem + "\n");
       const errorEntries = Object.values(errorItem);
-      console.log(errorEntries);
+      // console.log(errorEntries);
       return (prev += errorEntries.join("\n") + "\n");
     }, "");
   }
@@ -93,7 +93,7 @@ const Page = ({ setPageTitle }) => {
     business: { name, finance, type, city },
   } = data;
 
-  console.log("dataggggg", data);
+  // console.log("dataggggg", data);
   useEffect(() => {
     setBankDetails(finance?.bankDetails || {});
     setPaymentChannels(finance?.paymentChannels || {});
@@ -238,11 +238,11 @@ const Page = ({ setPageTitle }) => {
   //     discountSchemes.some((discount) => discount.add || discount.touched) ||
   //       paymentMethods.some((pay) => pay.add || pay.touched),
   //   );
-  console.log(error);
+  // console.log(error);
   return (
     <>
       <AccordionContainer>
-        <Accordion defaultExpanded={true} enabled={false}>
+        <Accordion defaultExpanded={false} enabled={false}>
           <AccordionSummary style={{ height: "123px", cursor: "default" }}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Typography style={{ fontSize: "28px" }}>{name}</Typography>
@@ -523,7 +523,7 @@ const Page = ({ setPageTitle }) => {
         </Accordion>
       </AccordionContainer>
       <AccordionContainer>
-        <Accordion defaultExpanded={true} onClick={() => {}}>
+        <Accordion defaultExpanded={false} onClick={() => {}}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Box
               sx={{
@@ -597,7 +597,7 @@ const Page = ({ setPageTitle }) => {
                   }}
                   variant="filled"
                   value={discount?.name || ""}
-                  placeholder="Enter Method"
+                  placeholder="Enter discount scheme name*"
                   onChange={(e) => {
                     const newState = [...discountSchemes];
                     newState[index].name = e.target.value;
@@ -613,7 +613,7 @@ const Page = ({ setPageTitle }) => {
                     "& .MuiFilledInput-input": { py: 0 },
                   }}
                   variant="filled"
-                  value={discount?.value || 0}
+                  value={discount?.value}
                   placeholder="%"
                   onChange={(e) => {
                     const newState = [...discountSchemes];
@@ -747,7 +747,7 @@ const Page = ({ setPageTitle }) => {
       >
         <ImgIcon>{errorIcon}</ImgIcon>
         <DialogTitle>Error</DialogTitle>
-        <DialogContent>"Please save the changes."</DialogContent>
+        <DialogContent>Please save the changes.</DialogContent>
         <DialogActions>
           <Button
             sx={{

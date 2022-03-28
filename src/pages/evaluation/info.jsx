@@ -47,7 +47,7 @@ const EvaluationDetailPage = () => {
     evaluationScheme: { name, status, levelCount, _id, levels },
   } = data;
   const items = {
-    "Evaluation Scheme Name*": name,
+    "Evaluation Scheme Name": name,
     Status: status,
     "Number of Levels": levelCount,
   };
@@ -61,7 +61,7 @@ const EvaluationDetailPage = () => {
           variant="h3"
           sx={{ fontSize: "20px", fontWeight: "bold", ml: 1 }}
         >
-          Evaluation
+          Evaluation Scheme
         </Typography>
       </Box>
       <Box sx={{ mb: "20px" }}>
@@ -96,7 +96,7 @@ const EvaluationDetailPage = () => {
         levels.map((dataa, index) => {
           // console.log("dataa", dataa);
           return (
-            <Accordion defaultExpanded>
+            <Accordion defaultExpanded={false}>
               <AccordionSummary expandIcon={<ImgIcon>{arrowDownIcon}</ImgIcon>}>
                 <Box
                   sx={{ flex: 1, mr: 1, display: "flex", alignItems: "center" }}

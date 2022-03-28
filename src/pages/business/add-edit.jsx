@@ -141,8 +141,8 @@ const AddBusinessPage = () => {
   useEffect(() => {
     data?.business && resetFormData(data.business);
   }, [resetFormData, data]);
-  console.log("before delete", errors);
-  console.log("data", data);
+  // console.log("before delete", errors);
+  // console.log("data", data);
   return (
     <>
       <FormModal open={true} maxWidth="xl">
