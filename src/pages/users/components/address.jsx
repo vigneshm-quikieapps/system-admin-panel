@@ -133,10 +133,10 @@ const Address = ({ errors, setValue, setFocus, control, isEdit }) => {
           justifyContent: "center",
           gridRow: "2 / span 7",
           gridColumnStart: "2",
-          mb: "280px",
+          mb: "270px",
         }}
       >
-        <GradientButton onClick={manualClickHandler}>
+        <GradientButton size="large" onClick={manualClickHandler}>
           {manual ? "Enter Address Automatically" : "Enter Address Manually"}
         </GradientButton>
       </Box>
