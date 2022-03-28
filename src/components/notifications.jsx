@@ -84,7 +84,7 @@ const Notifications = ({ items = [] }) => {
             horizontal: "center",
           }}
         >
-          <List sx={{ maxHeight: 200, my: 1, overflow: "auto" }}>
+          <List sx={{ maxHeight: 255, my: 1, overflow: "auto" }}>
             {items.map((item, index) => (
               <ListItem
                 sx={{

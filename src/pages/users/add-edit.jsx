@@ -16,6 +16,7 @@ import {
   MenuItem,
   AccordionSummary,
   AccordionDetails,
+  DialogContentText,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 
@@ -384,71 +385,36 @@ const AddUserPage = () => {
                 label="Full Name*"
               />
             )}
-            {data?.user && data?.user?.status.length > "0" ? (
-              <Input
-                name="status"
-                control={control}
-                error={!!errors?.name?.message}
-                variant="outlined"
-                label="Status"
-                InputLabelProps={{ style: { background: "#fff" } }}
-                select
-              >
-                <MenuItem value="ACTIVE">Active</MenuItem>
-                <MenuItem value="INACTIVE">Inactive</MenuItem>
-              </Input>
-            ) : (
-              <Input
-                name="status"
-                control={control}
-                error={!!errors?.name?.message}
-                variant="outlined"
-                label="Status"
-                select
-              >
-                <MenuItem value="ACTIVE">Active</MenuItem>
-                <MenuItem value="INACTIVE">Inactive</MenuItem>
-              </Input>
-            )}
-            {(data?.user && data?.user?.isCoach) ||
-            (data?.user && data?.user?.isParent).length > "0" ? (
-              <Input
-                name="userType"
-                control={control}
-                error={
-                  !!errors?.isCoach?.message && !!errors?.isParent?.message
-                }
-                variant="outlined"
-                label="User Type"
-                select
-                value={
-                  data?.user && data?.user?.isCoach == true
-                    ? "Coach"
-                    : "Other Staff"
-                }
-                InputLabelProps={{ style: { background: "#fff" } }}
-              >
-                <MenuItem value="Coach">Coach</MenuItem>
-                <MenuItem value="Other Staff">Other Staff</MenuItem>
-                <MenuItem value="Parent">Parent</MenuItem>
-              </Input>
-            ) : (
-              <Input
-                name="userType"
-                control={control}
-                error={
-                  !!errors?.isCoach?.message && !!errors?.isParent?.message
-                }
-                variant="outlined"
-                label="User Type"
-                select
-              >
-                <MenuItem value="Coach">Coach</MenuItem>
-                <MenuItem value="Other Staff">Other Staff</MenuItem>
-                <MenuItem value="Parent">Parent</MenuItem>
-              </Input>
-            )}
-
+            <Input
+              name="status"
+              control={control}
+              error={!!errors?.name?.message}
+              variant="outlined"
+              label="Status"
+              InputLabelProps={{ style: { background: "#fff" } }}
+              select
+            >
+              <MenuItem value="ACTIVE">Active</MenuItem>
+              <MenuItem value="INACTIVE">Inactive</MenuItem>
+            </Input>
+            <Input
+              name="userType"
+              control={control}
+              error={!!errors?.isCoach?.message && !!errors?.isParent?.message}
+              variant="outlined"
+              label="User Type"
+              select
+              value={
+                data?.user && data?.user?.isCoach == true
+                  ? "Coach"
+                  : "Other Staff"
+              }
+              InputLabelProps={{ style: { background: "#fff" } }}
+            >
+              <MenuItem value="Coach">Coach</MenuItem>
+              <MenuItem value="Other Staff">Other Staff</MenuItem>
+              <MenuItem value="Parent">Parent</MenuItem>
+            </Input>
             <Box />
             <Address
               isEdit={!!id}
@@ -522,43 +488,33 @@ const AddUserPage = () => {
         >
           <ImgIcon>{errorIcon}</ImgIcon>
           <DialogTitle>Error</DialogTitle>
-          <DialogContent sx={{ textAlign: "center" }}>
-            {!!Object.keys(errors).length && (
-              <DialogActions
-                sx={{
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                  p: 2,
-                  position: "relative",
-                }}
-              >
-                {Object.values(errors)
-                  // .reverse()
-                  .map(({ message }, index) => (
-                    <Typography
-                      key={index}
-                      sx={{
-                        color: "error.main",
-                        sm: "0 !important",
-                        margin: "0 9px 5px 9px",
-                      }}
-                      component="span"
-                    >
-                      {message}
-                    </Typography>
-                  ))}
-                <Button
-                  sx={{ color: "#ff2c60" }}
-                  onClick={() => {
-                    setDisplayError({});
-                  }}
-                  autoFocus
-                >
-                  OK
-                </Button>
-              </DialogActions>
-            )}
-          </DialogContent>
+          {!!Object.keys(errors).length && (
+            <DialogContent sx={{ textAlign: "center" }}>
+              {Object.values(errors)
+                // .reverse()
+                .map(({ message }, index) => (
+                  <DialogContentText key={index}>{message}</DialogContentText>
+                ))}
+            </DialogContent>
+          )}
+          <DialogActions>
+            <Button
+              sx={{
+                color: "#ff2c60",
+                border: "solid 1px #f2f1f6",
+                textTransform: "none",
+                fontSize: "20px",
+                fontWeight: "600px",
+                borderRadius: "12px",
+                width: "100px",
+              }}
+              onClick={() => {
+                setDisplayError({});
+              }}
+            >
+              OK
+            </Button>
+          </DialogActions>
         </Dialog>
       </FormModal>
       <WarningDialog

@@ -13,6 +13,7 @@ import {
   Typography,
   IconButton,
   CircularProgress,
+  DialogContentText,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import errorIcon from "../../assets/icons/icon-error.png";
@@ -341,43 +342,33 @@ const AddRolePage = () => {
         >
           <ImgIcon>{errorIcon}</ImgIcon>
           <DialogTitle>Error</DialogTitle>
-          <DialogContent sx={{ textAlign: "center" }}>
-            {!!Object.keys(errors).length && (
-              <DialogActions
-                sx={{
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                  p: 2,
-                  position: "relative",
-                }}
-              >
-                {Object.values(errors)
-                  // .reverse()
-                  .map(({ message }, index) => (
-                    <Typography
-                      key={index}
-                      sx={{
-                        color: "error.main",
-                        sm: "0 !important",
-                        margin: "0 9px 5px 9px",
-                      }}
-                      component="span"
-                    >
-                      {message}
-                    </Typography>
-                  ))}
-                <Button
-                  sx={{ color: "#ff2c60" }}
-                  onClick={() => {
-                    setDisplayError({});
-                  }}
-                  autoFocus
-                >
-                  OK
-                </Button>
-              </DialogActions>
-            )}
-          </DialogContent>
+          {!!Object.keys(errors).length && (
+            <DialogContent sx={{ textAlign: "center" }}>
+              {Object.values(errors)
+                // .reverse()
+                .map(({ message }, index) => (
+                  <DialogContentText key={index}>{message}</DialogContentText>
+                ))}
+            </DialogContent>
+          )}
+          <DialogActions>
+            <Button
+              sx={{
+                color: "#ff2c60",
+                border: "solid 1px #f2f1f6",
+                textTransform: "none",
+                fontSize: "20px",
+                fontWeight: "600px",
+                borderRadius: "12px",
+                width: "100px",
+              }}
+              onClick={() => {
+                setDisplayError({});
+              }}
+            >
+              OK
+            </Button>
+          </DialogActions>
         </Dialog>
       </FormModal>
       <WarningDialog

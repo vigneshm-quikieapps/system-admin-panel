@@ -130,7 +130,7 @@ const Header = ({
             <Notifications
               show={true}
               items={[
-                "notification 1",
+                "notification 1 notification 1 notification 1 notification 1  ",
                 "notification 2",
                 "notification 3",
                 "notification 4",
