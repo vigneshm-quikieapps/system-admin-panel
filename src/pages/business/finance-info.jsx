@@ -73,7 +73,10 @@ const Page = ({ setPageTitle }) => {
   const [updateStatus, setUpdateStatus] = useState(false);
   const [isDiscountSaved, setIsDiscountSaved] = useState(false);
   const [bankDetails, setBankDetails] = useState({});
-  const [paymentChannels, setPaymentChannels] = useState({});
+  const [paymentChannels, setPaymentChannels] = useState({
+    online: false,
+    manual: false,
+  });
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [discountSchemes, setDiscountSchemes] = useState([]);
   const [error, setError] = useState("");
@@ -197,6 +200,10 @@ const Page = ({ setPageTitle }) => {
           bankDetails,
           paymentChannels,
           paymentMethods: paymentMethods?.map((data) => data.pay),
+          discountSchemes: discountSchemes.map((data) => ({
+            name: data?.name,
+            value: data?.value,
+          })),
           // charges: [],
         },
         { onSuccess: () => navigate("/Business") },
@@ -685,9 +692,7 @@ const Page = ({ setPageTitle }) => {
       >
         <ImgIcon>{errorIcon}</ImgIcon>
         <DialogTitle>Error</DialogTitle>
-        <DialogContent>
-          "Please save the new changes done before SAVING"
-        </DialogContent>
+        <DialogContent>"Please save the changes."</DialogContent>
         <DialogActions>
           <Button
             sx={{
