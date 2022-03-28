@@ -41,7 +41,12 @@ const BusinessBasicInfo = ({ setPageTitle }) => {
     "Business Registered Name": name,
     "Business Code": code,
     "Business Trade Name": tradename,
-    "Business Type": type,
+    "Business Type": type
+      ?.toLowerCase()
+      ?.replaceAll("_", " ")
+      ?.split(" ")
+      ?.map((data) => data?.charAt(0)?.toUpperCase() + data?.slice(1) || "")
+      ?.join(" "),
     Status: status,
     Address:
       line1 +

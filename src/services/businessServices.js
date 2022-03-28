@@ -5,7 +5,7 @@ export async function updateFinance(id, payload) {
   try {
     const api = `businesses/finances/${id}`;
     const response = await axios.put(api, payload);
-    return response.data.message;
+    return response;
   } catch (error) {
     throw error;
   }

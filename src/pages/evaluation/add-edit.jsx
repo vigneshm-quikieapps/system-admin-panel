@@ -57,10 +57,15 @@ import { CenterFocusStrong } from "@mui/icons-material";
 import { useEvaluationSchemesQuery } from "../../services/list-services";
 import { useGetEvaluation } from "../../services/queries";
 import {
-  updateEvaluation,
-  createEvaluation,
-} from "../../services/businessServices";
+  useUpdateEvaluation,
+  useCreateEvaluation,
+} from "../../services/mutations";
+// import {
+//   updateEvaluation,
+//   createEvaluation,
+// } from "../../services/businessServices";
 import { fontSize } from "@mui/system";
+import { findAllByDisplayValue } from "@testing-library/react";
 
 const FormModal = styled(Dialog)(({ theme }) => ({
   "& .MuiPaper-root": { borderRadius: theme.shape.borderRadiuses.ternary },
@@ -75,6 +80,21 @@ const validationSchema = yup
     levelCount: yup.number(),
   })
   .required();
+
+const customTransformError = (error, customMessage = "Error") => {
+  error = error?.response?.data;
+  let message = error?.message || customMessage;
+  let errors = error?.errors;
+  if (Array.isArray(errors) && errors.length > 0) {
+    message = errors.reduce((prev, errorItem) => {
+      if (typeof errorItem === "string") return (prev += errorItem + "\n");
+      const errorEntries = Object.values(errorItem);
+      console.log(errorEntries);
+      return (prev += errorEntries.join("\n") + "\n");
+    }, "");
+  }
+  return message;
+};
 
 const Page = () => {
   const navigate = useNavigate();
@@ -94,15 +114,26 @@ const Page = () => {
   const [minLevelCount, setMinLevelCount] = useState(0);
 
   const { data, isLoading, isFetching, isPreviousData } = useGetEvaluation(id, {
-    // onSuccess: console.log("LOL"),
-    // refetchOnWindowFocus: false,
-    // refetchOnReconnect: false,
     onError: (error) => {
       setShowError(true);
       setError(error);
     },
   });
+  const { isLoading: isDataUpdated, mutate: updateEvaluation } =
+    useUpdateEvaluation({
+      onError: (error) => {
+        setShowError(true);
+        setError(error);
+      },
+    });
 
+  const { isLoading: isDataCreated, mutate: createEvaluation } =
+    useCreateEvaluation({
+      onError: (error) => {
+        setShowError(true);
+        setError(error);
+      },
+    });
   const {
     control,
     setValue,
@@ -125,19 +156,22 @@ const Page = () => {
       if (temp) {
         setValue("evaluationName", temp?.name || "");
         setValue("status", temp?.status || "ACTIVE");
-        setValue("levelCount", temp?.levelCount || 0);
+        setValue("levelCount", temp?.levelCount || null);
         setMinLevelCount(temp?.levelCount || 0);
         setLevel(
-          temp?.levels || [
-            { skills: [], isAddNewSkill: true, add: false, touched: false },
-          ],
+          temp?.levels ||
+            [
+              // { skills: [], isAddNewSkill: true, add: false, touched: false },
+            ],
         );
-        setEvaluationId(temp?._id);
+        setEvaluationId(temp?._id || "");
       }
     } else {
       setValue("evaluationName", "");
       setValue("status", "ACTIVE");
-      setValue("levelCount", 0);
+      setValue("levelCount", null);
+      setMinLevelCount(0);
+      setEvaluationId("");
       // setLevel([
       //   { skills: [], isAddNewSkill: true, add: false, touched: false },
       // ]);
@@ -145,56 +179,85 @@ const Page = () => {
   }, [data]);
 
   const onSubmit = async () => {
-    let message1;
+    // let message1;
     if (evaluationId !== "") {
-      await updateEvaluation(evaluationId, {
-        name: control._formValues.evaluationName,
-        status: control._formValues.status,
-        levelCount: control._formValues.levelCount,
-        levels: level,
-      })
-        .then((res) => {
-          message1 = res;
-          setMessage(message1?.data?.message);
-        })
-        .catch((error) => {
-          setMessage("Name should be at least 3 char unique");
-        });
-
-      setOnSaveUpdateStatus(true);
-
-      if (message1?.data?.message === "Update successful.") {
-        setIcon(informationIcon);
-        setTitle("Information");
-      } else {
-        setIcon(errorIcon);
-        setTitle("Error");
-      }
+      // await updateEvaluation(evaluationId, {
+      //   name: control._formValues.evaluationName,
+      //   status: control._formValues.status,
+      //   levelCount: control._formValues.levelCount,
+      //   levels: level,
+      // })
+      //   .then((res) => {
+      //     message1 = res;
+      //     setMessage(message1?.data?.message);
+      //   })
+      //   .catch((error) => {
+      //     setMessage("Name should be at least 3 char unique");
+      //   });
+      updateEvaluation(
+        // finance._id,
+        {
+          name: control._formValues.evaluationName,
+          status: control._formValues.status,
+          levelCount: control._formValues.levelCount,
+          levels: level,
+          _id: evaluationId,
+        },
+        {
+          onSuccess: (msg) => {
+            setMessage(msg?.data?.message);
+            setIcon(informationIcon);
+            setTitle("Information");
+            setOnSaveUpdateStatus(true);
+          },
+        },
+      );
     } else {
-      await createEvaluation({
-        name: control._formValues.evaluationName,
-        status: control._formValues.status,
-        levelCount: control._formValues.levelCount,
-        levels: level,
-      })
-        .then((res) => {
-          message1 = res;
-          setMessage(message1?.data?.message);
-        })
-        .catch((error) => {
-          setMessage("Name should be at least 3 char unique");
-        });
+      createEvaluation(
+        // finance._id,
+        {
+          name: control._formValues.evaluationName,
+          status: control._formValues.status,
+          levelCount: control._formValues.levelCount,
+          levels: level,
+        },
+        {
+          onSuccess: (msg) => {
+            setMessage(msg?.data?.message);
+            setIcon(informationIcon);
+            setTitle("Information");
+            setOnSaveUpdateStatus(true);
+          },
+        },
+      );
 
-      setOnSaveUpdateStatus(true);
-      if (message1?.data?.message === "created successfully") {
-        setIcon(informationIcon);
-        setTitle("Information");
-      } else {
-        setIcon(errorIcon);
-        setTitle("Error");
-        // setMessage("Name should be at least 3 char unique");
-      }
-      setOnSaveUpdateStatus(true);
+      // await createEvaluation({
+      //   name: control._formValues.evaluationName,
+      //   status: control._formValues.status,
+      //   levelCount: control._formValues.levelCount,
+      //   levels: level,
+      // })
+      //   .then((res) => {
+      //     message1 = res;
+      //     setMessage(message1?.data?.message);
+      //   })
+      //   .catch((error) => {
+      //     // setMessage(error);
+      //   });
+
+      // setOnSaveUpdateStatus(true);
+      //   if (
+      //     message1?.data?.message === "Evaluation scheme created successfully."
+      //   ) {
+      //     setIcon(informationIcon);
+      //     setTitle("Information");
+      //   } else {
+      //     setIcon(errorIcon);
+      //     setTitle("Error");
+      //     // setMessage("Name should be at least 3 char unique");
+      //   }
+      //   setOnSaveUpdateStatus(true);
+      // }
     }
   };
   // console.log(message);
@@ -302,21 +365,48 @@ const Page = () => {
               variant="filled"
               onChange={(data) => {
                 let temp = [...level];
-                if (temp.length > data.target.value) {
-                  // temp.pop();
-                  setValue("levelCount", data.target.value);
+                // if (minLevelCount >= data.target.value) {
+                //   setLevel(temp);
+                // } else {
+                //   if (temp.length > data.target.value) {
+                //     temp.pop();
+                //     setValue("levelCount", data.target.value);
+                //     setLevel(temp);
+                //   } else if (
+                //     data.target.value &&
+                //     temp.length < data.target.value
+                //   ) {
+                //     setValue("levelCount", data.target.value);
+                //     for (var i = temp.length; i < data.target.value; i++) {
+                //       temp.push({ skills: [], isAddNewSkill: true });
+                //     }
+                //   }
+                // }
+                if (data.target.value == "") {
                   // setLevel(temp);
-                } else if (
-                  data.target.value &&
-                  temp.length < data.target.value
-                ) {
                   setValue("levelCount", data.target.value);
-                  for (var i = temp.length; i < data.target.value; i++) {
-                    temp.push({ skills: [], isAddNewSkill: true });
-                  }
-                  setLevel(temp);
                 } else {
+                  if (data.target.value <= minLevelCount) {
+                    setValue("levelCount", data.target.value);
+                  } else if (data.target.value > minLevelCount) {
+                    setValue("levelCount", data.target.value);
+                    for (var i = temp.length; i < data.target.value; i++) {
+                      temp.push({ skills: [], isAddNewSkill: true });
+                    }
+                    setLevel(temp);
+                  }
                 }
+                //  else if (
+                //   data.target.value &&
+                //   temp.length < data.target.value
+                // ) {
+                //   setValue("levelCount", data.target.value);
+                //   for (var i = temp.length; i < data.target.value; i++) {
+                //     temp.push({ skills: [], isAddNewSkill: true });
+                //   }
+                //   setLevel(temp);
+                // } else {
+                // }
               }}
             ></Input>
           </Grid>
@@ -324,7 +414,7 @@ const Page = () => {
         <Box sx={{ margin: "5%" }}>
           {level?.map((data, index1) => (
             <AccordionContainer key={index1}>
-              <Accordion defaultExpanded={true}>
+              <Accordion defaultExpanded={false}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Box
                     sx={{
@@ -416,13 +506,21 @@ const Page = () => {
                         {data?.isAddNewSkill && (
                           <IconButton
                             onClick={() => {
-                              const newState = [...level];
-                              // if (newState[index1].skills[0].skill !== "") {
-                              newState[index1].isAddNewSkill = false;
-                              setLevel(newState);
-                              // }
-                              // newState[index1].isAddNewSkill = true;
+                              const temp = [...level];
+                              // const newState = [...level];
+                              temp[index1].isAddNewSkill = false;
+                              // setLevel(newState);
                               setSaveStatus(false);
+
+                              // temp[index1].skills.splice(index2, 1);
+                              if (temp[index1].skills.length === 0) {
+                                temp.splice(index1, 1);
+                              }
+                              setLevel(temp);
+                              setValue("levelCount", temp.length);
+                              if (temp.length <= minLevelCount) {
+                                setMinLevelCount(temp.length);
+                              }
                             }}
                           >
                             <CancelIcon color="secondary" />
@@ -502,7 +600,14 @@ const Page = () => {
                         onClick={() => {
                           const temp = [...level];
                           temp[index1].skills.splice(index2, 1);
+                          if (temp[index1].skills.length === 0) {
+                            temp.splice(index1, 1);
+                          }
                           setLevel(temp);
+                          setValue("levelCount", temp.length);
+                          if (temp.length <= minLevelCount) {
+                            setMinLevelCount(temp.length);
+                          }
                         }}
                       >
                         <ImgIcon>{deleteIcon}</ImgIcon>
@@ -688,6 +793,16 @@ const Page = () => {
         </DialogActions>
         </ElevationScroll> */}
       </FormModal>
+      <WarningDialog
+        open={showError}
+        onAccept={() => {
+          // setError("");
+          setShowError(false);
+        }}
+        title="Error"
+        acceptButtonTitle="OK"
+        description={customTransformError(error)}
+      />
     </>
   );
 };

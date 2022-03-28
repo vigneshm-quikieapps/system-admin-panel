@@ -40,15 +40,32 @@ import {
   Button,
 } from "../../components";
 import deleteIcon from "../../assets/icons/icon-delete.png";
+import { useUpdateFinance, useCreateFinance } from "../../services/mutations";
 import { useGetBusiness, useGetBusinessFinance } from "../../services/queries";
+import { transformError } from "../../utils";
 import {
-  updateFinance,
+  // updateFinance,
   getDiscount,
   addDiscount,
   updateDiscount,
   deleteDiscount,
 } from "../../services/businessServices";
 import { da } from "date-fns/locale";
+
+const customTransformError = (error, customMessage = "Error") => {
+  error = error?.response?.data;
+  let message = error?.message || customMessage;
+  let errors = error?.errors;
+  if (Array.isArray(errors) && errors.length > 0) {
+    message = errors.reduce((prev, errorItem) => {
+      if (typeof errorItem === "string") return (prev += errorItem + "\n");
+      const errorEntries = Object.values(errorItem);
+      console.log(errorEntries);
+      return (prev += errorEntries.join("\n") + "\n");
+    }, "");
+  }
+  return message;
+};
 
 const Page = ({ setPageTitle }) => {
   const navigate = useNavigate();
@@ -59,7 +76,8 @@ const Page = ({ setPageTitle }) => {
   const [paymentChannels, setPaymentChannels] = useState({});
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [discountSchemes, setDiscountSchemes] = useState([]);
-  const [errors, setErrors] = useState({});
+  const [error, setError] = useState("");
+  const [showError, setShowError] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [financeMessage, setFinanceMessage] = useState();
   const [icon, setIcon] = useState();
@@ -71,15 +89,18 @@ const Page = ({ setPageTitle }) => {
   const {
     business: { name, finance, type, city },
   } = data;
-  console.log("data", data);
+  // console.log("data", data);
   useEffect(() => {
-    setBankDetails(finance?.bankDetails);
-    setPaymentChannels(finance?.paymentChannels);
-    const newState = finance?.paymentMethods.map((pay) => ({
-      pay,
-    }));
-    setPaymentMethods(newState);
-    getDiscount(id).then((data) => setDiscountSchemes(data));
+    setBankDetails(finance?.bankDetails || {});
+    setPaymentChannels(finance?.paymentChannels || {});
+    const newState =
+      finance?.paymentMethods.map((pay) => ({
+        pay,
+      })) || [];
+    setPaymentMethods(newState || []);
+    getDiscount(id)
+      .then((data) => setDiscountSchemes(data))
+      .catch(() => setDiscountSchemes([]));
   }, [data]);
   const checkboxHandler = (name, e) => {
     if (name === "Online") {
@@ -134,16 +155,55 @@ const Page = ({ setPageTitle }) => {
       }
     }
   };
-  const updateData = async () => {
-    await updateFinance(finance._id, {
-      bankDetails,
-      paymentChannels,
-      paymentMethods: paymentMethods?.map((data) => data.pay),
-    })
-      .then((response) => setFinanceMessage(response))
-      .catch((error) => setFinanceMessage(error));
-    setUpdateStatus(true);
+  const { isLoading: isDataLoading, mutate: updateFinance } = useUpdateFinance({
+    onError: (error) => {
+      setShowError(true);
+      setError(error);
+    },
+  });
+
+  const { isLoading: isLoading, mutate: createFinance } = useCreateFinance({
+    onError: (error) => {
+      setShowError(true);
+      setError(error);
+    },
+  });
+
+  // const updateData = async () => {
+  //   await updateFinance(finance._id, {
+  //     bankDetails,
+  //     paymentChannels,
+  //     paymentMethods: paymentMethods?.map((data) => data.pay),
+  //   }).then((response) => console.log(response));
+  //   setUpdateStatus(true);
+  // };
+
+  const updateData = () => {
+    if (finance?._id) {
+      updateFinance(
+        // finance._id,
+        {
+          bankDetails,
+          paymentChannels,
+          paymentMethods: paymentMethods?.map((data) => data.pay),
+          _id: finance._id,
+        },
+        { onSuccess: () => navigate("/Business") },
+      );
+    } else {
+      createFinance(
+        {
+          businessId: id,
+          bankDetails,
+          paymentChannels,
+          paymentMethods: paymentMethods?.map((data) => data.pay),
+          // charges: [],
+        },
+        { onSuccess: () => navigate("/Business") },
+      );
+    }
   };
+
   const addNewDiscount = async (name, value) => {
     await addDiscount({ businessId: id, name, value });
   };
@@ -170,6 +230,7 @@ const Page = ({ setPageTitle }) => {
   //     discountSchemes.some((discount) => discount.add || discount.touched) ||
   //       paymentMethods.some((pay) => pay.add || pay.touched),
   //   );
+  console.log(error);
   return (
     <>
       <AccordionContainer>
@@ -574,7 +635,7 @@ const Page = ({ setPageTitle }) => {
         onClick={() => {
           if (
             !(
-              discountSchemes.some(
+              discountSchemes?.some(
                 (discount) => discount.add || discount.touched,
               ) || paymentMethods.some((pay) => pay.add || pay.touched)
             )
@@ -601,23 +662,7 @@ const Page = ({ setPageTitle }) => {
       >
         Discard
       </GradientButton>
-      {!!Object.keys(errors).length && (
-        <DialogActions
-          sx={{ flexDirection: "column", alignItems: "flex-start", p: 2 }}
-        >
-          {Object.values(errors)
-            .reverse()
-            .map(({ message }, index) => (
-              <Typography
-                key={index}
-                sx={{ color: "error.main", ml: "0 !important" }}
-                component="span"
-              >
-                {message}
-              </Typography>
-            ))}
-        </DialogActions>
-      )}
+
       <WarningDialog
         showReject
         open={showWarning}
@@ -661,49 +706,16 @@ const Page = ({ setPageTitle }) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog
-        open={updateStatus}
-        sx={{
-          "& .MuiDialog-paper": {
-            minWidth: "380px",
-            padding: "40px 30px",
-            margin: "27px 300px 31px 200px",
-            alignItems: "center",
-            borderRadius: "20px",
-          },
+      <WarningDialog
+        open={showError}
+        onAccept={() => {
+          setError("");
+          setShowError(false);
         }}
-      >
-        <ImgIcon>
-          {financeMessage === "Update successful."
-            ? informationIcon
-            : errorIcon}
-        </ImgIcon>
-        <DialogTitle>
-          {financeMessage === "Update successful." ? "Information" : "Error"}
-        </DialogTitle>
-        <DialogContent sx={{ textAlign: "center" }}>
-          {financeMessage === "Update successful."
-            ? financeMessage
-            : "Should be either: CASH / REC_BANK / TOTZ_BANK / REC_CREDIT_CARD / TOTZ_CREDIT_CARD"}
-        </DialogContent>
-        <DialogActions>
-          <Button
-            sx={{
-              color: "#ff2c60",
-              border: "solid 1px #f2f1f6",
-              textTransform: "none",
-              fontSize: "20px",
-              fontWeight: "600px",
-              borderRadius: "12px",
-              width: "100px",
-            }}
-            onClick={handleOnClickSubmitFinance}
-            autoFocus
-          >
-            {financeMessage === "Update successful." ? "OK" : "OK"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        title="Error"
+        acceptButtonTitle="OK"
+        description={customTransformError(error)}
+      />
     </>
   );
 };

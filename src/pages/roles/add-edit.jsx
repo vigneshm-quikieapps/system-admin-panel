@@ -15,7 +15,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
-
+import errorIcon from "../../assets/icons/icon-error.png";
 import { usePostRole, usePutRole } from "../../services/mutations";
 import { useGetRole } from "../../services/queries";
 import { transformError } from "../../utils";
@@ -26,6 +26,8 @@ import {
   GradientButton,
   Grid,
   WarningDialog,
+  ImgIcon,
+  Button,
 } from "../../components";
 import Privileges from "./components/privileges";
 
@@ -76,6 +78,7 @@ const AddRolePage = () => {
   const [showError, setShowError] = useState(false);
   const [error, setError] = useState("");
   const [contentRef, setContentRef] = useState();
+  const [displayError, setDisplayError] = useState({});
   const { data, isLoading: getIsLoading } = useGetRole(id, {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
@@ -151,7 +154,9 @@ const AddRolePage = () => {
       });
     }
   }, [resetFormData, data, privileges]);
-
+  useEffect(() => {
+    setDisplayError(errors);
+  }, [errors]);
   return (
     <>
       <FormModal open={true} maxWidth="xl">
@@ -265,7 +270,7 @@ const AddRolePage = () => {
             </GradientButton>
           </Box>
         </DialogContent>
-        {!!Object.keys(errors).length && (
+        {/* {!!Object.keys(errors).length && (
           <DialogActions
             sx={{ flexDirection: "column", alignItems: "flex-start", p: 2 }}
           >
@@ -281,7 +286,59 @@ const AddRolePage = () => {
                 </Typography>
               ))}
           </DialogActions>
-        )}
+        )} */}
+        <Dialog
+          open={!!Object.keys(displayError).length}
+          sx={{
+            "& .MuiDialog-paper": {
+              minWidth: "380px",
+              padding: "40px 30px",
+              margin: "27px 300px 31px 200px",
+              alignItems: "center",
+              borderRadius: " 20px",
+            },
+          }}
+        >
+          <ImgIcon>{errorIcon}</ImgIcon>
+          <DialogTitle>Error</DialogTitle>
+          <DialogContent sx={{ textAlign: "center" }}>
+            {!!Object.keys(errors).length && (
+              <DialogActions
+                sx={{
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  p: 2,
+                  position: "relative",
+                }}
+              >
+                {Object.values(errors)
+                  // .reverse()
+                  .map(({ message }, index) => (
+                    <Typography
+                      key={index}
+                      sx={{
+                        color: "error.main",
+                        sm: "0 !important",
+                        margin: "0 9px 5px 9px",
+                      }}
+                      component="span"
+                    >
+                      {message}
+                    </Typography>
+                  ))}
+                <Button
+                  sx={{ color: "#ff2c60" }}
+                  onClick={() => {
+                    setDisplayError({});
+                  }}
+                  autoFocus
+                >
+                  OK
+                </Button>
+              </DialogActions>
+            )}
+          </DialogContent>
+        </Dialog>
       </FormModal>
       <WarningDialog
         open={showError}

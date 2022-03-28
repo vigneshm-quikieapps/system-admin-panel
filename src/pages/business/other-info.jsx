@@ -57,10 +57,12 @@ const Page = ({ setPageTitle }) => {
   const [errors, setErrors] = useState({});
   const [showWarning, setShowWarning] = useState(false);
   const temps = useGetBusiness(id);
+  const [city, setCity] = useState("");
 
   if (temps?.data?.business && !isSocialDataUpdated) {
     var temp = {
       name: temps?.data?.business?.name,
+      city: temps?.data?.business?.city,
       facebook: temps?.data?.business?.facebookUrl,
       instagram: temps?.data?.business?.instagramUrl,
       pinterest: temps?.data?.business?.pinterestUrl,
@@ -75,7 +77,7 @@ const Page = ({ setPageTitle }) => {
     setLinkedinUrl(temp.linkedin);
     setLogo(temp.logoUrl);
     setPic(temp.imageUrl);
-
+    setCity(temp.city);
     setIsSocialDataUpdated(true);
   }
 
@@ -170,10 +172,9 @@ const Page = ({ setPageTitle }) => {
               <Typography style={{ fontSize: "28px" }}>
                 {temps?.data?.business?.name}
               </Typography>
-              <Typography sx={{ opacity: 0.5, fontSize: "14px !important" }}>
-                BusinessID
+              <Typography sx={{ fontSize: "13px important" }}>
+                {city}
               </Typography>
-              <Typography sx={{ fontSize: "13px important" }}>{id}</Typography>
             </Box>
           </AccordionSummary>
         </Accordion>

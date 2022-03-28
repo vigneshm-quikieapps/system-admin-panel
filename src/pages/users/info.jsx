@@ -50,7 +50,7 @@ const UserDetailPage = () => {
 
   const items = {
     Email: email,
-    Password: password,
+    Password: "***************",
     "Contact Number": mobileNo,
     "Full Name": name,
     Status: status,

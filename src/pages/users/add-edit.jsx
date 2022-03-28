@@ -33,9 +33,11 @@ import {
   WarningDialog,
   ImgIcon,
   TextField,
+  Button,
 } from "../../components";
 import Roles from "./components/roles";
 import DataPrivileges from "./components/data-privileges";
+import errorIcon from "../../assets/icons/icon-error.png";
 
 const FormModal = styled(Dialog)(({ theme }) => ({
   "& .MuiPaper-root": { borderRadius: theme.shape.borderRadiuses.ternary },
@@ -103,6 +105,8 @@ const AddUserPage = () => {
   const [showError, setShowError] = useState(false);
   const [error, setError] = useState("");
   const [contentRef, setContentRef] = useState();
+  const [displayError, setDisplayError] = useState({});
+
   const { data, isLoading: getIsLoading } = useGetUser(id, {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
@@ -217,7 +221,9 @@ const AddUserPage = () => {
       resetFormData(userInfo);
     }
   }, [resetFormData, data]);
-
+  useEffect(() => {
+    setDisplayError(errors);
+  }, [errors]);
   return (
     <>
       <FormModal open={true} maxWidth="xl">
@@ -381,7 +387,7 @@ const AddUserPage = () => {
             </GradientButton>
           </Box>
         </DialogContent>
-        {!!Object.keys(errors).length && (
+        {/* {!!Object.keys(errors).length && (
           <DialogActions
             sx={{ flexDirection: "column", alignItems: "flex-start", p: 2 }}
           >
@@ -397,7 +403,59 @@ const AddUserPage = () => {
                 </Typography>
               ))}
           </DialogActions>
-        )}
+        )} */}
+        <Dialog
+          open={!!Object.keys(displayError).length}
+          sx={{
+            "& .MuiDialog-paper": {
+              minWidth: "380px",
+              padding: "40px 30px",
+              margin: "27px 300px 31px 200px",
+              alignItems: "center",
+              borderRadius: " 20px",
+            },
+          }}
+        >
+          <ImgIcon>{errorIcon}</ImgIcon>
+          <DialogTitle>Error</DialogTitle>
+          <DialogContent sx={{ textAlign: "center" }}>
+            {!!Object.keys(errors).length && (
+              <DialogActions
+                sx={{
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  p: 2,
+                  position: "relative",
+                }}
+              >
+                {Object.values(errors)
+                  // .reverse()
+                  .map(({ message }, index) => (
+                    <Typography
+                      key={index}
+                      sx={{
+                        color: "error.main",
+                        sm: "0 !important",
+                        margin: "0 9px 5px 9px",
+                      }}
+                      component="span"
+                    >
+                      {message}
+                    </Typography>
+                  ))}
+                <Button
+                  sx={{ color: "#ff2c60" }}
+                  onClick={() => {
+                    setDisplayError({});
+                  }}
+                  autoFocus
+                >
+                  OK
+                </Button>
+              </DialogActions>
+            )}
+          </DialogContent>
+        </Dialog>
       </FormModal>
       <WarningDialog
         open={showError}

@@ -336,47 +336,49 @@ const AddBusinessPage = () => {
             padding: "40px 30px",
             margin: "27px 300px 31px 200px",
             alignItems: "center",
+            borderRadius: " 20px",
           },
         }}
       >
         <ImgIcon>{errorIcon}</ImgIcon>
         <DialogTitle>Error</DialogTitle>
-        <DialogContent sx={{ textAlign: "center" }}></DialogContent>
-        {!!Object.keys(errors).length && (
-          <DialogActions
-            sx={{
-              flexDirection: "column",
-              alignItems: "flex-start",
-              p: 2,
-              position: "relative",
-            }}
-          >
-            {Object.values(errors)
-              // .reverse()
-              .map(({ message }, index) => (
-                <Typography
-                  key={index}
-                  sx={{
-                    color: "error.main",
-                    sm: "0 !important",
-                    margin: "0 9px 5px 9px",
-                  }}
-                  component="span"
-                >
-                  {message}
-                </Typography>
-              ))}
-            <Button
-              sx={{ color: "#ff2c60" }}
-              onClick={() => {
-                setDisplayError({});
+        <DialogContent sx={{ textAlign: "center" }}>
+          {!!Object.keys(errors).length && (
+            <DialogActions
+              sx={{
+                flexDirection: "column",
+                alignItems: "flex-start",
+                p: 2,
+                position: "relative",
               }}
-              autoFocus
             >
-              OK
-            </Button>
-          </DialogActions>
-        )}
+              {Object.values(errors)
+                // .reverse()
+                .map(({ message }, index) => (
+                  <Typography
+                    key={index}
+                    sx={{
+                      color: "error.main",
+                      sm: "0 !important",
+                      margin: "0 9px 5px 9px",
+                    }}
+                    component="span"
+                  >
+                    {message}
+                  </Typography>
+                ))}
+              <Button
+                sx={{ color: "#ff2c60" }}
+                onClick={() => {
+                  setDisplayError({});
+                }}
+                autoFocus
+              >
+                OK
+              </Button>
+            </DialogActions>
+          )}
+        </DialogContent>
       </Dialog>
       <WarningDialog
         open={showError}

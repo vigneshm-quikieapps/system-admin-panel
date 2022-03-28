@@ -29,6 +29,23 @@ export const useDeleteBusiness = () =>
     },
   });
 
+const updateFinance = (data) =>
+  axios.put(`businesses/finances/${data._id}`, data);
+export const useUpdateFinance = (options) =>
+  useMutation((data) => updateFinance(data), options);
+
+const createFinance = (data) => axios.post(`businesses/finances`, data);
+export const useCreateFinance = (options) =>
+  useMutation((data) => createFinance(data), options);
+
+const updateEvaluation = (data) => axios.put(`/evaluations/${data._id}`, data);
+export const useUpdateEvaluation = (options) =>
+  useMutation((data) => updateEvaluation(data), options);
+
+const createEvaluation = (data) => axios.post(`/evaluations`, data);
+export const useCreateEvaluation = (options) =>
+  useMutation((data) => createEvaluation(data), options);
+
 const postRole = (roleData) => axios.post("roles", roleData);
 const putRole = (roleData) => axios.put(`roles/${roleData._id}`, roleData);
 const deleteRole = (roleId) => axios.delete(`roles/${roleId}`);
