@@ -54,6 +54,7 @@ const OperatorField = ({
       sx={{ gridArea: area }}
       label="Operator"
       onChange={changeHandler}
+      InputLabelProps={{ style: { background: "#fff" } }}
       {...otherProps}
     >
       <MenuItem value="EQUALS">Equals to</MenuItem>

@@ -90,6 +90,7 @@ const AdvancedSearch = ({ setOpen, name, setName, setFilters, setPage }) => {
             label="Operator"
             value={state.operator}
             onChange={(e) => changeHandler(e, "operator")}
+            InputLabelProps={{ style: { background: "#fff" } }}
           >
             <MenuItem value="EQUALS">Equals to</MenuItem>
             <MenuItem value="STARTS_WITH">Starts with</MenuItem>

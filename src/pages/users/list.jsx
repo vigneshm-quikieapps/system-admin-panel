@@ -90,6 +90,7 @@ const AdvancedSearch = ({ setOpen, name, setName, setFilters, setPage }) => {
         label="Operator"
         value={state.operator}
         onChange={(e) => changeHandler(e, "operator")}
+        InputLabelProps={{ style: { background: "#fff" } }}
       >
         <MenuItem value="EQUALS">Equals to</MenuItem>
         <MenuItem value="STARTS_WITH">Starts with</MenuItem>
@@ -117,6 +118,7 @@ const AdvancedSearch = ({ setOpen, name, setName, setFilters, setPage }) => {
         value={state.status}
         onChange={(e) => changeHandler(e, "status")}
         sx={{ gridArea: "status" }}
+        InputLabelProps={{ style: { background: "#fff" } }}
         select
       >
         <MenuItem value="ACTIVE">Active</MenuItem>

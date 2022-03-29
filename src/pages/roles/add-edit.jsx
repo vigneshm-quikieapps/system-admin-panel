@@ -41,8 +41,8 @@ const validationSchema = Yup.object()
   .shape({
     name: Yup.string().required("Role Name is mandatory").label("Role Name"),
     code: Yup.string()
-      .required("Role Code is mandatory and must be at most 5 Characters")
-      .max(6, "Role Code must be at most 5 Characters"),
+      .required("Role Code is mandatory and must be at most 5 characters")
+      .max(6, "Role Code must be at most 5 characters"),
     description: Yup.string(),
     functionalPrivileges: Yup.array()
       .min(1)
