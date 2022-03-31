@@ -190,7 +190,7 @@ const AddBusinessPage = () => {
             </Box>
           )}
           <Typography
-            sx={{ fontSize: "16px", fontWeight: "bold", mb: 2 }}
+            sx={{ fontSize: "20px", fontWeight: "bold", mb: 2 }}
             component="h3"
           >
             Basic Information

@@ -2,7 +2,7 @@ import { styled } from "@mui/material/styles";
 import { TextField } from "@mui/material";
 import { useController } from "react-hook-form";
 
-const StyledTextField = styled(TextField)(({ theme }) => ({
+const StyledTextField = styled(TextField)(({ theme, value }) => ({
   "& .Mui-disabled": {
     color: `${theme.palette.text.secondary} !important`,
     WebkitTextFillColor: `${theme.palette.text.secondary} !important`,
@@ -19,7 +19,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
   // applied to label of outlined variant
   "& .MuiInputLabel-outlined": {
-    backgroundColor: "#f4f4f4",
+    backgroundColor: value ? "white" : "#f4f4f4",
     padding: theme.spacing(0, 1),
   },
   // applied to InputBase (FormControl) of all variants
@@ -47,6 +47,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
   // applied to InputBase (FormControl) of outlined variant
   "& .MuiOutlinedInput-root": {
+    backgroundColor: value ? "white" : "#f4f4f4",
     "& fieldset": { border: "none" },
   },
 }));

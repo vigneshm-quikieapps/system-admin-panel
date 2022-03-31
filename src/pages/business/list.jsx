@@ -163,6 +163,7 @@ const AdvancedSearch = ({
           name="name"
           onChange={valuesChangeHandler}
           value={name}
+          // InputLabelProps={{ style: { background: "#fff" } }}
         />
 
         <TextField
@@ -171,6 +172,7 @@ const AdvancedSearch = ({
           name="city"
           value={valuesState["city"]}
           onChange={valuesChangeHandler}
+          // InputLabelProps={{ style: { background: "#fff" } }}
         />
 
         <TextField

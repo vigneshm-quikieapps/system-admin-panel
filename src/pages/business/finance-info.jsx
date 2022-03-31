@@ -270,7 +270,7 @@ const Page = ({ setPageTitle }) => {
                 <TextField
                   variant="outlined"
                   label="Account Holder Name*"
-                  InputLabelProps={{ style: { background: "#fff" } }}
+                  // InputLabelProps={{ style: { background: "#fff" } }}
                   value={bankDetails?.accHolderName || ""}
                   onChange={(e) => {
                     changeHandler(e, "Account Holder Name");
@@ -291,7 +291,7 @@ const Page = ({ setPageTitle }) => {
                 <TextField
                   variant="outlined"
                   label="Bank Name*"
-                  InputLabelProps={{ style: { background: "#fff" } }}
+                  // InputLabelProps={{ style: { background: "#fff" } }}
                   value={bankDetails?.bankName || ""}
                   onChange={(e) => {
                     changeHandler(e, "Bank Name");
@@ -312,7 +312,7 @@ const Page = ({ setPageTitle }) => {
                 <TextField
                   variant="outlined"
                   label="Sort Code*"
-                  InputLabelProps={{ style: { background: "#fff" } }}
+                  // InputLabelProps={{ style: { background: "#fff" } }}
                   value={bankDetails?.sortCode || ""}
                   onChange={(e) => {
                     changeHandler(e, "Sort Code");
@@ -335,7 +335,7 @@ const Page = ({ setPageTitle }) => {
                   xs={2}
                   variant="outlined"
                   label="Account Number*"
-                  InputLabelProps={{ style: { background: "#fff" } }}
+                  // InputLabelProps={{ style: { background: "#fff" } }}
                   value={bankDetails?.accNo || ""}
                   onChange={(e) => {
                     changeHandler(e, "Account Number");

@@ -27,11 +27,11 @@ const passwordValidationRules =
         )
         .matches(/(?=.*[0-9])/, "Password should contain at least one digit")
         .label("Password")
-    : Yup.string().required().label("Password");
+    : Yup.string().required("Password is mandatory").label("Password");
 
 const validationSchema = Yup.object()
   .shape({
-    email: Yup.string().required().label("Email"),
+    email: Yup.string().required("Email is mandatory").label("Email"),
     password: passwordValidationRules,
   })
   .required();

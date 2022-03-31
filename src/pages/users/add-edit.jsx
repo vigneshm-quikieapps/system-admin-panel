@@ -320,7 +320,7 @@ const AddUserPage = () => {
             </Box>
           )}
           <Typography
-            sx={{ fontSize: "16px", fontWeight: "bold", mb: 2 }}
+            sx={{ fontSize: "20px", fontWeight: "bold", mb: 2 }}
             component="h3"
           >
             User Details
@@ -346,7 +346,7 @@ const AddUserPage = () => {
                 type="email"
                 autoComplete="off"
                 inputProps={{ readOnly: !!id }}
-                InputLabelProps={{ style: { background: "#fff" } }}
+                // InputLabelProps={{ style: { background: "#fff" } }}
                 disabled
               />
             ) : (
@@ -371,7 +371,7 @@ const AddUserPage = () => {
                 type="password"
                 inputProps={{ autoComplete: "new-password" }}
                 onFocus={() => setValue("password", "")}
-                InputLabelProps={{ style: { background: "#fff" } }}
+                // InputLabelProps={{ style: { background: "#fff" } }}
               />
             ) : (
               <Input
@@ -393,7 +393,7 @@ const AddUserPage = () => {
                 variant="outlined"
                 label="Contact Number*"
                 inputProps={{ readOnly: !!id }}
-                InputLabelProps={{ style: { background: "#fff" } }}
+                // InputLabelProps={{ style: { background: "#fff" } }}
                 disabled
               />
             ) : (
@@ -413,7 +413,7 @@ const AddUserPage = () => {
                 error={!!errors?.name?.message}
                 variant="outlined"
                 label="Full Name*"
-                InputLabelProps={{ style: { background: "#fff" } }}
+                // InputLabelProps={{ style: { background: "#fff" } }}
               />
             ) : (
               <Input
@@ -430,7 +430,7 @@ const AddUserPage = () => {
               error={!!errors?.name?.message}
               variant="outlined"
               label="Status*"
-              InputLabelProps={{ style: { background: "#fff" } }}
+              // InputLabelProps={{ style: { background: "#fff" } }}
               select
             >
               <MenuItem value="ACTIVE">Active</MenuItem>
@@ -445,7 +445,7 @@ const AddUserPage = () => {
               select
               value={userTypeValue}
               onChange={handleChange}
-              InputLabelProps={{ style: { background: "#fff" } }}
+              // InputLabelProps={{ style: { background: "#fff" } }}
             >
               <MenuItem
                 // onSelect={() => {

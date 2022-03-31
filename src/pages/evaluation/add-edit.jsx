@@ -351,7 +351,7 @@ const Page = () => {
                 name="evaluationName"
                 variant="outlined"
                 sx={{ mr: "20px", width: "100% !important" }}
-                InputLabelProps={{ style: { background: "#fff" } }}
+                // InputLabelProps={{ style: { background: "#fff" } }}
               />
             </div>
           ) : (
@@ -374,7 +374,7 @@ const Page = () => {
               name="status"
               select
               variant="outlined"
-              InputLabelProps={{ style: { background: "#fff" } }}
+              // InputLabelProps={{ style: { background: "#fff" } }}
               sx={{ mr: "20px !important", width: "100% !important" }}
             >
               <MenuItem value="ACTIVE">Active</MenuItem>
@@ -389,7 +389,7 @@ const Page = () => {
                 control={control}
                 name="levelCount"
                 type="number"
-                InputLabelProps={{ style: { background: "#fff" } }}
+                // InputLabelProps={{ style: { background: "#fff" } }}
                 InputProps={{
                   inputProps: { min: `${minLevelCount}`, max: "10", step: "1" },
                 }}

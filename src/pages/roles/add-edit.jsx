@@ -205,7 +205,7 @@ const AddRolePage = () => {
             </Box>
           )}
           <Typography
-            sx={{ fontSize: "16px", fontWeight: "bold", mb: 2 }}
+            sx={{ fontSize: "20px", fontWeight: "bold", mb: 2 }}
             component="h3"
           >
             Role Details
@@ -228,7 +228,7 @@ const AddRolePage = () => {
                 error={!!errors?.name?.message}
                 variant="outlined"
                 label="Role Name*"
-                InputLabelProps={{ style: { background: "#fff" } }}
+                // InputLabelProps={{ style: { background: "#fff" } }}
               />
             ) : (
               <Input
@@ -248,7 +248,7 @@ const AddRolePage = () => {
                 variant="outlined"
                 label="Role Code*"
                 inputProps={{ readOnly: !!id }}
-                InputLabelProps={{ style: { background: "#fff" } }}
+                // InputLabelProps={{ style: { background: "#fff" } }}
               />
             ) : (
               <Input
@@ -268,7 +268,7 @@ const AddRolePage = () => {
                 label="Description"
                 multiline
                 rows={4}
-                InputLabelProps={{ style: { background: "#fff" } }}
+                // InputLabelProps={{ style: { background: "#fff" } }}
                 sx={{
                   gridColumnEnd: "span 2",
                   "& .MuiOutlinedInput-root": { height: "initial !important" },
